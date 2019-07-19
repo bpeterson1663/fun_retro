@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Column from './Column';
-
+import {db} from '../firebase';
 import RetroContext from '../retro-context';
 const RETRO_FORM_DEFAULT={
     keepDoing: [],
@@ -10,7 +10,13 @@ const RETRO_FORM_DEFAULT={
     sprint: ''
 }
 const Container = () => {
-    
+    useEffect(() => {
+        db.collection("retros")
+        .get().then(querySnapshot => {
+            const data = querySnapshot.docs.map(doc => doc.data());
+            console.log(data); // array of cities objects        
+        });
+    });
     return(
         <RetroContext.Provider value={RETRO_FORM_DEFAULT}>
             <Column title="Keep Doing" columnName="keepDoing" />
