@@ -1,14 +1,28 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import {db} from '../firebase';
 
 const Column = (props) => {
-    const [itemList, setItemList] = useState([]);
     const [itemValue, setItemValue] = useState('');
+    
+    const itemListReducer = (state, action) => {
+        switch(action.type){
+            case 'ADD':
+                return state.concat(action.payload);
+            case 'SET':
+                return action.payload;
+            case 'REMOVE':
+                return state.filter((item) => item.id !== action.payload );
+            default:
+                return state;
+        }
+    };
+
+    const [itemList, dispatch] = useReducer(itemListReducer, [])
 
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
             .onSnapshot(querySnapshot => {
-                setItemList(querySnapshot.docs.map(doc => doc.data()));
+                dispatch({type: 'SET_LIST', payload: querySnapshot.docs.map(doc => doc.data())})
             });
         return () => unsubscirbe();
     }, [props.columnName]);
@@ -23,8 +37,8 @@ const Column = (props) => {
           .add({value: itemValue, retroId: 1})
           .then((res) =>{
             setItemValue('');
-            setItemList(itemList.concat([{value: itemValue, retroId: 1}]));
-          });
+            dispatch({type: 'ADD', payload: itemValue})
+        });
     };
     
     return(
