@@ -1,28 +1,43 @@
-import React, {useState, useContext} from 'react';
-import Item from './Item';
-import RetroContext from '../retro-context';
+import React, {useState, useEffect} from 'react';
+import {db} from '../firebase';
 
 const Column = (props) => {
-    const [addItem, setAddItem] = useState(false);
     const [itemList, setItemList] = useState([]);
+    const [itemValue, setItemValue] = useState('');
 
-    const retroForm = useContext(RetroContext)
+    useEffect(() => {
+        db.collection(props.columnName)
+        .get().then(querySnapshot => {
+            setItemList(querySnapshot.docs.map(doc => doc.data()));
+        });
+        return () => {
+            console.log('Cleanup');
+          };
+    }, [props.columnName]);
 
-    const setItemState = () => {
-        setAddItem(addItem ? false : true);
+    const onChangeHandler = (event) => {
+        setItemValue(event.target.value);
+    };
+
+    const handleItemSubmit = (event) => {
+        event.preventDefault();
+        db.collection(props.columnName)
+          .add({value: itemValue, retroId: 1})
+          .then((res) =>{
+            setItemValue('');
+            setItemList(itemList.concat([{value: itemValue, retroId: 1}]));
+          });
     };
     
-    const displayItemList = (item) => {
-        setItemList(retroForm[props.columnName]);
-    }
-
     return(
         <div>
             <h2>{props.title}</h2>
-            <button onClick={setItemState.bind(this)}>Add New</button>
-            {addItem ? <Item type={props.columnName} itemSubmitted={displayItemList}/> : null}
+            <form onSubmit={handleItemSubmit.bind(this)}> 
+                <textarea value={itemValue} onChange={onChangeHandler.bind(this)}></textarea>
+                <input type="submit" value="Submit" />
+            </form>
             {itemList.map((item, i) => {
-                return <p key={i}>{item}</p>
+                return <p key={i}>{item.value}</p>
             })}
         </div>
     );
