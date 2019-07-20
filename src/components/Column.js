@@ -6,13 +6,11 @@ const Column = (props) => {
     const [itemValue, setItemValue] = useState('');
 
     useEffect(() => {
-        db.collection(props.columnName)
-        .get().then(querySnapshot => {
-            setItemList(querySnapshot.docs.map(doc => doc.data()));
-        });
-        return () => {
-            console.log('Cleanup');
-          };
+        const unsubscirbe = db.collection(props.columnName)
+            .onSnapshot(querySnapshot => {
+                setItemList(querySnapshot.docs.map(doc => doc.data()));
+            });
+        return () => unsubscirbe();
     }, [props.columnName]);
 
     const onChangeHandler = (event) => {
