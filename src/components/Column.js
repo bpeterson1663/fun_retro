@@ -22,7 +22,7 @@ const Column = (props) => {
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
             .onSnapshot(querySnapshot => {
-                dispatch({type: 'SET_LIST', payload: querySnapshot.docs.map(doc => doc.data())})
+                dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => doc.data())})
             });
         return () => unsubscirbe();
     }, [props.columnName]);
