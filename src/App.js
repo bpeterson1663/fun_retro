@@ -6,6 +6,8 @@ import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Navigation from './components/Navigation';
 import AuthContext from './auth-context';
+import AdminContainer from './components/Admin/AdminContainer';
+
 function App() {
   const [authStatus, setAuthStatus] = useState(false);
   const [authToken, setAuthToken] = useState('')
@@ -23,6 +25,7 @@ function App() {
           <Route path="/retro" component={RetroContainer} />
           <Route path="/login" component={Login} />
           <Route path="/signup" exact component={SignUp} />
+          <Route path="/adminPortal" component={AdminContainer} />
         </AuthContext.Provider>  
       </div>
   </BrowserRouter>
