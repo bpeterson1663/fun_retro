@@ -1,11 +1,11 @@
-import React, {useState, useReducer, useEffect} from 'react';
+import React, {useReducer, useEffect, useRef} from 'react';
 import {db} from '../../firebase';
-
 import moment from 'moment';
+
 const AdminContainer = () => {
-    const [nameValue, setNameValue] = useState('');
-    const [dateValue, setDateValue] = useState(new moment().format('YYYY-MM-DD'));
-    
+    const nameValueRef = useRef();
+    const dateValueRef = useRef();
+
     const itemListReducer = (state, action) => {
         switch(action.type){
             case 'ADD':
@@ -29,35 +29,24 @@ const AdminContainer = () => {
             });
     }, []);
 
-    const onChangeHandler = (event, type) =>{
-        switch(type){
-            case 'name':
-                setNameValue(event.target.value);
-                break;
-            case 'date':
-                setDateValue(event.target.value);
-                break;
-            default:
-                return;
-        }
-    }
-
     const onSubmitHandler = (event) => {
+        const nameValue = nameValueRef.current.value,
+            dateValue = dateValueRef.current.value;
         event.preventDefault();
         db.collection('retros')
           .add({name: nameValue, date: dateValue})
           .then((res) =>{
-            setNameValue('');
+            nameValueRef.current.value = '';
+            dateValueRef.current.value = new moment().format('YYYY-MM-DD');
             dispatch({type: 'ADD', payload: {name: nameValue, date: dateValue}});
-
         });
     };
     return (
         <div>
             <h1>Admin Portal</h1>
             <form onSubmit={onSubmitHandler}>
-                <input type="text" placeholder="Retro Name" value={nameValue} onChange={(event) => onChangeHandler(event, 'name')}/>
-                <input type="date" placeholder="Start of Sprint" value={dateValue} onChange={(event) => onChangeHandler(event, 'date')}/>
+                <input type="text" placeholder="Retro Name" ref={nameValueRef}/>
+                <input type="date" placeholder="Start of Sprint" ref={dateValueRef}/>
                 <input type="submit" value="Submit" />
             </form>
             {retroList.map((retro, i) => {

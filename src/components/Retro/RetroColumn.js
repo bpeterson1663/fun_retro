@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {db} from '../../firebase';
 
 const RetroColumn = (props) => {
-    const [itemValue, setItemValue] = useState('');
     const [itemList, setItemList] = useState([]);
-
+    const itemValueRef = useRef();
+    
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
             .onSnapshot(querySnapshot => {
@@ -17,16 +17,13 @@ const RetroColumn = (props) => {
         return () => unsubscirbe();
     }, [props.columnName]);
 
-    const onChangeHandler = (event) => {
-        setItemValue(event.target.value);
-    };
-
     const handleItemSubmit = (event) => {
         event.preventDefault();
+        const itemValue = itemValueRef.current.value;
         db.collection(props.columnName)
           .add({value: itemValue, retroId: 1})
           .then((res) =>{
-            setItemValue('');
+            itemValueRef.current.value = null;
         });
     };
 
@@ -40,7 +37,7 @@ const RetroColumn = (props) => {
         <div>
             <h2>{props.title}</h2>
             <form onSubmit={handleItemSubmit.bind(this)}> 
-                <textarea value={itemValue} onChange={onChangeHandler.bind(this)}></textarea>
+                <textarea ref={itemValueRef}></textarea>
                 <input type="submit" value="Submit" />
             </form>
             {itemList.map((item, i) => {
