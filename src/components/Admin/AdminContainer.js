@@ -25,7 +25,11 @@ const AdminContainer = () => {
         db.collection('retros')
             .get()
             .then(querySnapshot => {
-                dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => doc.data())})
+                dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    return data;
+                })});
             });
     }, []);
 
@@ -41,6 +45,15 @@ const AdminContainer = () => {
             dispatch({type: 'ADD', payload: {name: nameValue, date: dateValue}});
         });
     };
+
+    const handleRetroDelete = (id) => {
+        db.collection('retros')
+          .doc(id)
+          .delete()
+          .then(() =>{
+              dispatch({type: 'REMOVE', payload: id});
+          });
+    };
     return (
         <div>
             <h1>Admin Portal</h1>
@@ -50,7 +63,11 @@ const AdminContainer = () => {
                 <input type="submit" value="Submit" />
             </form>
             {retroList.map((retro, i) => {
-               return <p key={i}>{retro.name} {retro.date}</p>
+               return <p key={i}>
+                    Name: {retro.name}<br/>
+                    Date: {retro.date}
+                    <button onClick={handleRetroDelete.bind(this, retro.id)}>Delete</button>
+                </p>
             })}
         </div>
     );  
