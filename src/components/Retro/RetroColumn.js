@@ -1,26 +1,18 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useState, useEffect} from 'react';
 import {db} from '../../firebase';
 
 const RetroColumn = (props) => {
     const [itemValue, setItemValue] = useState('');
-    
-    const itemListReducer = (state, action) => {
-        switch(action.type){
-            case 'SET':
-                return action.payload;
-            case 'REMOVE':
-                return state.filter((item) => item.id !== action.payload );
-            default:
-                return state;
-        }
-    };
-
-    const [itemList, dispatch] = useReducer(itemListReducer, []);
+    const [itemList, setItemList] = useState([]);
 
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
             .onSnapshot(querySnapshot => {
-                dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => doc.data())})
+                setItemList(querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    return data;
+                }));
             });
         return () => unsubscirbe();
     }, [props.columnName]);
@@ -37,6 +29,12 @@ const RetroColumn = (props) => {
             setItemValue('');
         });
     };
+
+    const handleItemDelete = (id) => {
+        db.collection(props.columnName)
+            .doc(id)
+            .delete();
+    };
     
     return(
         <div>
@@ -46,7 +44,12 @@ const RetroColumn = (props) => {
                 <input type="submit" value="Submit" />
             </form>
             {itemList.map((item, i) => {
-                return <p key={i}>{item.value}</p>
+                return (
+                    <p key={i}>
+                        {item.value}
+                        <button onClick={handleItemDelete.bind(this, item.id)}>Delete</button>
+                    </p>
+                );
             })}
         </div>
     );
