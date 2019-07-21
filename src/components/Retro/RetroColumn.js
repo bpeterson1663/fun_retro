@@ -6,8 +6,6 @@ const RetroColumn = (props) => {
     
     const itemListReducer = (state, action) => {
         switch(action.type){
-            case 'ADD':
-                return state.concat(action.payload);
             case 'SET':
                 return action.payload;
             case 'REMOVE':
@@ -17,7 +15,7 @@ const RetroColumn = (props) => {
         }
     };
 
-    const [itemList, dispatch] = useReducer(itemListReducer, [])
+    const [itemList, dispatch] = useReducer(itemListReducer, []);
 
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
@@ -37,7 +35,6 @@ const RetroColumn = (props) => {
           .add({value: itemValue, retroId: 1})
           .then((res) =>{
             setItemValue('');
-            dispatch({type: 'ADD', payload: itemValue})
         });
     };
     
