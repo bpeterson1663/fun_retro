@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import { BrowserRouter, Route } from 'react-router-dom';
-import Container from './components/Container';
+import RetroContainer from './components/Retro/RetroContainer';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Navigation from './components/Navigation';
@@ -20,7 +20,7 @@ function App() {
         <AuthContext.Provider value={{status: authStatus, authToken: authToken, login: login}}>
           <Navigation/>
           <Route path="/retroList" component={null} />
-          <Route path="/retro" component={Container} />
+          <Route path="/retro" component={RetroContainer} />
           <Route path="/login" component={Login} />
           <Route path="/signup" exact component={SignUp} />
         </AuthContext.Provider>  

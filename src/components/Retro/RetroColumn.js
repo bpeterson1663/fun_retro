@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useReducer} from 'react';
-import {db} from '../firebase';
+import {db} from '../../firebase';
 
-const Column = (props) => {
+const RetroColumn = (props) => {
     const [itemValue, setItemValue] = useState('');
     
     const itemListReducer = (state, action) => {
@@ -55,4 +55,4 @@ const Column = (props) => {
     );
 };
 
-export default Column;
+export default RetroColumn;

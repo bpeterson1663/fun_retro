@@ -2,7 +2,6 @@ import React, {useState, useContext} from 'react';
 import axios from 'axios';
 import AuthContext from '../auth-context';
 import {loginUrl} from '../firebase';
-import {Redirect} from 'react-router-dom';
 //TODO: Refactor Login and SignUp components to be one
 const Login = (props) => {
     const [emailValue, setEmailValue] = useState('');
