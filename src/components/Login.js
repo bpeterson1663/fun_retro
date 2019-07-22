@@ -1,7 +1,6 @@
 import React, {useState, useContext} from 'react';
-import axios from 'axios';
+import firebase from 'firebase';
 import AuthContext from '../auth-context';
-import {loginUrl} from '../firebase';
 //TODO: Refactor Login and SignUp components to be one
 const Login = (props) => {
     const [emailValue, setEmailValue] = useState('');
@@ -24,18 +23,15 @@ const Login = (props) => {
 
     const submitHandler = event => {
         event.preventDefault();
-        const authData = {
-            email: emailValue,
-            password: passwordValue,
-            returnSecureToken: true
-        };
-        axios.post(loginUrl, authData)
-             .then((res) => {
-                 console.log("RES: ", res)
-                 auth.login(res.data);
-                 props.history.push('/retro')
-             })
-             .catch(error => console.log("ERROR: ", error));
+        firebase.auth()
+            .signInWithEmailAndPassword(emailValue, passwordValue)
+            .then((res) => {
+                auth.login(true);
+                props.history.push('/retro');
+            })
+            .catch(function(error) {
+                auth.login(false);
+          });
     };
 
     return( 
