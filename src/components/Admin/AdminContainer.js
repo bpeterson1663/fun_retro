@@ -34,7 +34,7 @@ const AdminContainer = () => {
                     return data;
                 })});
             });
-    });
+    }, [auth.userId]);
 
     const onSubmitHandler = (event) => {
         const nameValue = nameValueRef.current.value,
