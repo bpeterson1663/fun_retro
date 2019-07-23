@@ -6,8 +6,7 @@ const Navigation = () => {
     const auth = useContext(AuthContext);
     const athenticatedOptions = (
         <div>
-            <NavLink to="/retroList">View Retros</NavLink>
-            <NavLink to="/adminPortal">Admin Portal</NavLink>
+            <NavLink to="/retroList">Admin Portal</NavLink>
         </div>
     );
     const unauthenticatedOptions = (
@@ -18,7 +17,7 @@ const Navigation = () => {
     )
     return(
         <div>
-            {auth.status ? athenticatedOptions : unauthenticatedOptions}
+            {auth.userId ? athenticatedOptions : unauthenticatedOptions}
         </div>
     )
 };

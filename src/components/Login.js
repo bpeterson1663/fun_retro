@@ -26,7 +26,6 @@ const Login = (props) => {
         firebase.auth()
             .signInWithEmailAndPassword(emailValue, passwordValue)
             .then((res) => {
-                auth.login(true);
                 props.history.push('/retro');
             })
             .catch(function(error) {

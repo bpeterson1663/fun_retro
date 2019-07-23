@@ -9,17 +9,18 @@ import AuthContext from './auth-context';
 import AdminContainer from './components/Admin/AdminContainer';
 import firebase from 'firebase';
 const App = (props) => {
-  const [authStatus, setAuthStatus] = useState(false);
+  const [authId, setAuthId] = useState(false);
   const login = (status) => {
-    setAuthStatus(status);
+    setAuthId(status);
   };
   useEffect(() => {
     firebase.auth()
           .onAuthStateChanged((user) => {
+            console.log("ON AUTH CALLED: ")
             if(user){
-              setAuthStatus(true);
+              setAuthId(user.uid);
             }else{
-              setAuthStatus(false);
+              setAuthId(false);
             }
           });
   });
@@ -27,12 +28,12 @@ const App = (props) => {
     <BrowserRouter>
       <div className="App">
 
-        <AuthContext.Provider value={{status: authStatus, login: login}}>
+        <AuthContext.Provider value={{userId: authId, login: login}}>
           <Navigation/>
-          <Route path="/retro/:id" component={authStatus ? RetroContainer : null} />
+          <Route path="/retro/:id" component={authId ? RetroContainer : null} />
           <Route path="/login" component={Login} />
           <Route path="/signup" exact component={SignUp} />
-          <Route path="/adminPortal" component={authStatus ? AdminContainer : null} />
+          <Route path="/retroList" component={authId ? AdminContainer : null} />
         </AuthContext.Provider>  
       </div>
   </BrowserRouter>

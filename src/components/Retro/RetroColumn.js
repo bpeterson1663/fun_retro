@@ -1,9 +1,11 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import {db} from '../../firebase';
+import AuthContext from '../../auth-context';
 
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
     const itemValueRef = useRef();
+    const auth = useContext(AuthContext);
 
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
@@ -22,7 +24,11 @@ const RetroColumn = (props) => {
         event.preventDefault();
         const itemValue = itemValueRef.current.value;
         db.collection(props.columnName)
-          .add({value: itemValue, retroId: props.retroId})
+          .add({
+              value: itemValue,
+              retroId: props.retroId,
+              userId: auth.userId
+            })
           .then((res) =>{
             itemValueRef.current.value = null;
         });
