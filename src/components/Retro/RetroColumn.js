@@ -1,11 +1,13 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
 import {db} from '../../firebase';
 import AuthContext from '../../auth-context';
+import VoteContext from './vote-context';
 
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
     const itemValueRef = useRef();
     const auth = useContext(AuthContext);
+    const vote = useContext(VoteContext);
 
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
@@ -27,11 +29,18 @@ const RetroColumn = (props) => {
           .add({
               value: itemValue,
               retroId: props.retroId,
-              userId: auth.userId
+              userId: auth.userId,
+              votes: 0
             })
           .then((res) =>{
             itemValueRef.current.value = null;
         });
+    };
+
+    const handleItemVote = (operation, item) =>{
+        vote.setRemaingVotes(operation === 'remove' 
+                            ? --vote.votes 
+                            : ++vote.votes);
     };
 
     const handleItemDelete = (id) => {
@@ -52,6 +61,7 @@ const RetroColumn = (props) => {
                     <p key={i}>
                         {item.value}
                         {auth.userId === item.userId ? <button onClick={handleItemDelete.bind(this, item.id)}>Delete</button> : null}
+                        <button onClick={handleItemVote.bind(this, 'remove', item)}>Add Vote</button><button onClick={handleItemVote.bind(this, 'add', item)}>Remove Vote</button>
                     </p>
                 );
             })}
