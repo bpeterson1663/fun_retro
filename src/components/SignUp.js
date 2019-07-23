@@ -14,7 +14,7 @@ const SignUp = (props) => {
             .createUserWithEmailAndPassword(emailValue, passwordValue)
             .then((res) => {
                 auth.login(true);
-                props.history.push('/retro');
+                props.history.push('/retroList');
             })
             .catch(function(error) {
                 auth.login(false);
