@@ -4,9 +4,10 @@ import {db} from '../../firebase';
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
     const itemValueRef = useRef();
-    
+
     useEffect(() => {
         const unsubscirbe = db.collection(props.columnName)
+            .where('retroId', '==', props.retroId)
             .onSnapshot(querySnapshot => {
                 setItemList(querySnapshot.docs.map(doc => {
                     const data = doc.data();
@@ -15,13 +16,13 @@ const RetroColumn = (props) => {
                 }));
             });
         return () => unsubscirbe();
-    }, [props.columnName]);
+    }, [props.columnName, props.retroId]);
 
     const handleItemSubmit = (event) => {
         event.preventDefault();
         const itemValue = itemValueRef.current.value;
         db.collection(props.columnName)
-          .add({value: itemValue, retroId: 1})
+          .add({value: itemValue, retroId: props.retroId})
           .then((res) =>{
             itemValueRef.current.value = null;
         });

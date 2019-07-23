@@ -29,8 +29,7 @@ const App = (props) => {
 
         <AuthContext.Provider value={{status: authStatus, login: login}}>
           <Navigation/>
-          <Route path="/retroList" component={null} />
-          <Route path="/retro" component={authStatus ? RetroContainer : null} />
+          <Route path="/retro/:id" component={authStatus ? RetroContainer : null} />
           <Route path="/login" component={Login} />
           <Route path="/signup" exact component={SignUp} />
           <Route path="/adminPortal" component={authStatus ? AdminContainer : null} />

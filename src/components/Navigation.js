@@ -4,12 +4,10 @@ import {NavLink} from 'react-router-dom';
 
 const Navigation = () => {
     const auth = useContext(AuthContext);
-    const isAdmin = true; //TODO: Change this. Setting to true for development 
     const athenticatedOptions = (
         <div>
             <NavLink to="/retroList">View Retros</NavLink>
-            <NavLink to="/retro">Current Retro</NavLink>
-            {isAdmin ? <NavLink to="/adminPortal">Admin Portal</NavLink> : null}
+            <NavLink to="/adminPortal">Admin Portal</NavLink>
         </div>
     );
     const unauthenticatedOptions = (

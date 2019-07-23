@@ -65,7 +65,8 @@ const AdminContainer = () => {
             {retroList.map((retro, i) => {
                return <p key={i}>
                     Name: {retro.name}<br/>
-                    Date: {retro.date}
+                    Date: {retro.date}<br/>
+                    Retro Link: <a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a><br/>
                     <button onClick={handleRetroDelete.bind(this, retro.id)}>Delete</button>
                 </p>
             })}
