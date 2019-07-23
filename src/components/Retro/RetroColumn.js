@@ -51,7 +51,7 @@ const RetroColumn = (props) => {
                 return (
                     <p key={i}>
                         {item.value}
-                        <button onClick={handleItemDelete.bind(this, item.id)}>Delete</button>
+                        {auth.userId === item.userId ? <button onClick={handleItemDelete.bind(this, item.id)}>Delete</button> : null}
                     </p>
                 );
             })}
