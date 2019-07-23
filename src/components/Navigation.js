@@ -14,7 +14,7 @@ const Navigation = (props) => {
     };
     const athenticatedOptions = (
         <div>
-            <NavLink to="/retroList">Admin Portal</NavLink>
+            <NavLink to="/retroList">Retro List</NavLink>
             <Link to="/login" onClick={handleLogOut.bind(this)}>Log Out</Link>
         </div>
     );
