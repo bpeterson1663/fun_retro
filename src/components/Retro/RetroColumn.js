@@ -1,10 +1,12 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import {db} from '../../firebase';
+import {db, incrementCounter, decrementCounter} from '../../firebase';
 import AuthContext from '../../auth-context';
 import VoteContext from './vote-context';
+import _ from 'lodash';
 
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
+    const [trackedVotes, setTrackedVotes] = useState([])
     const itemValueRef = useRef();
     const auth = useContext(AuthContext);
     const vote = useContext(VoteContext);
@@ -37,16 +39,42 @@ const RetroColumn = (props) => {
         });
     };
 
+    const trackVote = (item, remove) => {
+        if(remove){
+            trackedVotes.splice(trackedVotes.indexOf(item.id), 1);
+            setTrackedVotes(trackedVotes);
+        } else{
+            trackedVotes.push(item.id);
+            setTrackedVotes(trackedVotes);
+        }
+    }
+
     const handleItemVote = (operation, item) =>{
-        vote.setRemaingVotes(operation === 'remove' 
-                            ? --vote.votes 
-                            : ++vote.votes);  
+        const itemRef = db.collection(props.columnName).doc(item.id);
+        if(operation === 'addVote') {
+            itemRef.update({votes: incrementCounter})
+            vote.setRemaingVotes(--vote.votes);
+            trackVote(item, false);
+        }else {
+            itemRef.update({votes: decrementCounter});
+            vote.setRemaingVotes(++vote.votes);
+            trackVote(item, true);
+        }
     };
 
     const handleItemDelete = (id) => {
         db.collection(props.columnName)
             .doc(id)
             .delete();
+    };
+
+    const disableDeleteVotes = (id) => {
+        const votesExist = _.filter(trackedVotes, (trackedId) => trackedId === id);
+        return vote.votes === 6 || votesExist.length === 0;
+    };
+
+    const getUsersVoteCount = (item) => {
+        return _.filter(trackedVotes, (id) => id === item.id).length;
     };
     
     return(
@@ -60,9 +88,11 @@ const RetroColumn = (props) => {
                 return (
                     <p key={i}>
                         {item.value}
+                        Your Votes: { getUsersVoteCount(item)}<br/>
+                        Total Votes: {item.votes}<br/>
                         {auth.userId === item.userId ? <button onClick={handleItemDelete.bind(this, item.id)}>Delete</button> : null}
-                        <button disabled={vote.votes === 0}onClick={handleItemVote.bind(this, 'remove', item)}>Add Vote</button>
-                        <button disabled={vote.votes === 6} onClick={handleItemVote.bind(this, 'add', item)}>Remove Vote</button>
+                        <button disabled={vote.votes === 0}onClick={handleItemVote.bind(this, 'addVote', item)}>Add Vote</button>
+                        <button disabled={disableDeleteVotes(item.id)} onClick={handleItemVote.bind(this, 'removeVote', item)}>Remove Vote</button>
                     </p>
                 );
             })}

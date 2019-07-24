@@ -12,4 +12,6 @@ const firebaseApp = firebase.initializeApp({
 
 const db = firebaseApp.firestore();
 
-export { db };
+const incrementCounter = firebase.firestore.FieldValue.increment(1);
+const decrementCounter = firebase.firestore.FieldValue.increment(-1);
+export { db, incrementCounter, decrementCounter };
