@@ -40,7 +40,7 @@ const RetroColumn = (props) => {
     const handleItemVote = (operation, item) =>{
         vote.setRemaingVotes(operation === 'remove' 
                             ? --vote.votes 
-                            : ++vote.votes);
+                            : ++vote.votes);  
     };
 
     const handleItemDelete = (id) => {
@@ -61,7 +61,8 @@ const RetroColumn = (props) => {
                     <p key={i}>
                         {item.value}
                         {auth.userId === item.userId ? <button onClick={handleItemDelete.bind(this, item.id)}>Delete</button> : null}
-                        <button onClick={handleItemVote.bind(this, 'remove', item)}>Add Vote</button><button onClick={handleItemVote.bind(this, 'add', item)}>Remove Vote</button>
+                        <button disabled={vote.votes === 0}onClick={handleItemVote.bind(this, 'remove', item)}>Add Vote</button>
+                        <button disabled={vote.votes === 6} onClick={handleItemVote.bind(this, 'add', item)}>Remove Vote</button>
                     </p>
                 );
             })}
