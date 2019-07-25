@@ -29,10 +29,10 @@ const App = () => {
 
         <AuthContext.Provider value={{userId: authId, login: login}}>
           <Navigation/>
-          <Route path="/retro/:id" component={authId ? RetroContainer : null} />
+          <Route path="/retro/:id" component={authId ? RetroContainer : Login} />
           <Route path="/login" component={Login} />
           <Route path="/signup" exact component={SignUp} />
-          <Route path="/retroList" component={authId ? AdminContainer : null} />
+          <Route path="/retroList" component={authId ? AdminContainer : Login} />
         </AuthContext.Provider>  
       </div>
   </BrowserRouter>
