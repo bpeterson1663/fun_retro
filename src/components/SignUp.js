@@ -1,14 +1,27 @@
 import React, {useState, useContext} from 'react';
 import firebase from 'firebase';
 import AuthContext from '../auth-context';
+import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+//TODO: Refactor Snack bar into its own component
 //TODO: Refactor Login and SignUp components to be one
+const useStyles = makeStyles(theme => ({
+    inputField: {
+      margin: theme.spacing(2),
+    },
+}));
 const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
-
+    const [message, setMessage] = useState('false');
+    const [open, setOpen] = useState(false);
     const auth = useContext(AuthContext);
+    const classes = useStyles();
 
     const submitHandler = event => {
         event.preventDefault();
@@ -22,6 +35,8 @@ const SignUp = (props) => {
             })
             .catch(function(error) {
                 auth.login(false);
+                setMessage(error.message);
+                setOpen(true);
           });
         
     };
@@ -38,15 +53,39 @@ const SignUp = (props) => {
                 return;
         }
     };
+
+    const handleMessageClose = () => {
+        setOpen(false);
+        setMessage('');
+    };
+
     return (
-        <div>
+        <Container>
             <h1>Sign Up</h1>
             <form onSubmit={submitHandler.bind(this)}>
-                <TextField type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
-                <TextField type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
-                <Button type="submit" value="Sign Up" >Sign Up</Button>
+                <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
+                <TextField className={classes.inputField} type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
+                <Button type="submit" value="Sign Up" color="secondary" variant="contained">Sign Up</Button>
             </form>
-        </div>
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                variant="warning"
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleMessageClose}
+                message={<span id="message-id">{message}</span>}
+                action={[
+                <IconButton
+                    key="close"
+                    aria-label="Close"
+                    color="inherit"
+                    onClick={handleMessageClose}
+                >
+                    <CloseIcon />
+                </IconButton>,
+                ]}
+            />
+        </Container>
     );
 };
 
