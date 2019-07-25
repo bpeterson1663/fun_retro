@@ -2,12 +2,28 @@ import React, {useReducer, useEffect, useRef, useContext} from 'react';
 import {db} from '../../firebase';
 import AuthContext from '../../auth-context';
 import moment from 'moment';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
 
+const useStyles = makeStyles(theme => ({
+    inputField: {
+      margin: theme.spacing(2),
+    },
+    icon: {
+        margin: theme.spacing(1),
+        fontSize: 32,
+        cursor: "pointer",
+        float: "right"
+      },
+}));
 const AdminContainer = () => {
     const nameValueRef = useRef();
     const dateValueRef = useRef();
     const auth = useContext(AuthContext);
-
+    const classes = useStyles();
     const itemListReducer = (state, action) => {
         switch(action.type){
             case 'ADD':
@@ -63,23 +79,23 @@ const AdminContainer = () => {
           });
     };
     return (
-        <div>
+        <Container>
             <h1>Add Retro</h1>
             <form onSubmit={onSubmitHandler}>
-                <input type="text" placeholder="Retro Name" ref={nameValueRef}/>
-                <input type="date" placeholder="Start of Sprint" ref={dateValueRef}/>
-                <input type="submit" value="Submit" />
+                <TextField required className={classes.inputField} type="text" placeholder="Retro Name" ref={nameValueRef}/>
+                <TextField required className={classes.inputField} type="date" placeholder="Start of Sprint" ref={dateValueRef}/>
+                <Button type="submit" value="Submit" color="secondary" variant="contained">Create Retro</Button>
             </form>
             {retroList.length > 0 ? <h1>Retro List</h1> : null } 
             {retroList.map((retro, i) => {
                return <p key={i}>
+                    <DeleteIcon className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)} color="secondary">Delete</DeleteIcon>
                     Name: {retro.name}<br/>
                     Date: {retro.date}<br/>
                     Retro Link: <a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a><br/>
-                    <button onClick={handleRetroDelete.bind(this, retro.id)}>Delete</button>
                 </p>
             })}
-        </div>
+        </Container>
     );  
 };
 

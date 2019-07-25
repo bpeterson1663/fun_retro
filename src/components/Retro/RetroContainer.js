@@ -3,6 +3,10 @@ import RetroColumn from './RetroColumn';
 import VoteContext from './vote-context';
 import {db} from '../../firebase';
 import AuthContext from '../../auth-context';
+import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container/Container';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography/Typography';
 
 const RetroContainer = (props) => {
     const [remaingVotes, setRemaingVotes] = useState(6);
@@ -29,13 +33,24 @@ const RetroContainer = (props) => {
             });
     };
     return(
-        <VoteContext.Provider value={{votes: remaingVotes, setRemaingVotes: setRemaingVotes }}>
-            {retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}
-            <RetroColumn retroId={retroId} title="Keep Doing" columnName="keepDoing" isActive={retroStatus}/>
-            <RetroColumn retroId={retroId} title="Stop Doing" columnName="stopDoing" isActive={retroStatus}/>
-            <RetroColumn retroId={retroId} title="Start Doing" columnName="startDoing" isActive={retroStatus}/>
-            {retroData.userId === auth.userId && retroStatus ? <button onClick={handleEndRetro}>End Retro</button> : null}
-        </VoteContext.Provider>
+        <Container>
+            <h2>{retroData.name}</h2>
+            <Typography>{retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}</Typography>
+            {retroData.userId === auth.userId && retroStatus ? <Button size="small" color="secondary" onClick={handleEndRetro}>End Retro</Button> : null}
+            <Grid container justify="center" spacing={0}>
+                <VoteContext.Provider value={{votes: remaingVotes, setRemaingVotes: setRemaingVotes }}>
+                    <Grid item >
+                        <RetroColumn retroId={retroId} title="Keep Doing" columnName="keepDoing" isActive={retroStatus}/>
+                    </Grid>
+                    <Grid item >
+                        <RetroColumn retroId={retroId} title="Stop Doing" columnName="stopDoing" isActive={retroStatus}/>
+                    </Grid>
+                    <Grid item>
+                        <RetroColumn retroId={retroId} title="Start Doing" columnName="startDoing" isActive={retroStatus}/>
+                    </Grid>
+                </VoteContext.Provider>
+            </Grid>
+        </Container>
     );
 };
 
