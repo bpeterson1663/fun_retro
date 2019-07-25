@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react';
 import firebase from 'firebase';
 import AuthContext from '../auth-context';
+import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -9,12 +10,18 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 //TOOD: Refactor Snackbar into a single component
 //TODO: Refactor Login and SignUp components to be one
+const useStyles = makeStyles(theme => ({
+    inputField: {
+      margin: theme.spacing(2),
+    },
+}));
 const Login = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
     const [message, setMessage] = useState('false');
     const [open, setOpen] = useState(false);
     const auth = useContext(AuthContext);
+    const classes = useStyles();
 
     const onChangeHandler = (event, value) => {
         switch (value) {
@@ -49,14 +56,14 @@ const Login = (props) => {
     const handleMessageClose = () => {
         setOpen(false);
         setMessage('');
-
     };
+
     return( 
         <Container>
             <h1>Log In</h1>
             <form onSubmit={submitHandler.bind(this)}>
-                <TextField type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
-                <TextField type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
+                <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
+                <TextField className={classes.inputField}  type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
                 <Button type="submit" color="secondary" variant="contained">Log In</Button>
             </form>
             <Snackbar
