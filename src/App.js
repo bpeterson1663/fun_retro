@@ -8,6 +8,17 @@ import Navigation from './components/Navigation';
 import AuthContext from './auth-context';
 import AdminContainer from './components/Admin/AdminContainer';
 import firebase from 'firebase';
+import { ThemeProvider } from '@material-ui/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {main:'#2196f3'},
+    secondary: {main: '#dd33fa'},
+  }
+});
 const App = () => {
   const [authId, setAuthId] = useState(false);
   const login = (status) => {
@@ -24,18 +35,20 @@ const App = () => {
           });
   });
   return (
-    <BrowserRouter>
-      <div className="App">
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <div className="App">
 
-        <AuthContext.Provider value={{userId: authId, login: login}}>
-          <Navigation/>
-          <Route path="/retro/:id" component={authId ? RetroContainer : Login} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" exact component={SignUp} />
-          <Route path="/retroList" component={authId ? AdminContainer : Login} />
-        </AuthContext.Provider>  
-      </div>
-  </BrowserRouter>
+          <AuthContext.Provider value={{userId: authId, login: login}}>
+              <Navigation/>
+              <Route path="/retro/:id" component={authId ? RetroContainer : Login} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" exact component={SignUp} />
+              <Route path="/retroList" component={authId ? AdminContainer : Login} />
+          </AuthContext.Provider>  
+        </div>
+    </BrowserRouter>
+  </ThemeProvider>
   );
 }
 

@@ -1,8 +1,16 @@
 import React, {useContext} from 'react';
 import AuthContext from '../auth-context';
-import {NavLink, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
 import firebase from 'firebase';
-
+const useStyles = makeStyles(theme => ({
+    button: {
+      margin: theme.spacing(1),
+    },
+  }));
 const Navigation = (props) => {
     const auth = useContext(AuthContext);
     const handleLogOut = () => {
@@ -12,22 +20,25 @@ const Navigation = (props) => {
             console.log("error: ", error);
           });
     };
+    const classes = useStyles();
     const athenticatedOptions = (
         <div>
-            <NavLink to="/retroList">Retro List</NavLink>
-            <Link to="/login" onClick={handleLogOut.bind(this)}>Log Out</Link>
+            <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
+            <Link to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
         </div>
     );
     const unauthenticatedOptions = (
         <div>
-            <NavLink to="/login">Log In</NavLink>
-            <NavLink to="/signup">Sign Up</NavLink>
+            <Link to="/login" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Log In</Button></Link>
+            <Link to="/signup" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Sign Up</Button></Link>
         </div>
     )
     return(
-        <div>
-            {auth.userId ? athenticatedOptions : unauthenticatedOptions}
-        </div>
+        <AppBar position="static" style ={{padding:'0px,0px,0px,0px'}} >
+            <Toolbar>
+                {auth.userId ? athenticatedOptions : unauthenticatedOptions}
+            </Toolbar>
+        </AppBar>
     )
 };
 

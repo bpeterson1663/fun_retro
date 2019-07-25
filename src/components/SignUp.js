@@ -1,6 +1,8 @@
 import React, {useState, useContext} from 'react';
 import firebase from 'firebase';
 import AuthContext from '../auth-context';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 //TODO: Refactor Login and SignUp components to be one
 const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
@@ -40,9 +42,9 @@ const SignUp = (props) => {
         <div>
             <h1>Sign Up</h1>
             <form onSubmit={submitHandler.bind(this)}>
-                <input type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
-                <input type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
-                <input type="submit" value="Sign Up" />
+                <TextField type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
+                <TextField type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
+                <Button type="submit" value="Sign Up" >Sign Up</Button>
             </form>
         </div>
     );
