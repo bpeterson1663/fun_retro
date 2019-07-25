@@ -81,18 +81,18 @@ const RetroColumn = (props) => {
         <div>
             <h2>{props.title}</h2>
             <form onSubmit={handleItemSubmit.bind(this)}> 
-                <textarea ref={itemValueRef}></textarea>
-                <input type="submit" value="Submit" />
+                <textarea disabled={!props.isActive} ref={itemValueRef}></textarea>
+                <input disabled={!props.isActive} type="submit" value="Submit" />
             </form>
             {itemList.map((item, i) => {
                 return (
                     <p key={i}>
                         {item.value}
-                        Your Votes: { getUsersVoteCount(item)}<br/>
+                        {getUsersVoteCount(item) ? `Your Votes: ${ getUsersVoteCount(item)}` : null}<br/>
                         Total Votes: {item.votes}<br/>
-                        {auth.userId === item.userId ? <button onClick={handleItemDelete.bind(this, item.id)}>Delete</button> : null}
-                        <button disabled={vote.votes === 0}onClick={handleItemVote.bind(this, 'addVote', item)}>Add Vote</button>
-                        <button disabled={disableDeleteVotes(item.id)} onClick={handleItemVote.bind(this, 'removeVote', item)}>Remove Vote</button>
+                        {auth.userId === item.userId ? <button disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>Delete</button> : null}
+                        <button disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>Add Vote</button>
+                        <button disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)}>Remove Vote</button>
                     </p>
                 );
             })}

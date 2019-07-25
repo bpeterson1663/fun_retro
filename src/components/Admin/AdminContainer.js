@@ -44,7 +44,8 @@ const AdminContainer = () => {
           .add({
               name: nameValue,
               date: dateValue,
-              userId: auth.userId
+              userId: auth.userId,
+              isActive: true
             })
           .then((res) =>{
             nameValueRef.current.value = '';
