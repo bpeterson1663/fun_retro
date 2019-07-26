@@ -8,6 +8,7 @@ import Container from '@material-ui/core/Container';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import LoadingContext from '../loading-context';
 //TOOD: Refactor Snackbar into a single component
 //TODO: Refactor Login and SignUp components to be one
 const useStyles = makeStyles(theme => ({
@@ -22,6 +23,7 @@ const Login = (props) => {
     const [open, setOpen] = useState(false);
     const auth = useContext(AuthContext);
     const classes = useStyles();
+    const loading = useContext(LoadingContext);
 
     const onChangeHandler = (event, value) => {
         switch (value) {
@@ -37,6 +39,7 @@ const Login = (props) => {
     };
 
     const submitHandler = event => {
+        loading.setLoading(true);
         event.preventDefault();
         firebase.auth()
             .signInWithEmailAndPassword(emailValue, passwordValue)
@@ -46,10 +49,13 @@ const Login = (props) => {
                     props.history.push('/retro/'+props.match.params.id) :
                     props.history.push('/retroList');
             })
-            .catch(function(error) {
+            .catch((error) => {
                 setOpen(true);
                 setMessage(error.message)
                 auth.login(false);
+          })
+          .finally(() => {
+              loading.setLoading(false);
           });
     };
 
