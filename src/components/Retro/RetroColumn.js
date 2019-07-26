@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {db, incrementCounter, decrementCounter} from '../../firebase';
 import AuthContext from '../../auth-context';
 import VoteContext from './vote-context';
