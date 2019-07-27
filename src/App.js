@@ -10,8 +10,6 @@ import LoadingContext from './loading-context';
 import AdminContainer from './components/Admin/AdminContainer';
 import firebase from 'firebase';
 import { ThemeProvider } from '@material-ui/styles';
-import LoadingOverlay from 'react-loading-overlay';
-
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
@@ -39,10 +37,6 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <LoadingContext.Provider value={{isLoading: loading, setLoading: setLoading}}>
-        <LoadingOverlay
-          active={loading}
-          spinner
-          text='Loading your content...'>
           <BrowserRouter>
             <div className="App">
 
@@ -56,7 +50,6 @@ const App = () => {
               </AuthContext.Provider>  
             </div>
         </BrowserRouter>
-      </LoadingOverlay>
     </LoadingContext.Provider>
   </ThemeProvider>
   );
