@@ -8,22 +8,29 @@ import Container from '@material-ui/core/Container';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 //TODO: Refactor Snack bar into its own component
 //TODO: Refactor Login and SignUp components to be one
+//TODO: Lots of useState references. Can this be combined into one?
 const useStyles = makeStyles(theme => ({
     inputField: {
       margin: theme.spacing(2),
     },
+    placeHolder: {
+        height: 5
+    }
 }));
 const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
     const [message, setMessage] = useState('false');
+    const [isLoading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const auth = useContext(AuthContext);
     const classes = useStyles();
 
     const submitHandler = event => {
+        setLoading(true);
         event.preventDefault();
         firebase.auth()
             .createUserWithEmailAndPassword(emailValue, passwordValue)
@@ -37,7 +44,8 @@ const SignUp = (props) => {
                 auth.login(false);
                 setMessage(error.message);
                 setOpen(true);
-          });
+            })
+            .finally(() => setLoading(false));
         
     };
 
@@ -61,6 +69,7 @@ const SignUp = (props) => {
 
     return (
         <Container>
+            {isLoading ? <LinearProgress /> : <div className={classes.placeHolder}></div>}
             <h1>Sign Up</h1>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
