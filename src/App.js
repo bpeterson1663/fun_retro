@@ -6,11 +6,11 @@ import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Navigation from './components/Navigation';
 import AuthContext from './auth-context';
-import LoadingContext from './loading-context';
 import AdminContainer from './components/Admin/AdminContainer';
 import firebase from 'firebase';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 
 const theme = createMuiTheme({
   palette: {
@@ -20,7 +20,7 @@ const theme = createMuiTheme({
 });
 const App = () => {
   const [authId, setAuthId] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const login = (status) => {
     setAuthId(status);
   };
@@ -32,25 +32,24 @@ const App = () => {
             }else{
               setAuthId(false);
             }
+            setLoading(false);
           });
   });
   return (
     <ThemeProvider theme={theme}>
-      <LoadingContext.Provider value={{isLoading: loading, setLoading: setLoading}}>
-          <BrowserRouter>
-            <div className="App">
-
-              <AuthContext.Provider value={{userId: authId, login: login}}>
-                  <Navigation/>
-                  <Route path="/retro/:id" exact component={authId ? RetroContainer : Login} />
-                  <Route path="/login" exact component={Login} />
-                  <Route path="/signup" exact component={SignUp} />
-                  <Route path="/retroList" exact component={authId ? AdminContainer : Login} />
-                  <Route path="/" exact component={authId ? AdminContainer : Login} />
-              </AuthContext.Provider>  
-            </div>
-        </BrowserRouter>
-    </LoadingContext.Provider>
+      <BrowserRouter>
+        <div className="App">
+          <AuthContext.Provider value={{userId: authId, login: login}}>
+              <Navigation/>
+              {isLoading ? <LinearProgress/> : null}
+              <Route path="/retro/:id" exact component={authId ? RetroContainer : Login} />
+              <Route path="/login" exact component={Login} />
+              <Route path="/signup" exact component={SignUp} />
+              <Route path="/retroList" exact component={authId ? AdminContainer : Login} />
+              <Route path="/" exact component={authId ? AdminContainer : Login} />
+          </AuthContext.Provider>
+        </div>
+    </BrowserRouter>
   </ThemeProvider>
   );
 }
