@@ -18,7 +18,10 @@ const useStyles = makeStyles(theme => ({
         fontSize: 32,
         cursor: "pointer",
         float: "right"
-      },
+    },
+    placeholder: {
+        height: 5
+    }
 }));
 const AdminContainer = () => {
     const [nameValue, setNameValue] = useState('');
@@ -84,13 +87,13 @@ const AdminContainer = () => {
     };
     return (
         <Container>
+            {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}
             <h1>Add Retro</h1>
             <form onSubmit={onSubmitHandler}>
                 <TextField required className={classes.inputField} type="text" placeholder="Retro Name" onChange={(e) => setNameValue(e.target.value)}/>
                 <TextField required className={classes.inputField} type="date" placeholder="Start of Sprint" onChange={(e) => setDateValue(e.target.value)}/>
                 <Button type="submit" value="Submit" color="secondary" variant="contained">Create Retro</Button>
             </form>
-            {isLoading ? <LinearProgress /> : null}
             {retroList.length > 0 ? <h1>Retro List</h1> : null } 
             {retroList.map((retro, i) => {
                return <p key={i}>
