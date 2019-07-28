@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect, useRef, useContext} from 'react';
+import React, {useReducer, useEffect, useState, useContext} from 'react';
 import {db} from '../../firebase';
 import AuthContext from '../../auth-context';
 import moment from 'moment';
@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 
 const useStyles = makeStyles(theme => ({
     inputField: {
@@ -20,11 +21,14 @@ const useStyles = makeStyles(theme => ({
       },
 }));
 const AdminContainer = () => {
-    const nameValueRef = useRef();
-    const dateValueRef = useRef();
+    const [nameValue, setNameValue] = useState('');
+    const [dateValue, setDateValue] = useState(new moment().format('YYYY-MM-DD'));
+    const [isLoading, setIsLoading] = useState(true);
+
     const auth = useContext(AuthContext);
     const classes = useStyles();
     const itemListReducer = (state, action) => {
+        setIsLoading(false);
         switch(action.type){
             case 'ADD':
                 return state.concat(action.payload);
@@ -53,9 +57,8 @@ const AdminContainer = () => {
     }, [auth.userId]);
 
     const onSubmitHandler = (event) => {
-        const nameValue = nameValueRef.current.value,
-            dateValue = dateValueRef.current.value;
         event.preventDefault();
+        setIsLoading(true);
         db.collection('retros')
           .add({
               name: nameValue,
@@ -64,13 +67,14 @@ const AdminContainer = () => {
               isActive: true
             })
           .then((res) =>{
-            nameValueRef.current.value = '';
-            dateValueRef.current.value = new moment().format('YYYY-MM-DD');
-            dispatch({type: 'ADD', payload: {name: nameValue, date: dateValue}});
+            setNameValue('');
+            setDateValue(new moment().format('YYYY-MM-DD'));
+            dispatch({type: 'ADD', payload: {name: nameValue, date: dateValue, id: res.id}});
         });
     };
 
     const handleRetroDelete = (id) => {
+        setIsLoading(true);
         db.collection('retros')
           .doc(id)
           .delete()
@@ -82,10 +86,11 @@ const AdminContainer = () => {
         <Container>
             <h1>Add Retro</h1>
             <form onSubmit={onSubmitHandler}>
-                <TextField required className={classes.inputField} type="text" placeholder="Retro Name" ref={nameValueRef}/>
-                <TextField required className={classes.inputField} type="date" placeholder="Start of Sprint" ref={dateValueRef}/>
+                <TextField required className={classes.inputField} type="text" placeholder="Retro Name" onChange={(e) => setNameValue(e.target.value)}/>
+                <TextField required className={classes.inputField} type="date" placeholder="Start of Sprint" onChange={(e) => setDateValue(e.target.value)}/>
                 <Button type="submit" value="Submit" color="secondary" variant="contained">Create Retro</Button>
             </form>
+            {isLoading ? <LinearProgress /> : null}
             {retroList.length > 0 ? <h1>Retro List</h1> : null } 
             {retroList.map((retro, i) => {
                return <p key={i}>
