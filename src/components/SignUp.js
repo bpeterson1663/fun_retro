@@ -18,7 +18,11 @@ const useStyles = makeStyles(theme => ({
     },
     placeHolder: {
         height: 5
-    }
+    },
+    submit:{
+        display: 'block',
+        margin: 'auto'
+    },
 }));
 const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
@@ -70,11 +74,11 @@ const SignUp = (props) => {
     return (
         <Container>
             {isLoading ? <LinearProgress /> : <div className={classes.placeHolder}></div>}
-            <h1>Sign Up</h1>
+            <h1>Super Fun Retro</h1>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
                 <TextField className={classes.inputField} type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
-                <Button type="submit" value="Sign Up" color="secondary" variant="contained">Sign Up</Button>
+                <Button type="submit" value="Sign Up" color="secondary" variant="contained" className={classes.submit}>Sign Up</Button>
             </form>
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
