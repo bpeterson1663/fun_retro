@@ -1,7 +1,6 @@
 import React, {useReducer, useEffect, useState, useContext} from 'react';
 import {db} from '../../firebase';
 import AuthContext from '../../auth-context';
-import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
@@ -21,11 +20,20 @@ const useStyles = makeStyles(theme => ({
     },
     placeholder: {
         height: 5
+    },
+    submit:{
+        display: 'block',
+        margin: 'auto'
+    },
+    columnInfo: {
+        width: '75%',
+        margin: 'auto'
     }
 }));
 const AdminContainer = () => {
     const [nameValue, setNameValue] = useState('');
-    const [dateValue, setDateValue] = useState(new moment().format('YYYY-MM-DD'));
+    const [startDateValue, setStartDateValue] = useState('');
+    const [endDateValue, setEndDateValue] = useState('')
     const [isLoading, setIsLoading] = useState(true);
 
     const auth = useContext(AuthContext);
@@ -65,14 +73,25 @@ const AdminContainer = () => {
         db.collection('retros')
           .add({
               name: nameValue,
-              date: dateValue,
+              startDate: startDateValue,
+              endDate: endDateValue,
               userId: auth.userId,
               isActive: true
             })
           .then((res) =>{
             setNameValue('');
-            setDateValue(new moment().format('YYYY-MM-DD'));
-            dispatch({type: 'ADD', payload: {name: nameValue, date: dateValue, id: res.id}});
+            setEndDateValue('');
+            setStartDateValue('');
+            dispatch({
+                type: 'ADD', 
+                payload: {
+                    name: nameValue, 
+                    endDate: endDateValue, 
+                    startDate: 
+                    startDateValue, 
+                    id: res.id
+                }
+            });
         });
     };
 
@@ -88,20 +107,21 @@ const AdminContainer = () => {
     return (
         <Container>
             {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}
-            <h1>Add Retro</h1>
+            <h1>Create New Retro</h1>
             <form onSubmit={onSubmitHandler}>
-                <TextField required className={classes.inputField} type="text" placeholder="Retro Name" onChange={(e) => setNameValue(e.target.value)}/>
-                <TextField required className={classes.inputField} type="date" placeholder="Start of Sprint" onChange={(e) => setDateValue(e.target.value)}/>
-                <Button type="submit" value="Submit" color="secondary" variant="contained">Create Retro</Button>
+                <TextField required className={classes.inputField} type="text" label="Retro Name" onChange={(e) => setNameValue(e.target.value)}/>
+                <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="Start of Sprint" onChange={(e) => setStartDateValue(e.target.value)}/>
+                <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="End of Sprint" onChange={(e) => setEndDateValue(e.target.value)}/>
+                <Button type="submit" value="Submit" color="secondary" variant="contained" className={classes.submit}>Create</Button>
             </form>
             {retroList.length > 0 ? <h1>Retro List</h1> : null } 
             {retroList.map((retro, i) => {
-               return <p key={i}>
+               return <div className={classes.columnInfo} key={i}>
                     <DeleteIcon className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)} color="secondary">Delete</DeleteIcon>
-                    Name: {retro.name}<br/>
-                    Date: {retro.date}<br/>
+                    {retro.name}<br/>
+                    {retro.startDate} through {retro.endDate}<br/>
                     Retro Link: <a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a><br/>
-                </p>
+                </div>
             })}
         </Container>
     );  
