@@ -8,22 +8,25 @@ import Container from '@material-ui/core/Container';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import LoadingContext from '../loading-context';
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 //TOOD: Refactor Snackbar into a single component
 //TODO: Refactor Login and SignUp components to be one
 const useStyles = makeStyles(theme => ({
     inputField: {
       margin: theme.spacing(2),
     },
+    placeHolder: {
+        height: 5
+    }
 }));
 const Login = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
     const [message, setMessage] = useState('false');
     const [open, setOpen] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const auth = useContext(AuthContext);
     const classes = useStyles();
-    const loading = useContext(LoadingContext);
 
     const onChangeHandler = (event, value) => {
         switch (value) {
@@ -39,7 +42,7 @@ const Login = (props) => {
     };
 
     const submitHandler = event => {
-        loading.setLoading(true);
+        setLoading(true);
         event.preventDefault();
         firebase.auth()
             .signInWithEmailAndPassword(emailValue, passwordValue)
@@ -53,10 +56,8 @@ const Login = (props) => {
                 setOpen(true);
                 setMessage(error.message)
                 auth.login(false);
-          })
-          .finally(() => {
-              loading.setLoading(false);
-          });
+            })
+            .finally(() => setLoading(false));
     };
 
     const handleMessageClose = () => {
@@ -66,6 +67,7 @@ const Login = (props) => {
 
     return( 
         <Container>
+            {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
             <h1>Log In</h1>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
