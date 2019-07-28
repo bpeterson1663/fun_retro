@@ -42,6 +42,9 @@ const useStyles = makeStyles(theme => ({
     },
     placeHolder: {
         height: 5
+    },
+    iconPlaceHolder: {
+        width: 23
     }
 }));
 const RetroColumn = (props) => {
@@ -116,6 +119,10 @@ const RetroColumn = (props) => {
         return vote.votes === 6 || votesExist.length === 0;
     };
 
+    const showThumbsDown = (id) => {
+        return _.filter(trackedVotes, (trackedId) => trackedId === id).length > 0;
+    };
+
     const getUsersVoteCount = (item) => {
         return _.filter(trackedVotes, (id) => id === item.id).length;
     };
@@ -142,9 +149,10 @@ const RetroColumn = (props) => {
                             <IconButton disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>
                                 <ThumbUp  />
                             </IconButton>
-                            <IconButton disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)}>
-                                <ThumbDown/>
-                            </IconButton>
+                                <IconButton disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)}>
+                                    {showThumbsDown(item.id) 
+                                    ? <ThumbDown/>: <div className={classes.iconPlaceHolder}></div> }
+                                </IconButton>                           
                             {auth.userId === item.userId 
                                 ?  <IconButton className={classes.deleteIcon}disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
                                         <DeleteIcon/>
