@@ -15,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ThumbUp from '@material-ui/icons/ThumbUp';
 import ThumbDown from '@material-ui/icons/ThumbDown';
 import Typography from '@material-ui/core/Typography/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 
 const useStyles = makeStyles(theme => ({
     inputField: {
@@ -38,12 +39,16 @@ const useStyles = makeStyles(theme => ({
     },
     deleteIcon: {
         marginLeft: 28
+    },
+    placeHolder: {
+        height: 5
     }
 }));
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
-    const [trackedVotes, setTrackedVotes] = useState([])
-    const [itemValue, setItemValue] = useState('')
+    const [trackedVotes, setTrackedVotes] = useState([]);
+    const [itemValue, setItemValue] = useState('');
+    const [isLoading, setLoading] = useState(true);
     const auth = useContext(AuthContext);
     const vote = useContext(VoteContext);
     const classes = useStyles();
@@ -56,11 +61,13 @@ const RetroColumn = (props) => {
                     data.id = doc.id;
                     return data;
                 }));
+                setLoading(false);
             });
         return () => unsubscirbe();
     }, [props.columnName, props.retroId]);
 
     const handleItemSubmit = (event) => {
+        setLoading(true);
         event.preventDefault();
         setItemValue('')
         db.collection(props.columnName)
@@ -69,7 +76,8 @@ const RetroColumn = (props) => {
               retroId: props.retroId,
               userId: auth.userId,
               votes: 0
-            });
+            })
+            .finally(() => setLoading(false));
     };
 
     const trackVote = (item, remove) => {
@@ -96,9 +104,11 @@ const RetroColumn = (props) => {
     };
 
     const handleItemDelete = (id) => {
+        setLoading(true);
         db.collection(props.columnName)
             .doc(id)
-            .delete();
+            .delete()
+            .finally(() => setLoading(false));
     };
 
     const disableDeleteVotes = (id) => {
@@ -112,9 +122,10 @@ const RetroColumn = (props) => {
     
     return(
         <Container className={classes.column}>
+            {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
             <Typography>{props.title}</Typography>
             <form onSubmit={handleItemSubmit}> 
-                <TextField required className={classes.inputField} variant="outlined" multiline rows="4" disabled={!props.isActive} onChange={(e) => setItemValue(e.target.value)}></TextField>
+                <TextField required className={classes.inputField} variant="outlined" multiline rows="4" disabled={!props.isActive} value={itemValue} onChange={(e) => setItemValue(e.target.value)}></TextField>
                 <Button className={classes.button} size="small" variant="contained" color="secondary" disabled={!props.isActive} type="submit" value="Add">Add</Button>
             </form>
             {itemList.map((item, i) => {
@@ -125,8 +136,8 @@ const RetroColumn = (props) => {
                         </CardContent>
                         <CardActions>
                             <div className={classes.votes}>
-                            {getUsersVoteCount(item) ? <span>Your Votes: { getUsersVoteCount(item)}</span> : null}<br/>
-                            <span >Total Votes: {item.votes}</span><br/>
+                                {getUsersVoteCount(item) ? <span>Your Votes: { getUsersVoteCount(item)}</span> : null}<br/>
+                                <span >Total Votes: {item.votes}</span><br/>
                             </div>
                             <IconButton disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>
                                 <ThumbUp  />
