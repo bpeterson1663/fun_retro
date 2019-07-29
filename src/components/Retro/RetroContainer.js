@@ -9,9 +9,10 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography/Typography';
 
 const RetroContainer = (props) => {
-    const [remaingVotes, setRemaingVotes] = useState(6);
+    const [remaingVotes, setRemaingVotes] = useState('');
     const [retroData, setRetroData] = useState({});
     const [retroStatus, setRetroStatus] = useState(true);
+    const [retroExists, setRetroExists] = useState(true);
     const auth = useContext(AuthContext);
     const retroId = props.match.params.id;
 
@@ -20,37 +21,52 @@ const RetroContainer = (props) => {
             .get().then((doc) => {
                 if(doc.exists){
                     setRetroData(doc.data());
-                    setRetroStatus(retroData.isActive)
+                    setRetroStatus(retroData.isActive);
+                    setRemaingVotes(retroData.numberOfVotes);
+                }else{
+                    setRetroExists(false);
                 }
             });
-    },[retroId, retroData.isActive]);
+    },[retroId, retroData.isActive, retroData.numberOfVotes, props.history]);
 
-    const handleEndRetro = () => {
+    const handleRetroStatus = () => {
         db.collection('retros').doc(retroId)
-            .update({isActive: false })
+            .update({isActive: !retroStatus })
             .then(() =>{
-                setRetroStatus(false);
+                setRetroStatus(!retroStatus);
             });
     };
-    return(
+
+    const retroContainer = (
         <Container>
             <h2>{retroData.name}</h2>
+            <Typography>{retroData.startDate} through {retroData.endDate}</Typography>
             <Typography>{retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}</Typography>
-            {retroData.userId === auth.userId && retroStatus ? <Button size="small" color="secondary" onClick={handleEndRetro}>End Retro</Button> : null}
+            {retroData.userId === auth.userId ? <Button size="small" color="secondary" onClick={handleRetroStatus}>{retroStatus ? `End Retro` : `Activate Retro`} </Button> : null}
             <Grid container justify="center" spacing={0}>
                 <VoteContext.Provider value={{votes: remaingVotes, setRemaingVotes: setRemaingVotes }}>
                     <Grid item >
-                        <RetroColumn retroId={retroId} title="Keep Doing" columnName="keepDoing" isActive={retroStatus}/>
+                        <RetroColumn retroId={retroId} votesPerPerson={props.numberOfVotes} title="Keep Doing" columnName="keepDoing" isActive={retroStatus}/>
                     </Grid>
                     <Grid item >
-                        <RetroColumn retroId={retroId} title="Stop Doing" columnName="stopDoing" isActive={retroStatus}/>
+                        <RetroColumn retroId={retroId} votesPerPerson={props.numberOfVotes} title="Stop Doing" columnName="stopDoing" isActive={retroStatus}/>
                     </Grid>
                     <Grid item>
-                        <RetroColumn retroId={retroId} title="Start Doing" columnName="startDoing" isActive={retroStatus}/>
+                        <RetroColumn retroId={retroId} votesPerPerson={props.numberOfVotes} title="Start Doing" columnName="startDoing" isActive={retroStatus}/>
                     </Grid>
                 </VoteContext.Provider>
             </Grid>
         </Container>
+    );
+
+    const retroDoesNotExist = (
+        <Container>
+            <h1>Retro Does Not Exist</h1>
+        </Container>
+    );
+
+    return(
+        retroExists ? retroContainer : retroDoesNotExist
     );
 };
 

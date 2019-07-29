@@ -116,7 +116,7 @@ const RetroColumn = (props) => {
 
     const disableDeleteVotes = (id) => {
         const votesExist = _.filter(trackedVotes, (trackedId) => trackedId === id);
-        return vote.votes === 6 || votesExist.length === 0;
+        return vote.votes === props.votesPerPerson || votesExist.length === 0;
     };
 
     const showThumbsDown = (id) => {
