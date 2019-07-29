@@ -38,8 +38,8 @@ const RetroContainer = (props) => {
     const classes = useStyles();
 
     useEffect(() => {
-        db.collection('retros').doc(retroId)
-            .get().then((doc) => {
+        const unsubscribe = db.collection('retros').doc(retroId)
+            .onSnapshot((doc) => {
                 if(doc.exists){
                     setRetroData(doc.data());
                     setRetroStatus(retroData.isActive);
@@ -48,7 +48,8 @@ const RetroContainer = (props) => {
                     setRetroExists(false);
                 }
             });
-    },[retroId, retroData.isActive, retroData.numberOfVotes, props.history]);
+        return () => unsubscribe();
+    },[retroId, retroData.isActive, retroData.numberOfVotes]);
 
     const handleRetroStatus = () => {
         db.collection('retros').doc(retroId)
