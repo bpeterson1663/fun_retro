@@ -20,7 +20,9 @@ import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 const useStyles = makeStyles(theme => ({
     inputField: {
         margin: theme.spacing(1),
-        width: 250
+        width: 250,
+        backgroundColor: 'white',
+        borderRadius: 10
     },
     column: {
         width: 300,
@@ -45,6 +47,9 @@ const useStyles = makeStyles(theme => ({
     },
     iconPlaceHolder: {
         width: 23
+    },
+    header: {
+        color: 'white'
     }
 }));
 const RetroColumn = (props) => {
@@ -83,12 +88,12 @@ const RetroColumn = (props) => {
             .finally(() => setLoading(false));
     };
 
-    const trackVote = (item, remove) => {
+    const trackVote = (id, remove) => {
         if(remove){
-            trackedVotes.splice(trackedVotes.indexOf(item.id), 1);
+            trackedVotes.splice(trackedVotes.indexOf(id), 1);
             setTrackedVotes(trackedVotes);
         } else{
-            trackedVotes.push(item.id);
+            trackedVotes.push(id);
             setTrackedVotes(trackedVotes);
         }
     }
@@ -98,20 +103,31 @@ const RetroColumn = (props) => {
         if(operation === 'addVote') {
             itemRef.update({votes: incrementCounter})
             vote.setRemaingVotes(--vote.votes);
-            trackVote(item, false);
+            trackVote(item.id, false);
         }else {
             itemRef.update({votes: decrementCounter});
             vote.setRemaingVotes(++vote.votes);
-            trackVote(item, true);
+            trackVote(item.id, true);
         }
     };
 
     const handleItemDelete = (id) => {
         setLoading(true);
+        removeAllVotes(id);
         db.collection(props.columnName)
             .doc(id)
             .delete()
             .finally(() => setLoading(false));
+    };
+
+    const removeAllVotes = (id) => {
+        let count = 0;
+        const newTrackedVotes = _.filter(trackedVotes, (trackedId) => {
+            if(trackedId === id){count++}
+            return trackedId !== id;
+        });
+        vote.setRemaingVotes(vote.votes + count);
+        setTrackedVotes(newTrackedVotes);
     };
 
     const disableDeleteVotes = (id) => {
@@ -130,9 +146,11 @@ const RetroColumn = (props) => {
     return(
         <Container className={classes.column}>
             {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
-            <Typography>{props.title}</Typography>
+            <Typography className={classes.header}>{props.title}</Typography>
             <form onSubmit={handleItemSubmit}> 
-                <TextField required className={classes.inputField} variant="outlined" multiline rows="4" disabled={!props.isActive} value={itemValue} onChange={(e) => setItemValue(e.target.value)}></TextField>
+                <TextField placeholder="Start Typing"
+                            required 
+                            className={classes.inputField} variant="outlined" multiline rows="4" disabled={!props.isActive} value={itemValue} onChange={(e) => setItemValue(e.target.value)}></TextField>
                 <Button className={classes.button} size="small" variant="contained" color="secondary" disabled={!props.isActive} type="submit" value="Add">Add</Button>
             </form>
             {itemList.map((item, i) => {

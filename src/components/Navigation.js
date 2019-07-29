@@ -10,6 +10,12 @@ const useStyles = makeStyles(theme => ({
     button: {
       margin: theme.spacing(1),
     },
+    header: {
+        fontWeight: 'bold'
+    },
+    buttonContainer: {
+        marginLeft: 'auto'
+    }
   }));
 const Navigation = (props) => {
     const auth = useContext(AuthContext);
@@ -22,13 +28,13 @@ const Navigation = (props) => {
     };
     const classes = useStyles();
     const athenticatedOptions = (
-        <div>
+        <div className={classes.buttonContainer}>
             <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
             <Link to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
         </div>
     );
     const unauthenticatedOptions = (
-        <div>
+        <div className={classes.buttonContainer}>
             <Link to="/login" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Log In</Button></Link>
             <Link to="/signup" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Sign Up</Button></Link>
         </div>
@@ -36,6 +42,7 @@ const Navigation = (props) => {
     return(
         <AppBar position="static" style ={{padding:'0px,0px,0px,0px'}} >
             <Toolbar>
+            <span className={classes.header}>Super Fun Retro</span>
                 {auth.userId ? athenticatedOptions : unauthenticatedOptions}
             </Toolbar>
         </AppBar>
