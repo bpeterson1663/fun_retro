@@ -61,7 +61,7 @@ const RetroColumn = (props) => {
     const vote = useContext(VoteContext);
     const classes = useStyles();
     useEffect(() => {
-        const unsubscirbe = db.collection(props.columnName)
+        const unsubscribe = db.collection(props.columnName)
             .where('retroId', '==', props.retroId)
             .onSnapshot(querySnapshot => {
                 setItemList(querySnapshot.docs.map(doc => {
@@ -71,7 +71,7 @@ const RetroColumn = (props) => {
                 }));
                 setLoading(false);
             });
-        return () => unsubscirbe();
+        return () => unsubscribe();
     }, [props.columnName, props.retroId]);
 
     const handleItemSubmit = (event) => {
