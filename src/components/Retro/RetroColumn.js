@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
@@ -16,31 +17,32 @@ import ThumbUp from '@material-ui/icons/ThumbUp';
 import ThumbDown from '@material-ui/icons/ThumbDown';
 import Typography from '@material-ui/core/Typography/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
+import Avatar from '@material-ui/core/Avatar';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme =>({
     inputField: {
-        margin: theme.spacing(1),
-        width: 250,
+        margin: '10px auto',
+        width: '100%',
         backgroundColor: 'white',
         borderRadius: 10
-    },
-    column: {
-        width: 300,
-        float: 'left'
     },
     button: {
         display: "inherit",
         margin: "auto"
     },
     card: {
-        maxWidth: 290,
-        margin: theme.spacing(1),
+        width: '100%',
+        margin: '10px auto',
     },
     votes: {
-        fontSize: '8px'
+        margin: 0,
+        height: 20,
+        width: 20,
+        fontSize: 10,
+        backgroundColor: theme.palette.primary.main
     },
     deleteIcon: {
-        marginLeft: 28
+        marginLeft: 'auto'
     },
     placeHolder: {
         height: 5
@@ -50,7 +52,23 @@ const useStyles = makeStyles(theme => ({
     },
     header: {
         color: 'white'
+    },
+    avatar: {
+        margin: 0,
+        height: 30,
+        width: 30,
+        fontSize: 16,
+        backgroundColor: theme.palette.primary.main
+    },
+    cardHeader: {
+        padding: '10px 0 5px 0',
+        float: 'right',
+        margin: 0
+    },
+    cardConent: {
+        paddingBottom: 0
     }
+
 }));
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
@@ -144,9 +162,9 @@ const RetroColumn = (props) => {
     };
     
     return(
-        <Container className={classes.column}>
+        <Container>
             {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
-            <Typography className={classes.header}>{props.title}</Typography>
+            <Typography variant="h6" className={classes.header}>{props.title}</Typography>
             <form onSubmit={handleItemSubmit}> 
                 <TextField placeholder="Start Typing"
                             required 
@@ -155,27 +173,31 @@ const RetroColumn = (props) => {
             </form>
             {itemList.map((item, i) => {
                 return (
-                    <Card key={i} className={classes.card}>                           
+                    <Card key={i} className={classes.card}>   
+                        <CardHeader 
+                            className={classes.cardHeader}
+                            avatar={
+                                <Avatar className={classes.avatar}>
+                                  {item.votes}
+                                </Avatar>
+                              }/>                        
                         <CardContent className={classes.cardConent}>
                             {item.value}
                         </CardContent>
-                        <CardActions>
-                            <div className={classes.votes}>
-                                {getUsersVoteCount(item) ? <span>Your Votes: { getUsersVoteCount(item)}</span> : null}<br/>
-                                <span >Total Votes: {item.votes}</span><br/>
-                            </div>
+                        <CardActions >
+                            <Avatar className={classes.votes}>{ getUsersVoteCount(item) }</Avatar>
                             <IconButton disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>
                                 <ThumbUp  />
                             </IconButton>
-                                <IconButton disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)}>
-                                    {showThumbsDown(item.id) 
-                                    ? <ThumbDown/>: <div className={classes.iconPlaceHolder}></div> }
-                                </IconButton>                           
-                            {auth.userId === item.userId 
-                                ?  <IconButton className={classes.deleteIcon}disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
-                                        <DeleteIcon/>
-                                    </IconButton>
-                                : null
+                            <IconButton disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)}>
+                                {showThumbsDown(item.id) 
+                                ? <ThumbDown />: <div className={classes.iconPlaceHolder}></div> }
+                            </IconButton>                           
+                            {auth.userId === item.userId ?
+                            <IconButton className={classes.deleteIcon}disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
+                                <DeleteIcon />
+                            </IconButton>
+                            : null
                             }
                         </CardActions>
                     </Card>

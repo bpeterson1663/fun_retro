@@ -8,24 +8,28 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container/Container';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography/Typography';
+const columnStyle = {
+    borderRadius: 10,
+    padding: 5,
+    margin: '5px 10px',
+    width: '30%'
+};
 const useStyles = makeStyles(theme => ({
     keepDoing: {
         backgroundColor: '#009588',
-        borderRadius: 10,
-        padding: 5,
-        margin: '0 10px'
+        ...columnStyle
     },
     stopDoing: {
         backgroundColor: '#E91D63',
-        borderRadius: 10,
-        padding: 5,
-        margin: '0 10px'
+        ...columnStyle
     },
     startDoing: {
         backgroundColor: '#9C28B0',
-        borderRadius: 10,
-        padding: 5,
-        margin: '0 10px'
+        ...columnStyle
+    },
+    container: {
+        width: '100%',
+        margin: 0
     }
 }));
 const RetroContainer = (props) => {
@@ -61,9 +65,9 @@ const RetroContainer = (props) => {
 
     const retroContainer = (
         <Container>
-            <h2>{retroData.name}</h2>
-            <Typography>{retroData.startDate} through {retroData.endDate}</Typography>
-            <Typography>{retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}</Typography>
+            <Typography variant="h3">{retroData.name}</Typography>
+            <Typography variant="subtitle1">{retroData.startDate} through {retroData.endDate}</Typography>
+            <Typography variant="subtitle2">{retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}</Typography>
             {retroData.userId === auth.userId ? <Button size="small" color="secondary" onClick={handleRetroStatus}>{retroStatus ? `End Retro` : `Activate Retro`} </Button> : null}
             <Grid container justify="center" spacing={0}>
                 <VoteContext.Provider value={{votes: remaingVotes, setRemaingVotes: setRemaingVotes }}>
