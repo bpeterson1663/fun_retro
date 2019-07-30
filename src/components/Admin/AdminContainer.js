@@ -14,6 +14,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography/Typography';
 
 const useStyles = makeStyles(theme => ({
     inputField: {
@@ -27,7 +28,8 @@ const useStyles = makeStyles(theme => ({
         margin: '10px 30px'
     },
     cardHeader: {
-        padding: 0
+        padding: '10px 0 5px 0',
+        margin: 0
     },
     placeholder: {
         height: 5
@@ -37,8 +39,11 @@ const useStyles = makeStyles(theme => ({
         margin: 'auto'
     },
     columnInfo: {
-        width: '75%',
+        width: '100%%',
         margin: 'auto'
+    },
+    cardConent: {
+        paddingBottom: 0
     },
     form: {
         width: 400,
@@ -126,7 +131,7 @@ const AdminContainer = () => {
             {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}
             <Grid container justify="center" spacing={0}>
                 <Grid item>
-                    <h1>Create New Retro</h1>
+                    <Typography variant="h3">Create New Retro</Typography>
                     <form onSubmit={onSubmitHandler} className={classes.form}>
                         <TextField required className={classes.inputField} type="text" label="Retro Name" onChange={(e) => setNameValue(e.target.value)}/>
                         <TextField required className={classes.inputField} type="number" label="Votes Per Person" value={voteValue} onChange={(e) => setVoteValue(e.target.value)}/>
@@ -136,7 +141,7 @@ const AdminContainer = () => {
                     </form>
                 </Grid>
                 <Grid item>
-                    {retroList.length > 0 ? <h1>Retro List</h1> : null } 
+                    {retroList.length > 0 ? <Typography variant="h3">Retro List</Typography> : null } 
                     {retroList.map((retro, i) => {
                         return (
                             <Card className={classes.card} key={i}>
@@ -144,7 +149,7 @@ const AdminContainer = () => {
                                     className={classes.cardHeader}
                                     title={retro.name}
                                     />
-                                <CardContent>
+                                <CardContent className={classes.cardContent}>
                                     {retro.startDate} through {retro.endDate}<br/>
                                     Retro Link: <a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a><br/>
                                 </CardContent>
@@ -153,7 +158,7 @@ const AdminContainer = () => {
                                         <EditIcon color="secondary" />
                                     </IconButton> */}
                                     <IconButton className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)}>
-                                        <DeleteIcon color="secondary">Delete</DeleteIcon>
+                                        <DeleteIcon>Delete</DeleteIcon>
                                     </IconButton>
                                 </CardActions>
                             </Card>

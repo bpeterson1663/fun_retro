@@ -6,6 +6,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import firebase from 'firebase';
+import Typography from '@material-ui/core/Typography/Typography';
+
 const useStyles = makeStyles(theme => ({
     button: {
       margin: theme.spacing(1),
@@ -40,9 +42,9 @@ const Navigation = (props) => {
         </div>
     )
     return(
-        <AppBar position="static" style ={{padding:'0px,0px,0px,0px'}} >
+        <AppBar position="static" style ={{padding:'0px,0px,0px,0px', margin: '0 0 10px 0'}} >
             <Toolbar>
-            <span className={classes.header}>Super Fun Retro</span>
+                <Typography className={classes.header}>Super Fun Retro</Typography>
                 {auth.userId ? athenticatedOptions : unauthenticatedOptions}
             </Toolbar>
         </AppBar>
