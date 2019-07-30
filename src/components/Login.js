@@ -7,8 +7,11 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
+import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
+import Typography from '@material-ui/core/Typography/Typography';
+import SnackbarContent from '@material-ui/core/SnackbarContent/SnackbarContent';
 //TOOD: Refactor Snackbar into a single component
 //TODO: Refactor Login and SignUp components to be one
 const useStyles = makeStyles(theme => ({
@@ -21,6 +24,13 @@ const useStyles = makeStyles(theme => ({
     submit:{
         display: 'block',
         margin: 'auto'
+    },
+    error: {
+        backgroundColor: theme.palette.error.dark,
+    },
+    message: {
+        display: 'flex',
+        alignItems: 'center',
     },
 }));
 const Login = (props) => {
@@ -72,7 +82,7 @@ const Login = (props) => {
     return( 
         <Container>
             {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
-            <h1>Super Fun Retro</h1>
+            <Typography variant="h3">Super Fun Retro</Typography>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
                 <TextField className={classes.inputField}  type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
@@ -80,22 +90,33 @@ const Login = (props) => {
             </form>
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                variant="warning"
                 open={open}
                 autoHideDuration={6000}
                 onClose={handleMessageClose}
-                message={<span id="message-id">{message}</span>}
-                action={[
-                <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    onClick={handleMessageClose}
-                >
-                    <CloseIcon />
-                </IconButton>,
-                ]}
-            />
+            >
+                <SnackbarContent
+                    onClose={handleMessageClose}
+                    variant="warning"
+                    aria-describedby="client-snackbar"
+                    message={
+                        <span id="client-snackbar" className={classes.message}>
+                        <ErrorIcon />
+                        {message}
+                        </span>
+                    }
+                    className={classes.error}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            onClick={handleMessageClose}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    ]}
+                />
+            </Snackbar>
         </Container>
     );
 };

@@ -9,6 +9,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
+import Typography from '@material-ui/core/Typography/Typography';
 //TODO: Refactor Snack bar into its own component
 //TODO: Refactor Login and SignUp components to be one
 //TODO: Lots of useState references. Can this be combined into one?
@@ -74,7 +75,7 @@ const SignUp = (props) => {
     return (
         <Container>
             {isLoading ? <LinearProgress /> : <div className={classes.placeHolder}></div>}
-            <h1>Super Fun Retro</h1>
+            <Typography variant="h3">Super Fun Retro</Typography>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
                 <TextField className={classes.inputField} type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
