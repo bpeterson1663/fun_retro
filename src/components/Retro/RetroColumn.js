@@ -18,6 +18,9 @@ import ThumbDown from '@material-ui/icons/ThumbDown';
 import Typography from '@material-ui/core/Typography/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Avatar from '@material-ui/core/Avatar';
+import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles(theme =>({
     inputField: {
@@ -41,7 +44,7 @@ const useStyles = makeStyles(theme =>({
         fontSize: 10,
         backgroundColor: theme.palette.primary.main
     },
-    deleteIcon: {
+    actionIcon: {
         marginLeft: 'auto'
     },
     placeHolder: {
@@ -66,7 +69,11 @@ const useStyles = makeStyles(theme =>({
         margin: 0
     },
     cardConent: {
-        paddingBottom: 0
+        paddingBottom: 0,
+        wordBreak: 'break-all'
+    },
+    cardAction: {
+        width: '100%'
     }
 
 }));
@@ -75,6 +82,8 @@ const RetroColumn = (props) => {
     const [trackedVotes, setTrackedVotes] = useState([]);
     const [itemValue, setItemValue] = useState('');
     const [isLoading, setLoading] = useState(true);
+    const [editMode, setEditMode] = useState(false);
+    const [itemEdit, setItemEdit] = useState({})
     const auth = useContext(AuthContext);
     const vote = useContext(VoteContext);
     const classes = useStyles();
@@ -138,6 +147,27 @@ const RetroColumn = (props) => {
             .finally(() => setLoading(false));
     };
 
+    const handleEditItem = (item) => {
+        setEditMode(true);
+        setItemEdit(item);
+    };
+
+    const resetEditMode = () => {
+        setEditMode(false);
+        setItemEdit({});
+    };
+
+    const handleUpdateItem = (item) => {
+        setLoading(true);
+        resetEditMode();
+        db.collection(props.columnName)
+          .doc(itemEdit.id)
+          .update({
+              value: itemEdit.value
+          })
+          .finally(() => setLoading(false));
+    };
+
     const removeAllVotes = (id) => {
         let count = 0;
         const newTrackedVotes = _.filter(trackedVotes, (trackedId) => {
@@ -182,9 +212,11 @@ const RetroColumn = (props) => {
                                 </Avatar>
                               }/>                        
                         <CardContent className={classes.cardConent}>
-                            {item.value}
+                            {editMode && itemEdit.id === item.id 
+                                ? <TextField variant="outlined" multiline rows="3" value={itemEdit.value} onChange={(e) => setItemEdit({...itemEdit, value: e.target.value})}/> 
+                                : item.value}
                         </CardContent>
-                        <CardActions >
+                        <CardActions className={classes.cardAction}>
                             <Avatar className={classes.votes}>{ getUsersVoteCount(item) }</Avatar>
                             <IconButton disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>
                                 <ThumbUp  />
@@ -192,13 +224,27 @@ const RetroColumn = (props) => {
                             <IconButton disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)}>
                                 {showThumbsDown(item.id) 
                                 ? <ThumbDown />: <div className={classes.iconPlaceHolder}></div> }
-                            </IconButton>                           
+                            </IconButton>
+                            {auth.userId === item.userId ? (
+                                editMode && itemEdit.id === item.id ?
+                                <div>
+                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleUpdateItem.bind(this, item)}>
+                                        <SaveIcon />
+                                    </IconButton>
+                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={resetEditMode.bind(this, item)}>
+                                        <CancelIcon />
+                                    </IconButton>
+                                </div>
+                                : 
+                                <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
+                                    <EditIcon />
+                                </IconButton>
+                            ) : null}                           
                             {auth.userId === item.userId ?
-                            <IconButton className={classes.deleteIcon}disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
+                            <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
                                 <DeleteIcon />
                             </IconButton>
-                            : null
-                            }
+                            : null}
                         </CardActions>
                     </Card>
                 );
