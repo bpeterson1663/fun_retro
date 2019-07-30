@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
+import {Link} from 'react-router-dom';
 //TODO: Refactor Snack bar into its own component
 //TODO: Refactor Login and SignUp components to be one
 //TODO: Lots of useState references. Can this be combined into one?
@@ -33,7 +34,10 @@ const SignUp = (props) => {
     const [open, setOpen] = useState(false);
     const auth = useContext(AuthContext);
     const classes = useStyles();
-
+    let retroId = null;
+    if(props.location && props.location.state){
+        retroId = props.location.state.retroId;
+    }
     const submitHandler = event => {
         setLoading(true);
         event.preventDefault();
@@ -41,8 +45,8 @@ const SignUp = (props) => {
             .createUserWithEmailAndPassword(emailValue, passwordValue)
             .then((res) => {
                 auth.login(true);
-                props.match.params.id ?
-                    props.history.push('/retro/'+props.match.params.id) :
+                retroId ?
+                    props.history.push('/retro/'+retroId) :
                     props.history.push('/retroList');
             })
             .catch(function(error) {
@@ -81,6 +85,12 @@ const SignUp = (props) => {
                 <TextField className={classes.inputField} type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
                 <Button type="submit" value="Sign Up" color="secondary" variant="contained" className={classes.submit}>Sign Up</Button>
             </form>
+            <Link
+                to={{
+                    pathname: "/login",
+                    state: {retroId: retroId}
+                }}
+            > Log In </Link>
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 variant="warning"

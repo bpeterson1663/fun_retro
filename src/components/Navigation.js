@@ -29,23 +29,18 @@ const Navigation = (props) => {
           });
     };
     const classes = useStyles();
-    const athenticatedOptions = (
-        <div className={classes.buttonContainer}>
-            <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
-            <Link to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
-        </div>
-    );
-    const unauthenticatedOptions = (
-        <div className={classes.buttonContainer}>
-            <Link to="/login" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Log In</Button></Link>
-            <Link to="/signup" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Sign Up</Button></Link>
-        </div>
-    )
+
     return(
         <AppBar position="static" style ={{padding:'0px,0px,0px,0px', margin: '0 0 10px 0'}} >
             <Toolbar>
                 <Typography className={classes.header}>Super Fun Retro</Typography>
-                {auth.userId ? athenticatedOptions : unauthenticatedOptions}
+                {auth.userId ? 
+                    <div className={classes.buttonContainer}>
+                        <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
+                        <Link to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
+                    </div>
+                : null}
+
             </Toolbar>
         </AppBar>
     )

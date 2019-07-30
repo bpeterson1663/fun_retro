@@ -12,6 +12,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import SnackbarContent from '@material-ui/core/SnackbarContent/SnackbarContent';
+import {Link} from 'react-router-dom';
+
 //TOOD: Refactor Snackbar into a single component
 //TODO: Refactor Login and SignUp components to be one
 const useStyles = makeStyles(theme => ({
@@ -41,7 +43,13 @@ const Login = (props) => {
     const [isLoading, setLoading] = useState(false);
     const auth = useContext(AuthContext);
     const classes = useStyles();
-
+    let retroId = null;
+    if(props.location && props.location.state){
+        retroId = props.location.state.retroId;
+    }  
+    if(props.match.params.id){
+        retroId = props.match.params.id;
+    }
     const onChangeHandler = (event, value) => {
         switch (value) {
             case 'email':
@@ -62,9 +70,7 @@ const Login = (props) => {
             .signInWithEmailAndPassword(emailValue, passwordValue)
             .then((res) => {
                 auth.login(true);
-                props.match.params.id ?
-                    props.history.push('/retro/'+props.match.params.id) :
-                    props.history.push('/retroList');
+                    retroId ? props.history.push('/retro/'+retroId) : props.history.push('/retroList');
             })
             .catch((error) => {
                 setOpen(true);
@@ -88,6 +94,12 @@ const Login = (props) => {
                 <TextField className={classes.inputField}  type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
                 <Button type="submit" color="secondary" variant="contained" className={classes.submit}>Log In</Button>
             </form>
+            <Link
+                to={{
+                    pathname: "/signup",
+                    state: {retroId: retroId}
+                }}
+            > Signup </Link>
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 open={open}
