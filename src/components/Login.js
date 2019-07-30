@@ -99,7 +99,7 @@ const Login = (props) => {
                     pathname: "/signup",
                     state: {retroId: retroId}
                 }}
-            > Signup </Link>
+            > Sign Up </Link>
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 open={open}
