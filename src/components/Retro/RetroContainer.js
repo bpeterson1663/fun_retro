@@ -87,7 +87,7 @@ const RetroContainer = (props) => {
 
     const retroDoesNotExist = (
         <Container>
-            <h1>Retro Does Not Exist</h1>
+            <Typography variant="h3">Retro Does Not Exist</Typography>
         </Container>
     );
 
