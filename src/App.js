@@ -11,7 +11,7 @@ import firebase from 'firebase';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
-
+import IEWarning from './components/IEWarning';
 const theme = createMuiTheme({
   palette: {
     primary: {main:'#2196f3'},
@@ -49,6 +49,7 @@ const App = () => {
               <Route path="/" exact component={authId ? AdminContainer : Login} />
           </AuthContext.Provider>
         </div>
+      <IEWarning/>
     </BrowserRouter>
   </ThemeProvider>
   );
