@@ -157,9 +157,9 @@ const AdminContainer = () => {
                                     {/* <IconButton className={classes.icon}>
                                         <EditIcon color="secondary" />
                                     </IconButton> */}
-                                    <IconButton className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)}>
+                                    {/* <IconButton className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)}>
                                         <DeleteIcon>Delete</DeleteIcon>
-                                    </IconButton>
+                                    </IconButton> */}
                                 </CardActions>
                             </Card>
                         )
