@@ -23,8 +23,15 @@ const useStyles = makeStyles(theme => ({
     },
     submit:{
         display: 'block',
-        margin: 'auto'
+        margin: '10px auto'
     },
+    error: {
+        backgroundColor: theme.palette.error.dark,
+    },
+    message: {
+        display: 'flex',
+        alignItems: 'center',
+    }
 }));
 const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
@@ -80,6 +87,8 @@ const SignUp = (props) => {
         <Container>
             {isLoading ? <LinearProgress /> : <div className={classes.placeHolder}></div>}
             <Typography variant="h3">Super Fun Retro</Typography>
+            <Typography variant="subtitle1">Sign Up </Typography>
+            <Typography variant="subtitle2">Start making your sprint retrospectives super fun!</Typography>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
                 <TextField className={classes.inputField} type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
@@ -96,6 +105,7 @@ const SignUp = (props) => {
                 variant="warning"
                 open={open}
                 autoHideDuration={6000}
+                className={classes.error}
                 onClose={handleMessageClose}
                 message={<span id="message-id">{message}</span>}
                 action={[

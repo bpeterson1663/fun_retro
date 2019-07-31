@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
     submit:{
         display: 'block',
-        margin: 'auto'
+        margin: '10px auto'
     },
     error: {
         backgroundColor: theme.palette.error.dark,
@@ -34,6 +34,9 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
     },
+    links: {
+        margin: 10
+    }
 }));
 const Login = (props) => {
     const [emailValue, setEmailValue] = useState('');
@@ -89,12 +92,20 @@ const Login = (props) => {
         <Container>
             {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
             <Typography variant="h3">Super Fun Retro</Typography>
+            <Typography variant="subtitle1">Log In </Typography>
+            <Typography variant="subtitle2">and start your Super Fun Retro experience!</Typography>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
                 <TextField className={classes.inputField}  type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
                 <Button type="submit" color="secondary" variant="contained" className={classes.submit}>Log In</Button>
             </form>
             <Link
+                className={classes.links}   
+                to="/forgotPassword">
+                Forgot Your Password?
+            </Link>
+            <Link
+                className={classes.links}
                 to={{
                     pathname: "/signup",
                     state: {retroId: retroId}
