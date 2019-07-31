@@ -41,7 +41,6 @@ const RetroContainer = (props) => {
     const [retroData, setRetroData] = useState({});
     const [retroStatus, setRetroStatus] = useState(true);
     const [retroExists, setRetroExists] = useState(true);
-    const [reportData, setReportData] = useState([])
     const auth = useContext(AuthContext);
     const retroId = props.match.params.id;
     const classes = useStyles();
@@ -81,21 +80,20 @@ const RetroContainer = (props) => {
         });
         Promise.all(promises)
             .then((res) => {
+                const allData = []
                 _.each(res, (querySnapshot) => {
-                    setReportData(
-                        reportData.push(querySnapshot.docs.map(doc => {
-                            const data = doc.data();
-                            data.id = doc.id;
-                            return data;
-                        }))
-                    );
+                    allData.push(querySnapshot.docs.map(doc => {
+                        const data = doc.data();
+                        data.id = doc.id;
+                        return data;
+                    }));
                 });
                 let doc = new jsPDF();
 
                 _.each(columnMaps, (column, i) => {
                     let columnHeader = [column.title, 'Votes']
                     let rows = [];
-                    _.each(reportData[i], item => {
+                    _.each(allData[i], item => {
                         rows.push([item.value, item.votes]);
                     });                   
                     doc.autoTable({
@@ -105,7 +103,7 @@ const RetroContainer = (props) => {
                     });
                 });
             
-                doc.save(retroData.name+'.pdf')
+                doc.save(retroData.name+'.pdf');
             });
     };
 
