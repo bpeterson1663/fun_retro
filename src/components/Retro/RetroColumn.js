@@ -70,7 +70,8 @@ const useStyles = makeStyles(theme =>({
     },
     cardConent: {
         paddingBottom: 0,
-        wordBreak: 'break-all'
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'keep-all'
     },
     cardAction: {
         width: '100%'
