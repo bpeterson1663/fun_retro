@@ -45,7 +45,11 @@ const RetroContainer = (props) => {
     const auth = useContext(AuthContext);
     const retroId = props.match.params.id;
     const classes = useStyles();
-
+    const columnMaps = [
+        {title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588'},
+        {title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63'},
+        {title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0'}
+    ];
     useEffect(() => {
         const unsubscribe = db.collection('retros').doc(retroId)
             .onSnapshot((doc) => {
@@ -70,17 +74,13 @@ const RetroContainer = (props) => {
     };
 
     const handleGenerateReport = () => {
-
-        const allData = Promise.all([
-            db.collection('keepDoing')
-            .where('retroId', '==', retroId).get(),
-            db.collection('stopDoing')
-            .where('retroId', '==', retroId).get(),
-            db.collection('startDoing')
-            .where('retroId', '==', retroId).get(),
-        ]);
-        //TODO: Refactor. You can do better
-        allData.then((res) => {
+        const promises = columnMaps.map(column => {
+            return db.collection(column.value)
+                    .where('retroId', '==', retroId)
+                    .get();
+        });
+        Promise.all(promises)
+            .then((res) => {
                 _.each(res, (querySnapshot) => {
                     setReportData(
                         reportData.push(querySnapshot.docs.map(doc => {
@@ -90,35 +90,21 @@ const RetroContainer = (props) => {
                         }))
                     );
                 });
-                let columnsKeep = ['Keep Doing', 'Votes'];
-                let rowsKeep = []
-                let columnsStart = ['Start Doing', 'Votes'];
-                let rowsStart = []
-                let columnsStop = ['Stop Doing', 'Votes']
-                let rowsStop = []
                 let doc = new jsPDF();
-                _.each(reportData[0], (item, i) => {
-                    rowsKeep.push([item.value, item.votes])
+
+                _.each(columnMaps, (column, i) => {
+                    let columnHeader = [column.title, 'Votes']
+                    let rows = [];
+                    _.each(reportData[i], item => {
+                        rows.push([item.value, item.votes]);
+                    });                   
+                    doc.autoTable({
+                        headStyles: {fillColor: column.backgroundColor},
+                        head: [columnHeader],
+                        body:  _.orderBy(rows, x => x[1], ['desc'])
+                    });
                 });
-                _.each(reportData[1], item => {
-                    rowsStop.push([item.value, item.votes])
-                });
-                _.each(reportData[2], item => {
-                    rowsStart.push([item.value, item.votes])
-                });
-                doc.autoTable({
-                    head: [columnsKeep],
-                    body: rowsKeep
-                });
-                doc.autoTable({
-                    head: [columnsStop],
-                    body: rowsStop
-                });
-                doc.autoTable({
-                    head: [columnsStart],
-                    body: rowsStart
-                });
-                
+            
                 doc.save(retroData.name+'.pdf')
             });
     };
