@@ -5,15 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import ErrorIcon from '@material-ui/icons/Error';
-import CloseIcon from '@material-ui/icons/Close';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
-import SnackbarContent from '@material-ui/core/SnackbarContent/SnackbarContent';
 import {Link} from 'react-router-dom';
-
+import SnackBar from './SnackBar';
 //TOOD: Refactor Snackbar into a single component
 //TODO: Refactor Login and SignUp components to be one
 const useStyles = makeStyles(theme => ({
@@ -27,13 +22,6 @@ const useStyles = makeStyles(theme => ({
         display: 'block',
         margin: '10px auto'
     },
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
     links: {
         margin: 10
     }
@@ -41,11 +29,15 @@ const useStyles = makeStyles(theme => ({
 const Login = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
-    const [message, setMessage] = useState('false');
-    const [open, setOpen] = useState(false);
+    const [messageState, setMessageState] = useState({
+        message: '',
+        messageStatus: '',
+        displayMessage: false,
+    });
     const [isLoading, setLoading] = useState(false);
     const auth = useContext(AuthContext);
     const classes = useStyles();
+
     let retroId = null;
     if(props.location && props.location.state){
         retroId = props.location.state.retroId;
@@ -53,6 +45,7 @@ const Login = (props) => {
     if(props.match.params.id){
         retroId = props.match.params.id;
     }
+
     const onChangeHandler = (event, value) => {
         switch (value) {
             case 'email':
@@ -76,16 +69,22 @@ const Login = (props) => {
                     retroId ? props.history.push('/retro/'+retroId) : props.history.push('/retroList');
             })
             .catch((error) => {
-                setOpen(true);
-                setMessage(error.message)
+                setMessageState({
+                    displayMessage: true,
+                    message: error.message,
+                    messageStatus: 'error',
+                });
                 auth.login(false);
             })
             .finally(() => setLoading(false));
     };
 
     const handleMessageClose = () => {
-        setOpen(false);
-        setMessage('');
+        setMessageState({
+            displayMessage: false,
+            message: '',
+            messageStatus: '',
+        });
     };
 
     return( 
@@ -111,35 +110,13 @@ const Login = (props) => {
                     state: {retroId: retroId}
                 }}
             > Sign Up </Link>
-            <Snackbar
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleMessageClose}
-            >
-                <SnackbarContent
-                    onClose={handleMessageClose}
-                    variant="warning"
-                    aria-describedby="client-snackbar"
-                    message={
-                        <span id="client-snackbar" className={classes.message}>
-                        <ErrorIcon />
-                        {message}
-                        </span>
-                    }
-                    className={classes.error}
-                    action={[
-                        <IconButton
-                            key="close"
-                            aria-label="Close"
-                            color="inherit"
-                            onClick={handleMessageClose}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    ]}
-                />
-            </Snackbar>
+            {messageState.displayMessage 
+                ? <SnackBar 
+                    open={messageState.displayMessage} 
+                    message={messageState.message} 
+                    status={messageState.messageStatus} 
+                    close={handleMessageClose}/> 
+                : null }
         </Container>
     );
 };
