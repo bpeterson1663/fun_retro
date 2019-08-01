@@ -4,15 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CloseIcon from '@material-ui/icons/Close';
-import SnackbarContent from '@material-ui/core/SnackbarContent/SnackbarContent';
 import Typography from '@material-ui/core/Typography/Typography';
-import { green } from '@material-ui/core/colors';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import {Link} from 'react-router-dom';
+import SnackBar from './SnackBar';
 
 const useStyles = makeStyles(theme => ({
     inputField: {
@@ -25,52 +20,51 @@ const useStyles = makeStyles(theme => ({
         display: 'block',
         margin: '10px auto'
     },
-    success: {
-        backgroundColor: green[600]    
-    },
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
     links: {
         margin: 10
     }
 }));
 const ForgotPassword = () => {
     const [emailAddress, setEmailAddress] = useState('');
-    const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState('');
-    const [ messageStatus, setMessageStatus] = useState('');
+    const [messageState, setMessageState] = useState({
+        message: '',
+        messageStatus: '',
+        displayMessage: false,
+    });
     const [isLoading, setLoading] = useState(false);
-
     const classes = useStyles();
     const auth = firebase.auth();
+
     const submitHandler = (event) => {
         event.preventDefault();
         setLoading(true);
         auth.sendPasswordResetEmail(emailAddress).then(function() {
-            setMessageStatus('success')
-            setMessage(`An email has been sent to ${emailAddress}.`)
-            setOpen(true);
+            setMessageState({
+                displayMessage: true,
+                message: `An email has been sent to ${emailAddress}.`,
+                messageStatus: 'success',
+            });
         })
         .catch(function(error) {
-        // An error happened.
-            console.log('error: ', error);
-            setMessageStatus('error')
-            setMessage(error.message);
-            setOpen(true)
+            setMessageState({
+                displayMessage: true,
+                message: error.message,
+                messageStatus: 'error',
+            });
         })
         .finally(() => {
             setLoading(false);
         });
     };
+
     const handleMessageClose = () => {
-        setOpen(false);
-        setMessage('');
+        setMessageState({
+            displayMessage: false,
+            message: '',
+            messageStatus: '',
+        });
     };
+
     return(
         <Container>
             {isLoading ? <LinearProgress /> : <div className={classes.placeHolder}></div>}
@@ -83,38 +77,15 @@ const ForgotPassword = () => {
             </form>
             <Link className={classes.links} to="/signup"> Sign Up </Link>
             <Link className={classes.links} to="/login">Log In</Link>
-            <Snackbar
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleMessageClose}
-            >
-                <SnackbarContent
-                    onClose={handleMessageClose}
-                    aria-describedby="client-snackbar"
-                    message={
-                        <span id="client-snackbar" className={classes.message}>
-                        <CheckCircleIcon />
-                        {message}
-                        </span>
-                    }
-                    className={classes[messageStatus]}
-                    action={[
-                        <IconButton
-                            key="close"
-                            aria-label="Close"
-                            color="inherit"
-                            onClick={handleMessageClose}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    ]}
-                />
-            </Snackbar>
+            {messageState.displayMessage 
+                ? <SnackBar 
+                    open={messageState.displayMessage} 
+                    message={messageState.message} 
+                    status={messageState.messageStatus} 
+                    close={handleMessageClose}/> 
+                : null }
         </Container>
-        
     );
-
 };
 
 export default ForgotPassword;
