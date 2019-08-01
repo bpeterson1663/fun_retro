@@ -5,14 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import {Link} from 'react-router-dom';
-//TODO: Refactor Snack bar into its own component
-//TODO: Refactor Login and SignUp components to be one
+import SnackBar from './SnackBar';
 //TODO: Lots of useState references. Can this be combined into one?
 const useStyles = makeStyles(theme => ({
     inputField: {
@@ -24,27 +20,25 @@ const useStyles = makeStyles(theme => ({
     submit:{
         display: 'block',
         margin: '10px auto'
-    },
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
     }
 }));
 const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
-    const [message, setMessage] = useState('false');
+    const [messageState, setMessageState] = useState({
+        message: '',
+        messageStatus: '',
+        displayMessage: false,
+    });
     const [isLoading, setLoading] = useState(false);
-    const [open, setOpen] = useState(false);
     const auth = useContext(AuthContext);
     const classes = useStyles();
+
     let retroId = null;
     if(props.location && props.location.state){
         retroId = props.location.state.retroId;
     }
+
     const submitHandler = event => {
         setLoading(true);
         event.preventDefault();
@@ -57,9 +51,13 @@ const SignUp = (props) => {
                     props.history.push('/retroList');
             })
             .catch(function(error) {
+                setMessageState({
+                    displayMessage: true,
+                    message: error.message,
+                    messageStatus: 'error',
+                });
                 auth.login(false);
-                setMessage(error.message);
-                setOpen(true);
+
             })
             .finally(() => setLoading(false));
         
@@ -79,8 +77,11 @@ const SignUp = (props) => {
     };
 
     const handleMessageClose = () => {
-        setOpen(false);
-        setMessage('');
+        setMessageState({
+            displayMessage: false,
+            message: '',
+            messageStatus: '',
+        });
     };
 
     return (
@@ -100,25 +101,13 @@ const SignUp = (props) => {
                     state: {retroId: retroId}
                 }}
             > Log In </Link>
-            <Snackbar
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                variant="warning"
-                open={open}
-                autoHideDuration={6000}
-                className={classes.error}
-                onClose={handleMessageClose}
-                message={<span id="message-id">{message}</span>}
-                action={[
-                <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    onClick={handleMessageClose}
-                >
-                    <CloseIcon />
-                </IconButton>,
-                ]}
-            />
+            {messageState.displayMessage 
+                ? <SnackBar 
+                    open={messageState.displayMessage} 
+                    message={messageState.message} 
+                    status={messageState.messageStatus} 
+                    close={handleMessageClose}/> 
+                : null }
         </Container>
     );
 };
