@@ -97,9 +97,14 @@ const RetroContainer = (props) => {
                         rows.push([item.value, item.votes]);
                     });                   
                     doc.autoTable({
-                        headStyles: {fillColor: column.backgroundColor},
+                        headStyles: {fillColor: column.backgroundColor, halign: 'center'},
                         head: [columnHeader],
-                        body:  _.orderBy(rows, x => x[1], ['desc'])
+                        body:  _.orderBy(rows, x => x[1], ['desc']),
+                        columnStyles: {
+                            0: {columnWidth: 90},
+                            1: {columnWidth: 10, halign: 'center'},
+                          },
+                        theme: 'grid'
                     });
                 });
             
