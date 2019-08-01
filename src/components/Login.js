@@ -9,7 +9,6 @@ import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import {Link} from 'react-router-dom';
 import SnackBar from './SnackBar';
-//TOOD: Refactor Snackbar into a single component
 //TODO: Refactor Login and SignUp components to be one
 const useStyles = makeStyles(theme => ({
     inputField: {
