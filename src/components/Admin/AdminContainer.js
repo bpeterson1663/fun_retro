@@ -1,6 +1,6 @@
 import React, {useReducer, useEffect, useState, useContext} from 'react';
 import {db} from '../../firebase';
-import AuthContext from '../../auth-context';
+import AuthContext from '../../context/auth-context';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';

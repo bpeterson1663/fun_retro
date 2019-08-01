@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react';
 import RetroColumn from './RetroColumn';
-import VoteContext from './vote-context';
+import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
 import {db} from '../../firebase';
-import AuthContext from '../../auth-context';
+import AuthContext from '../../context/auth-context';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container/Container';
 import Button from '@material-ui/core/Button';

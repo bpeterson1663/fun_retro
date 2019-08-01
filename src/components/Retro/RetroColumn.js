@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {db, incrementCounter, decrementCounter} from '../../firebase';
-import AuthContext from '../../auth-context';
-import VoteContext from './vote-context';
+import AuthContext from '../../context/auth-context';
+import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';

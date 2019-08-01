@@ -7,7 +7,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import {Link} from 'react-router-dom';
-import SnackBar from './SnackBar';
+import SnackBar from '../Common/SnackBar';
 
 const useStyles = makeStyles(theme => ({
     inputField: {

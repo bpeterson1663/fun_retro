@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import firebase from 'firebase';
-import AuthContext from '../auth-context';
+import AuthContext from '../../context/auth-context';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -8,8 +8,8 @@ import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import {Link} from 'react-router-dom';
-import SnackBar from './SnackBar';
-//TODO: Refactor Login and SignUp components to be one
+import SnackBar from '../Common/SnackBar';
+//TODO: Lots of useState references. Can this be combined into one?
 const useStyles = makeStyles(theme => ({
     inputField: {
       margin: theme.spacing(2),
@@ -20,12 +20,9 @@ const useStyles = makeStyles(theme => ({
     submit:{
         display: 'block',
         margin: '10px auto'
-    },
-    links: {
-        margin: 10
     }
 }));
-const Login = (props) => {
+const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
     const [messageState, setMessageState] = useState({
@@ -40,10 +37,31 @@ const Login = (props) => {
     let retroId = null;
     if(props.location && props.location.state){
         retroId = props.location.state.retroId;
-    }  
-    if(props.match.params.id){
-        retroId = props.match.params.id;
     }
+
+    const submitHandler = event => {
+        setLoading(true);
+        event.preventDefault();
+        firebase.auth()
+            .createUserWithEmailAndPassword(emailValue, passwordValue)
+            .then((res) => {
+                auth.login(true);
+                retroId ?
+                    props.history.push('/retro/'+retroId) :
+                    props.history.push('/retroList');
+            })
+            .catch(function(error) {
+                setMessageState({
+                    displayMessage: true,
+                    message: error.message,
+                    messageStatus: 'error',
+                });
+                auth.login(false);
+
+            })
+            .finally(() => setLoading(false));
+        
+    };
 
     const onChangeHandler = (event, value) => {
         switch (value) {
@@ -58,26 +76,6 @@ const Login = (props) => {
         }
     };
 
-    const submitHandler = event => {
-        setLoading(true);
-        event.preventDefault();
-        firebase.auth()
-            .signInWithEmailAndPassword(emailValue, passwordValue)
-            .then((res) => {
-                auth.login(true);
-                    retroId ? props.history.push('/retro/'+retroId) : props.history.push('/retroList');
-            })
-            .catch((error) => {
-                setMessageState({
-                    displayMessage: true,
-                    message: error.message,
-                    messageStatus: 'error',
-                });
-                auth.login(false);
-            })
-            .finally(() => setLoading(false));
-    };
-
     const handleMessageClose = () => {
         setMessageState({
             displayMessage: false,
@@ -86,29 +84,23 @@ const Login = (props) => {
         });
     };
 
-    return( 
+    return (
         <Container>
-            {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
+            {isLoading ? <LinearProgress /> : <div className={classes.placeHolder}></div>}
             <Typography variant="h3">Super Fun Retro</Typography>
-            <Typography variant="subtitle1">Log In </Typography>
-            <Typography variant="subtitle2">and start your Super Fun Retro experience!</Typography>
+            <Typography variant="subtitle1">Sign Up </Typography>
+            <Typography variant="subtitle2">Start making your sprint retrospectives super fun!</Typography>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailValue} onChange={(event) => onChangeHandler(event, 'email')}/>
-                <TextField className={classes.inputField}  type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
-                <Button type="submit" color="secondary" variant="contained" className={classes.submit}>Log In</Button>
+                <TextField className={classes.inputField} type="password" placeholder="Password" value={passwordValue} onChange={(event) => onChangeHandler(event, 'password')}/>
+                <Button type="submit" value="Sign Up" color="secondary" variant="contained" className={classes.submit}>Sign Up</Button>
             </form>
             <Link
-                className={classes.links}   
-                to="/forgotPassword">
-                Forgot Your Password?
-            </Link>
-            <Link
-                className={classes.links}
                 to={{
-                    pathname: "/signup",
+                    pathname: "/login",
                     state: {retroId: retroId}
                 }}
-            > Sign Up </Link>
+            > Log In </Link>
             {messageState.displayMessage 
                 ? <SnackBar 
                     open={messageState.displayMessage} 
@@ -120,4 +112,4 @@ const Login = (props) => {
     );
 };
 
-export default Login;
+export default SignUp;

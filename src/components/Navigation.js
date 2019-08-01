@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import AuthContext from '../auth-context';
+import AuthContext from '../context/auth-context';
 import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';

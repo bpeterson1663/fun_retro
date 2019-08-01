@@ -2,17 +2,17 @@ import React, {useState, useEffect} from 'react';
 import './App.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import RetroContainer from './components/Retro/RetroContainer';
-import SignUp from './components/SignUp';
-import Login from './components/Login';
+import SignUp from './components/Auth/SignUp';
+import Login from './components/Auth/Login';
 import Navigation from './components/Navigation';
-import AuthContext from './auth-context';
+import AuthContext from './context/auth-context';
 import AdminContainer from './components/Admin/AdminContainer';
 import firebase from 'firebase';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
-import IEWarning from './components/IEWarning';
-import ForgotPassword from './components/ForgotPassword';
+import IEWarning from './components/Common/IEWarning';
+import ForgotPassword from './components/Auth/ForgotPassword';
 
 const theme = createMuiTheme({
   palette: {
