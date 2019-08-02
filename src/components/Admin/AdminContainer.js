@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
+// import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Grid from '@material-ui/core/Grid';
@@ -15,6 +15,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography/Typography';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles(theme => ({
     inputField: {
@@ -56,7 +58,8 @@ const AdminContainer = () => {
     const [endDateValue, setEndDateValue] = useState('')
     const [isLoading, setIsLoading] = useState(true);
     const [voteValue, setVoteValue] = useState(6);
-
+    const [editStatus, setEditStatus] = useState(false);
+    const [editRetro, setEditRetro] = useState({});
     const auth = useContext(AuthContext);
     const classes = useStyles();
     const itemListReducer = (state, action) => {
@@ -77,16 +80,29 @@ const AdminContainer = () => {
 
     useEffect(() => {
         db.collection('retros')
-            .where('userId', '==', auth.userId)
-            .get()
-            .then(querySnapshot => {
-                dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    return data;
-                })});
-            });
+        .where('userId', '==', auth.userId)
+        .get()
+        .then(querySnapshot => {
+            dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                return data;
+            })});
+        });
     }, [auth.userId]);
+
+    const getAllRetros = () => {
+        db.collection('retros')
+        .where('userId', '==', auth.userId)
+        .get()
+        .then(querySnapshot => {
+            dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                return data;
+            })});
+        });
+    };
 
     const onSubmitHandler = (event) => {
         event.preventDefault();
@@ -117,14 +133,32 @@ const AdminContainer = () => {
         });
     };
 
-    const handleRetroDelete = (id) => {
+    // const handleRetroDelete = (id) => {
+    //     setIsLoading(true);
+    //     db.collection('retros')
+    //       .doc(id)
+    //       .delete()
+    //       .then(() =>{
+    //           dispatch({type: 'REMOVE', payload: id});
+    //       });
+    // };
+
+    const handleEditItem = (retro) => {
+        setEditStatus(true);
+        setEditRetro(retro);
+    };
+
+    const handleUpdateRetro = () => {
         setIsLoading(true);
         db.collection('retros')
-          .doc(id)
-          .delete()
-          .then(() =>{
-              dispatch({type: 'REMOVE', payload: id});
-          });
+          .doc(editRetro.id)
+          .update(editRetro)
+          .then(() => {
+              setEditRetro({});
+              setEditStatus(false);
+              getAllRetros();
+          })
+          .finally(() => setIsLoading(false));
     };
     return (
         <Container>
@@ -145,18 +179,45 @@ const AdminContainer = () => {
                     {retroList.map((retro, i) => {
                         return (
                             <Card className={classes.card} key={i}>
+                                {editStatus && editRetro.id === retro.id ?
+                                <div>
+                                    <TextField required className={classes.inputField} type="text" value={editRetro.name} label="Retro Name" onChange={(e) => setEditRetro({...editRetro, name: e.target.value})}/>
+                                    <TextField required className={classes.inputField} type="number" label="Votes Per Person" value={editRetro.numberOfVotes} onChange={(e) => setEditRetro({...editRetro, numberOfVotes: e.target.value})}/>
+                                </div>
+                                :
                                 <CardHeader
                                     className={classes.cardHeader}
                                     title={retro.name}
                                     />
+                                }
                                 <CardContent className={classes.cardContent}>
-                                    {retro.startDate} through {retro.endDate}<br/>
+                                    { editStatus && editRetro.id === retro.id ?
+                                    <div>
+                                        <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} value={editRetro.startDate} label="Start of Sprint" onChange={(e) => setEditRetro({...editRetro, startDate: e.target.value})} />
+                                        <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} value={editRetro.endDate} label="End of Sprint" onChange={(e) => setEditRetro({...editRetro, endDate: e.target.value})}/>
+                                    </div>    
+                                        :
+                                        `${retro.startDate} through ${retro.endDate}`
+
+                                    }
+                                    <br/>
                                     Retro Link: <a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a><br/>
                                 </CardContent>
                                 <CardActions>
-                                    {/* <IconButton className={classes.icon}>
-                                        <EditIcon color="secondary" />
-                                    </IconButton> */}
+                                   {editStatus && editRetro.id === retro.id ?
+                                    <div>
+                                        <IconButton className={classes.actionIcon} onClick={handleUpdateRetro.bind(this, retro)}>
+                                            <SaveIcon />
+                                        </IconButton>
+                                        <IconButton className={classes.actionIcon} onClick={() => setEditStatus(false)}>
+                                            <CancelIcon />
+                                        </IconButton>
+                                    </div>
+                                    : 
+                                    <IconButton className={classes.actionIcon} onClick={handleEditItem.bind(this, retro)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                }
                                     {/* <IconButton className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)}>
                                         <DeleteIcon>Delete</DeleteIcon>
                                     </IconButton> */}
