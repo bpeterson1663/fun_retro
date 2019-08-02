@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-// import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
+import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Grid from '@material-ui/core/Grid';
@@ -133,15 +133,15 @@ const AdminContainer = () => {
         });
     };
 
-    // const handleRetroDelete = (id) => {
-    //     setIsLoading(true);
-    //     db.collection('retros')
-    //       .doc(id)
-    //       .delete()
-    //       .then(() =>{
-    //           dispatch({type: 'REMOVE', payload: id});
-    //       });
-    // };
+    const handleRetroDelete = (id) => {
+        setIsLoading(true);
+        db.collection('retros')
+          .doc(id)
+          .delete()
+          .then(() =>{
+              dispatch({type: 'REMOVE', payload: id});
+          });
+    };
 
     const handleEditItem = (retro) => {
         setEditStatus(true);
@@ -218,9 +218,9 @@ const AdminContainer = () => {
                                         <EditIcon />
                                     </IconButton>
                                 }
-                                    {/* <IconButton className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)}>
+                                    <IconButton className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)}>
                                         <DeleteIcon>Delete</DeleteIcon>
-                                    </IconButton> */}
+                                    </IconButton>
                                 </CardActions>
                             </Card>
                         )
