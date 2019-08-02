@@ -158,14 +158,14 @@ const RetroColumn = (props) => {
         setItemEdit({});
     };
 
-    const handleUpdateItem = (item) => {
+    const handleUpdateItem = () => {
         setLoading(true);
-        resetEditMode();
         db.collection(props.columnName)
           .doc(itemEdit.id)
           .update({
               value: itemEdit.value
           })
+          .then(() => resetEditMode())
           .finally(() => setLoading(false));
     };
 
@@ -229,7 +229,7 @@ const RetroColumn = (props) => {
                             {auth.userId === item.userId ? (
                                 editMode && itemEdit.id === item.id ?
                                 <div>
-                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleUpdateItem.bind(this, item)}>
+                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleUpdateItem.bind(this)}>
                                         <SaveIcon />
                                     </IconButton>
                                     <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={resetEditMode.bind(this, item)}>
