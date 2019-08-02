@@ -205,16 +205,16 @@ const AdminContainer = () => {
                                 </CardContent>
                                 <CardActions>
                                    {editStatus && editRetro.id === retro.id ?
-                                    <div>
-                                        <IconButton className={classes.actionIcon} onClick={handleUpdateRetro.bind(this, retro)}>
+                                    <div className={classes.icon}>
+                                        <IconButton onClick={handleUpdateRetro.bind(this, retro)}>
                                             <SaveIcon />
                                         </IconButton>
-                                        <IconButton className={classes.actionIcon} onClick={() => setEditStatus(false)}>
+                                        <IconButton onClick={() => setEditStatus(false)}>
                                             <CancelIcon />
                                         </IconButton>
                                     </div>
                                     : 
-                                    <IconButton className={classes.actionIcon} onClick={handleEditItem.bind(this, retro)}>
+                                    <IconButton className={classes.icon} onClick={handleEditItem.bind(this, retro)}>
                                         <EditIcon />
                                     </IconButton>
                                 }
