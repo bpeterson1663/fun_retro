@@ -236,16 +236,16 @@ const RetroColumn = (props) => {
                                         <CancelIcon />
                                     </IconButton>
                                 </div>
-                                : 
-                                <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
-                                    <EditIcon />
-                                </IconButton>
-                            ) : null}                           
-                            {auth.userId === item.userId ?
-                            <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
-                                <DeleteIcon />
-                            </IconButton>
-                            : null}
+                                :
+                                <div> 
+                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </div>
+                            ) : null}
                         </CardActions>
                     </Card>
                 );
