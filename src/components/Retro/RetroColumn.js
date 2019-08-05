@@ -3,7 +3,6 @@ import {db, incrementCounter, decrementCounter} from '../../firebase';
 import AuthContext from '../../context/auth-context';
 import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -21,63 +20,8 @@ import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
+import useStyles from './Retro.styles';
 
-const useStyles = makeStyles(theme =>({
-    inputField: {
-        margin: '10px auto',
-        width: '100%',
-        backgroundColor: 'white',
-        borderRadius: 10
-    },
-    button: {
-        display: "inherit",
-        margin: "auto"
-    },
-    card: {
-        width: '100%',
-        margin: '10px auto',
-    },
-    votes: {
-        margin: 0,
-        height: 20,
-        width: 20,
-        fontSize: 10,
-        backgroundColor: theme.palette.primary.main
-    },
-    actionIcon: {
-        marginLeft: 'auto'
-    },
-    placeHolder: {
-        height: 5
-    },
-    iconPlaceHolder: {
-        width: 23
-    },
-    header: {
-        color: 'white'
-    },
-    avatar: {
-        margin: 0,
-        height: 30,
-        width: 30,
-        fontSize: 16,
-        backgroundColor: theme.palette.primary.main
-    },
-    cardHeader: {
-        padding: '10px 0 5px 0',
-        float: 'right',
-        margin: 0
-    },
-    cardConent: {
-        paddingBottom: 0,
-        whiteSpace: 'pre-wrap',
-        wordBreak: 'keep-all'
-    },
-    cardAction: {
-        width: '100%'
-    }
-
-}));
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
     const [trackedVotes, setTrackedVotes] = useState([]);

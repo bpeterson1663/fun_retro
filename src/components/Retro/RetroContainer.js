@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import RetroColumn from './RetroColumn';
 import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
-import { makeStyles } from '@material-ui/core/styles';
+import useStyles from './Retro.styles';
 import {db} from '../../firebase';
 import AuthContext from '../../context/auth-context';
 import Grid from '@material-ui/core/Grid';
@@ -12,30 +12,6 @@ import Typography from '@material-ui/core/Typography/Typography';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-const columnStyle = {
-    borderRadius: 10,
-    padding: 5,
-    margin: '5px 10px',
-    width: '30%'
-};
-const useStyles = makeStyles(theme => ({
-    keepDoing: {
-        backgroundColor: '#009588',
-        ...columnStyle
-    },
-    stopDoing: {
-        backgroundColor: '#E91D63',
-        ...columnStyle
-    },
-    startDoing: {
-        backgroundColor: '#9C28B0',
-        ...columnStyle
-    },
-    container: {
-        width: '100%',
-        margin: 0
-    }
-}));
 const RetroContainer = (props) => {
     const [remaingVotes, setRemaingVotes] = useState('');
     const [retroData, setRetroData] = useState({});
