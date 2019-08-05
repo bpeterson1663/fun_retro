@@ -1,7 +1,6 @@
 import React, {useState, useContext} from 'react';
 import firebase from 'firebase';
 import AuthContext from '../../context/auth-context';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -9,19 +8,8 @@ import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import {Link} from 'react-router-dom';
 import SnackBar from '../Common/SnackBar';
-//TODO: Lots of useState references. Can this be combined into one?
-const useStyles = makeStyles(theme => ({
-    inputField: {
-      margin: theme.spacing(2),
-    },
-    placeHolder: {
-        height: 5
-    },
-    submit:{
-        display: 'block',
-        margin: '10px auto'
-    }
-}));
+import useStyles from './Auth.styles';
+
 const SignUp = (props) => {
     const [emailValue, setEmailValue] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
