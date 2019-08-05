@@ -1,7 +1,6 @@
 import React, {useReducer, useEffect, useState, useContext} from 'react';
 import {db} from '../../firebase';
 import AuthContext from '../../context/auth-context';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -17,41 +16,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
+import useStyles from './AdminContainer.styles';
 
-const useStyles = makeStyles(theme => ({
-    inputField: {
-      margin: theme.spacing(2),
-    },
-    icon: {
-        marginLeft: "auto"
-    },
-    card: {
-        width: 550,
-        margin: '10px 30px'
-    },
-    cardHeader: {
-        padding: '10px 0 5px 0',
-        margin: 0
-    },
-    placeholder: {
-        height: 5
-    },
-    submit:{
-        display: 'block',
-        margin: 'auto'
-    },
-    columnInfo: {
-        width: '100%%',
-        margin: 'auto'
-    },
-    cardConent: {
-        paddingBottom: 0
-    },
-    form: {
-        width: 400,
-        margin: 'auto'
-    }
-}));
 const AdminContainer = () => {
     const [nameValue, setNameValue] = useState('');
     const [startDateValue, setStartDateValue] = useState('');
