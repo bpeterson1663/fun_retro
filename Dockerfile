@@ -1,9 +1,9 @@
-FROM node:10.16.0 as react-build
+FROM node
 
-WORKDIR /app
+COPY . /
 
-COPY . ./
+RUN npm install
 
-RUN npm
+EXPOSE 8080
 
-RUN npm build
+ENTRYPOINT ["node", "./src/index.js"]
