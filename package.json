@@ -41,5 +41,8 @@
       "last 1 safari version",
       "last 1 ie version"
     ]
+  },
+  "devDependencies": {
+    "cypress": "^3.4.1"
   }
 }
