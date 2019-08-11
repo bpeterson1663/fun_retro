@@ -7,7 +7,7 @@ let apiKey,
     storageBucket,
     messagingSenderId,
     appId;
-console.log("PROCESS.ENV.NODE_ENV is: ", process.env.NODE_ENV);
+
 if (process.env.NODE_ENV === 'production') {
     apiKey = process.env.REACT_APP_API_KEY;
     authDomain = process.env.REACT_APP_AUTH_DOMAIN;
