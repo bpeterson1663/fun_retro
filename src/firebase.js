@@ -7,16 +7,9 @@ let apiKey,
     storageBucket,
     messagingSenderId,
     appId;
-console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
-if (process.env.NODE_ENV === 'production') {
-    apiKey = process.env.REACT_APP_API_KEY;
-    authDomain = process.env.REACT_APP_AUTH_DOMAIN;
-    databaseURL = process.env.REACT_APP_DATABASE_URL;
-    projectId = process.env.REACT_APP_PROJECT_ID;
-    storageBucket = process.env.REACT_APP_STORAGE_BUCKET;
-    messagingSenderId = process.env.REACT_APP_MESSAGING_SENDER_ID;
-    appId = process.env.REACT_APP_APP_ID;
-} else {
+//Heroku always sets process.env.NODE_ENV to development unless you upgrade your Dyno to an expensive paid version.
+//This is a work around to point superfunretrostaging.herokuapp.com and localhost to a testing firebase instance
+if (window.location.href.includes('staging') || window.location.href.includes('localhost')) {
     apiKey = process.env.REACT_APP_STAGE_API_KEY;
     authDomain = process.env.REACT_APP_STAGE_AUTH_DOMAIN;
     databaseURL = process.env.REACT_APP_STAGE_DATABASE_URL;
@@ -24,6 +17,14 @@ if (process.env.NODE_ENV === 'production') {
     storageBucket = process.env.REACT_APP_STAGE_STORAGE_BUCKET;
     messagingSenderId = process.env.REACT_APP_STAGE_MESSAGING_SENDER_ID;
     appId = process.env.REACT_APP_STAGE_APP_ID;
+} else {
+    apiKey = process.env.REACT_APP_API_KEY;
+    authDomain = process.env.REACT_APP_AUTH_DOMAIN;
+    databaseURL = process.env.REACT_APP_DATABASE_URL;
+    projectId = process.env.REACT_APP_PROJECT_ID;
+    storageBucket = process.env.REACT_APP_STORAGE_BUCKET;
+    messagingSenderId = process.env.REACT_APP_MESSAGING_SENDER_ID;
+    appId = process.env.REACT_APP_APP_ID;
 }
 
 const firebaseApp = firebase.initializeApp({
