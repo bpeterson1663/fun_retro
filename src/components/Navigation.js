@@ -37,7 +37,7 @@ const Navigation = (props) => {
                 {auth.userId ? 
                     <div className={classes.buttonContainer}>
                         <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
-                        <Link to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
+                        <Link data-id="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
                     </div>
                 : null}
 

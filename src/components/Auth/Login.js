@@ -89,6 +89,7 @@ const Login = (props) => {
                 Forgot Your Password?
             </Link>
             <Link
+                data-id="signup_from_login"
                 className={classes.links}
                 to={{
                     pathname: "/signup",
