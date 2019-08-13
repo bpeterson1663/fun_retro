@@ -35,13 +35,14 @@ const SnackBar = (props) => {
     const classes = useStyles();
     return (
         <Snackbar
-            data-id="snackbar-message"
+            data-id="snackbar_message"
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             open={props.open}
             autoHideDuration={6000}
             onClose={props.close}
             >
                 <SnackbarContent
+                    data-id="snackbar_content"
                     onClose={props.close}
                     aria-describedby="client-snackbar"
                     message={
