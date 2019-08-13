@@ -127,7 +127,7 @@ const AdminContainer = () => {
           .finally(() => setIsLoading(false));
     };
     return (
-        <Container>
+        <Container data-id="admin_container">
             {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}
             <Grid container justify="center" spacing={0}>
                 <Grid item>
