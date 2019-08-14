@@ -40,7 +40,7 @@ const AdminContainer = () => {
             case 'ADD':
                 setMessageState({
                     displayMessage: true,
-                    message: `Way to go! Your Super Fun Retro was created!`,
+                    message: `Way to go! You just created a Super Fun Retro!`,
                     messageStatus: 'success',
                 });
                 return state.concat(action.payload);
