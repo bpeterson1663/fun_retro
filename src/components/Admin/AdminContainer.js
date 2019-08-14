@@ -17,6 +17,7 @@ import Typography from '@material-ui/core/Typography/Typography';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import useStyles from './AdminContainer.styles';
+import SnackBar from '../Common/SnackBar';
 
 const AdminContainer = () => {
     const [nameValue, setNameValue] = useState('');
@@ -26,12 +27,22 @@ const AdminContainer = () => {
     const [voteValue, setVoteValue] = useState(6);
     const [editStatus, setEditStatus] = useState(false);
     const [editRetro, setEditRetro] = useState({});
+    const [messageState, setMessageState] = useState({
+        message: '',
+        messageStatus: '',
+        displayMessage: false,
+    });            
     const auth = useContext(AuthContext);
     const classes = useStyles();
     const itemListReducer = (state, action) => {
         setIsLoading(false);
         switch(action.type){
             case 'ADD':
+                setMessageState({
+                    displayMessage: true,
+                    message: `Way to go! Your Super Fun Retro was created!`,
+                    messageStatus: 'success',
+                });
                 return state.concat(action.payload);
             case 'SET':
                 return action.payload;
@@ -126,6 +137,14 @@ const AdminContainer = () => {
           })
           .finally(() => setIsLoading(false));
     };
+
+    const handleMessageClose = () => {
+        setMessageState({
+            displayMessage: false,
+            message: '',
+            messageStatus: '',
+        });
+    };
     return (
         <Container data-id="admin_container">
             {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}
@@ -133,10 +152,10 @@ const AdminContainer = () => {
                 <Grid item>
                     <Typography variant="h3">Create New Retro</Typography>
                     <form onSubmit={onSubmitHandler} className={classes.form}>
-                        <TextField required className={classes.inputField} type="text" label="Retro Name" onChange={(e) => setNameValue(e.target.value)}/>
-                        <TextField required className={classes.inputField} type="number" label="Votes Per Person" value={voteValue} onChange={(e) => setVoteValue(e.target.value)}/>
-                        <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="Start of Sprint" onChange={(e) => setStartDateValue(e.target.value)}/>
-                        <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="End of Sprint" onChange={(e) => setEndDateValue(e.target.value)}/>
+                        <TextField name="retro_name" required className={classes.inputField} type="text" label="Retro Name" onChange={(e) => setNameValue(e.target.value)}/>
+                        <TextField name="retro_vote" required className={classes.inputField} type="number" label="Votes Per Person" value={voteValue} onChange={(e) => setVoteValue(e.target.value)}/>
+                        <TextField name="retro_start" required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="Start of Sprint" onChange={(e) => setStartDateValue(e.target.value)}/>
+                        <TextField name="retro_end" required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="End of Sprint" onChange={(e) => setEndDateValue(e.target.value)}/>
                         <Button type="submit" value="Submit" color="secondary" variant="contained" className={classes.submit}>Create</Button>
                     </form>
                 </Grid>
@@ -193,6 +212,13 @@ const AdminContainer = () => {
                     })}
                 </Grid>
             </Grid>
+            {messageState.displayMessage 
+                ? <SnackBar 
+                    open={messageState.displayMessage} 
+                    message={messageState.message} 
+                    status={messageState.messageStatus} 
+                    close={handleMessageClose}/> 
+                : null }
         </Container>
     );  
 };
