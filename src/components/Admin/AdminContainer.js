@@ -134,6 +134,11 @@ const AdminContainer = () => {
               setEditRetro({});
               setEditStatus(false);
               getAllRetros();
+              setMessageState({
+                displayMessage: true,
+                message: `Oh yea! Way to make those changes!`,
+                messageStatus: 'success',
+            });
           })
           .finally(() => setIsLoading(false));
     };
