@@ -36,6 +36,8 @@ const Help = () => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
+                    Super Fun Retro is an application to collect information and feedback from your team about how your sprint went! As a manager, this can be important information to help create action items for future sprints. 
+                    Super Fun Retro is easy, simple and of course fun to use!   
                 </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
@@ -49,6 +51,8 @@ const Help = () => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
+                    Using Super Fun Retro is easy! Simple create your retro and then send the link that is generated out to your team. Your team members then login and can start entering in feedback in three different categories; Keep Doing, Stop Doing, and Start Doing. 
+                    Each team member can then vote for any item added they like. All feedback is anonymous to help encourage a safe and free environment to provide more honest feedback. 
                 </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
@@ -62,6 +66,8 @@ const Help = () => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
+                    Absolutely nothing! It is free to use! No limits on how many people can sign up, no limits on how many retrospectives you can create, and no limits on how long you can use it! 
+                    Other so called "Fun Retros" charge you after a certain time period, which isn't really fun in my opinion.
                 </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
