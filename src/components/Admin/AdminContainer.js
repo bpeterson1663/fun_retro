@@ -1,6 +1,7 @@
 import React, {useReducer, useEffect, useState, useContext} from 'react';
 import {db} from '../../firebase';
 import AuthContext from '../../context/auth-context';
+import _ from 'lodash';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -31,7 +32,12 @@ const AdminContainer = () => {
         message: '',
         messageStatus: '',
         displayMessage: false,
-    });            
+    });
+    const columnMaps = [
+        {title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588'},
+        {title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63'},
+        {title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0'}
+    ];            
     const auth = useContext(AuthContext);
     const classes = useStyles();
     const itemListReducer = (state, action) => {
@@ -47,6 +53,11 @@ const AdminContainer = () => {
             case 'SET':
                 return action.payload;
             case 'REMOVE':
+                setMessageState({
+                    displayMessage: true,
+                    message: 'Goodbye Retro! You have been deleted!',
+                    messageStatus: 'success',
+                });
                 return state.filter((item) => item.id !== action.payload );
             default:
                 return state;
@@ -112,12 +123,28 @@ const AdminContainer = () => {
 
     const handleRetroDelete = (id) => {
         setIsLoading(true);
-        db.collection('retros')
-          .doc(id)
-          .delete()
-          .then(() =>{
-              dispatch({type: 'REMOVE', payload: id});
-          });
+        const promises = columnMaps.map(column => {
+            return db.collection(column.value)
+                    .where('retroId', '==', id)
+                    .get();
+        });
+
+        Promise.all(promises).then((res) => {
+            const batchDeletes = db.batch();
+            _.each(res, (querySnapshot) => {
+                _.each(querySnapshot.docs, doc => {
+                    batchDeletes.delete(doc.ref);
+                });
+            });
+            batchDeletes.commit().then(() => {
+                db.collection('retros')
+                .doc(id)
+                .delete()
+                .then(() =>{
+                    dispatch({type: 'REMOVE', payload: id});
+                });
+            });
+        });        
     };
 
     const handleEditItem = (retro) => {
