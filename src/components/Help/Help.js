@@ -36,7 +36,8 @@ const Help = () => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
-                    Super Fun Retro is an application to collect information and feedback from your team about how your sprint went! As a manager, this can be important information to help create action items for future sprints. 
+                    Super Fun Retro is an application to gather information and feedback from your team about how your sprint went! Sprint Retrospectives are an awesome opportunity to get your team together and talk about what went well, what can you approve on and anything you should stop doing.
+                    As a manager, this can be important information to help create action items for future sprints. 
                     Super Fun Retro is easy, simple and of course fun to use!   
                 </Typography>
                 </ExpansionPanelDetails>
