@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
       flexShrink: 0,
     }
   }));
-const Help = () => {
+const FAQ = () => {
     const [expanded, setExpanded] = React.useState(false);
     const classes = useStyles();
 
@@ -25,7 +25,7 @@ const Help = () => {
     };
     return (
         <Container>
-            <Typography variant="h3">Help</Typography>
+            <Typography variant="h3">FAQ</Typography>
             <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -91,4 +91,4 @@ const Help = () => {
     );
 };
 
-export default Help;
+export default FAQ;

@@ -7,7 +7,7 @@ import Login from './components/Auth/Login';
 import Navigation from './components/Navigation';
 import AuthContext from './context/auth-context';
 import AdminContainer from './components/Admin/AdminContainer';
-import Help from './components/Help/Help';
+import FAQ from './components/FAQ/FAQ';
 import firebase from 'firebase';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -50,7 +50,7 @@ const App = () => {
               <Route path="/signup" exact component={SignUp} />
               <Route path="/retroList" exact component={authId ? AdminContainer : Login} />
               <Route path="/forgotPassword" exact component={ForgotPassword} />
-              <Route path="/help" exact component={Help} />
+              <Route path="/faq" exact component={FAQ} />
               <Route path="/" exact component={authId ? AdminContainer : Login} />
           </AuthContext.Provider>
         </div>
