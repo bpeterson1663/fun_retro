@@ -16,12 +16,11 @@ const useStyles = makeStyles(theme => ({
         fontWeight: 'bold'
     },
     buttonContainer: {
-        marginLeft: 'auto'
+        margin: '0 0 0 auto'
     },
     faq:{
         color: 'white',
         textDecoration: 'none',
-        right: 0
     }
   }));
 const Navigation = (props) => {
@@ -34,19 +33,23 @@ const Navigation = (props) => {
           });
     };
     const classes = useStyles();
-
+    const authenticatedNav = (
+        <div className={classes.buttonContainer}>
+            <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
+            <Link data-id="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
+            <Link className={classes.faq} to="/faq">FAQ</Link>
+        </div>
+    );
+    const unathenticatedNav = (
+        <div className={classes.buttonContainer}>
+            <Link className={classes.faq} to="/faq">FAQ</Link>
+        </div>
+    );
     return(
         <AppBar position="static" style ={{padding:'0px,0px,0px,0px', margin: '0 0 10px 0'}} >
             <Toolbar>
                 <Typography className={classes.header}>Super Fun Retro</Typography>
-                {auth.userId ? 
-                    <div className={classes.buttonContainer}>
-                        <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
-                        <Link data-id="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
-                        <Link className={classes.faq} to="/faq">FAQ</Link>
-                    </div>
-                : null}
-                
+                    {auth.userId ? authenticatedNav : unathenticatedNav}
             </Toolbar>
         </AppBar>
     )
