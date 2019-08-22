@@ -55,7 +55,7 @@ const ForgotPassword = () => {
             {isLoading ? <LinearProgress /> : <div className={classes.placeHolder}></div>}
             <Typography variant="h3">Super Fun Retro</Typography>
             <Typography variant="subtitle1">Reset Your Password</Typography>
-            <Typography variant="subtitle2">Enter your email associated with your Super Fun Retro account</Typography>
+            <Typography variant="subtitle2">Enter the email associated with your Super Fun Retro account</Typography>
             <form onSubmit={submitHandler.bind(this)}>
                 <TextField className={classes.inputField} type="email" placeholder="Email" value={emailAddress} onChange={(event) => setEmailAddress(event.target.value)}/>
                 <Button type="submit" value="Reset Password" color="secondary" variant="contained" className={classes.submit}>Reset Password</Button>
