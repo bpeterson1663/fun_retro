@@ -11,9 +11,27 @@ const useStyles = makeStyles(theme => ({
       width: '100%',
     },
     heading: {
-      fontSize: theme.typography.pxToRem(15),
+      fontSize: theme.typography.pxToRem(18),
       margin: '0 auto',
       flexShrink: 0,
+      backgroundColor: 'red',
+      width: '98%',
+      height: 40,
+      borderRadius: 4,
+      padding: '8px 0',
+      color: 'white'
+    },
+    panel: {
+        marginTop: 10
+    },
+    green: {
+        backgroundColor: '#009588' //TODO: moves to a constant
+    },
+    pink: {
+        backgroundColor: '#E91D63'
+    },
+    purple: {
+        backgroundColor: '#9C28B0'
     }
   }));
 const FAQ = () => {
@@ -26,13 +44,14 @@ const FAQ = () => {
     return (
         <Container>
             <Typography variant="h3">FAQ</Typography>
-            <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            <Typography variant="subtitle1">Here to answer all your questions</Typography>
+            <ExpansionPanel className={classes.panel} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                     >
-                <Typography className={classes.heading}>What is Super Fun Retro?</Typography>
+                <Typography className={[classes.heading, classes.green]}>What is Super Fun Retro?</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
@@ -42,29 +61,29 @@ const FAQ = () => {
                 </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+            <ExpansionPanel className={classes.panel} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                     >
-                <Typography className={classes.heading}>How does Fun Retro work?</Typography>
+                <Typography className={[classes.heading, classes.pink]}>How does Fun Retro work?</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
                     Using Super Fun Retro is easy! Simply create your retro and send the link that is generated out to your team. Your team members then login and can start entering in feedback in three different categories; Keep Doing, Stop Doing, and Start Doing. 
-                    Each team member can then vote for any item added they like. All feedback is anonymous to help encourage a safe and free environment to provide more honest feedback. 
+                    Each team member can then vote for any item they like. All feedback is anonymous to help encourage a safe and free environment to provide more honest feedback. 
                     Only the user who creates the Super Fun Retro will be able to acivate/disable the retro as well as edit, delete or generate a report. 
                 </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+            <ExpansionPanel className={classes.panel} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                     >
-                <Typography className={classes.heading}>How much does it cost?</Typography>
+                <Typography className={[classes.heading, classes.purple]}>How much does it cost?</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
@@ -73,13 +92,13 @@ const FAQ = () => {
                 </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+            <ExpansionPanel className={classes.panel} expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                     >
-                <Typography className={classes.heading}>Does everyone have to have an account that uses Super Fun Retro?</Typography>
+                <Typography className={[classes.heading, classes.green]}>Does everyone have to have an account that uses Super Fun Retro?</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                 <Typography>
