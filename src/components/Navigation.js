@@ -37,19 +37,13 @@ const Navigation = (props) => {
         <div className={classes.buttonContainer}>
             <Link to="/retroList" style={{ textDecoration: 'none' }}><Button color="secondary" variant="contained" className={classes.button}>Retro List</Button></Link>
             <Link data-id="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}><Button color="secondary" variant="contained" className={classes.button}>Log Out</Button></Link>
-            <Link className={classes.faq} to="/faq">FAQ</Link>
-        </div>
-    );
-    const unathenticatedNav = (
-        <div className={classes.buttonContainer}>
-            <Link className={classes.faq} to="/faq">FAQ</Link>
         </div>
     );
     return(
         <AppBar position="static" style ={{padding:'0px,0px,0px,0px', margin: '0 0 10px 0'}} >
             <Toolbar>
                 <Typography className={classes.header}>Super Fun Retro</Typography>
-                    {auth.userId ? authenticatedNav : unathenticatedNav}
+                    {auth.userId ? authenticatedNav : null}
             </Toolbar>
         </AppBar>
     )

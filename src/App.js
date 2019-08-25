@@ -5,6 +5,7 @@ import RetroContainer from './components/Retro/RetroContainer';
 import SignUp from './components/Auth/SignUp';
 import Login from './components/Auth/Login';
 import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 import AuthContext from './context/auth-context';
 import AdminContainer from './components/Admin/AdminContainer';
 import FAQ from './components/FAQ/FAQ';
@@ -52,6 +53,7 @@ const App = () => {
               <Route path="/forgotPassword" exact component={ForgotPassword} />
               <Route path="/faq" exact component={FAQ} />
               <Route path="/" exact component={authId ? AdminContainer : Login} />
+              <Footer/>
           </AuthContext.Provider>
         </div>
       <IEWarning/>
