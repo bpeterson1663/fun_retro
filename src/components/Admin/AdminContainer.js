@@ -109,7 +109,6 @@ const AdminContainer = () => {
             setEndDateValue('');
             setStartDateValue('');
             setVoteValue(6);
-            debugger;
             dispatch({
                 type: 'ADD', 
                 payload: {
