@@ -3,6 +3,7 @@ import {db, incrementCounter, decrementCounter} from '../../firebase';
 import AuthContext from '../../context/auth-context';
 import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
+import moment from 'moment';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -36,11 +37,12 @@ const RetroColumn = (props) => {
         const unsubscribe = db.collection(props.columnName)
             .where('retroId', '==', props.retroId)
             .onSnapshot(querySnapshot => {
-                setItemList(querySnapshot.docs.map(doc => {
+                const columnData = querySnapshot.docs.map(doc => {
                     const data = doc.data();
                     data.id = doc.id;
                     return data;
-                }));
+                }).sort((a,b) => {return a.timestamp - b.timestamp});
+                setItemList(columnData);
                 setLoading(false);
             });
         return () => unsubscribe();
@@ -55,7 +57,8 @@ const RetroColumn = (props) => {
               value: itemValue,
               retroId: props.retroId,
               userId: auth.userId,
-              votes: 0
+              votes: 0,
+              timestamp: new moment().valueOf()
             })
             .finally(() => setLoading(false));
     };
