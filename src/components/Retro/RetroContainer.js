@@ -95,10 +95,10 @@ const RetroContainer = (props) => {
             <Typography variant="subtitle1">{retroData.startDate} through {retroData.endDate}</Typography>
             <Typography variant="subtitle2">{retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}</Typography>
             {retroData.userId === auth.userId ? <Button size="small" color="secondary" onClick={handleRetroStatus}>{retroStatus ? `End Retro` : `Activate Retro`} </Button> : null}
-            {retroData.userId === auth.userId ? <Button size="small" color="secondary" onClick={handleGenerateReport}>Generate Report </Button> : null}
+            <Button size="small" color="secondary" onClick={handleGenerateReport}>Generate Report </Button>
             <Grid container justify="center" spacing={0}>
-                <VoteContext.Provider value={{votes: remaingVotes, setRemaingVotes: setRemaingVotes }}>
-                    <Grid className={classes.keepDoing} >
+            <VoteContext.Provider value={{votes: remaingVotes, setRemaingVotes: setRemaingVotes }}>
+            <Grid className={classes.keepDoing} >
                         <RetroColumn retroId={retroId} votesPerPerson={props.numberOfVotes} title="Keep Doing" columnName="keepDoing" isActive={retroStatus}/>
                     </Grid>
                     <Grid className={classes.stopDoing}>
