@@ -6,6 +6,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Button from '@material-ui/core/Button/Button';
 const useStyles = makeStyles(theme => ({
     root: {
       width: '100%',
@@ -32,9 +33,13 @@ const useStyles = makeStyles(theme => ({
     },
     purple: {
         backgroundColor: '#9C28B0'
+    },
+    back: {
+        display: 'flex',
+        fontSize: 12
     }
   }));
-const FAQ = () => {
+const FAQ = (props) => {
     const [expanded, setExpanded] = React.useState(false);
     const classes = useStyles();
 
@@ -43,6 +48,7 @@ const FAQ = () => {
     };
     return (
         <Container>
+            <Button color="secondary" variant="contained" sizeSmall className={classes.back} onClick={() => props.history.goBack()}>Back</Button>
             <Typography variant="h3">FAQ</Typography>
             <Typography variant="subtitle1">Here to answer all your questions</Typography>
             <ExpansionPanel className={classes.panel} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
