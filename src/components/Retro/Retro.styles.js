@@ -20,10 +20,6 @@ const useStyles = makeStyles(theme =>({
         backgroundColor: '#9C28B0',
         ...columnStyle
     },
-    container: {
-        width: '100%',
-        margin: 0
-    },
     inputField: {
         margin: '10px auto',
         width: '100%',
@@ -39,20 +35,14 @@ const useStyles = makeStyles(theme =>({
         margin: '10px auto',
     },
     votes: {
-        margin: 0,
+        margin: '15px 2px',
         height: 20,
         width: 20,
         fontSize: 10,
         backgroundColor: theme.palette.primary.main
     },
-    actionIcon: {
-        marginLeft: 'auto'
-    },
     placeHolder: {
         height: 5
-    },
-    iconPlaceHolder: {
-        width: 23
     },
     header: {
         color: 'white'
@@ -75,7 +65,25 @@ const useStyles = makeStyles(theme =>({
         wordBreak: 'keep-all'
     },
     cardAction: {
-        width: '100%'
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-evenly'
+    },
+    remove: {
+        fontSize: 8,
+        width: 15,
+        marginRight: 'auto'
+    },
+    voteContainer:{
+        width: '49%',
+        display: 'flex',
+        flexFlow: 'row wrap',
+        justifyContent: 'flex-start'
+    },
+    editContainer: {
+        display: 'flex',
+        flexFlow: 'row wrap',
+        justifyContent: 'space-around',
     }
 
 }));

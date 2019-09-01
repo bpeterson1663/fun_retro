@@ -14,7 +14,6 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import ThumbUp from '@material-ui/icons/ThumbUp';
-import ThumbDown from '@material-ui/icons/ThumbDown';
 import Typography from '@material-ui/core/Typography/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Avatar from '@material-ui/core/Avatar';
@@ -161,34 +160,35 @@ const RetroColumn = (props) => {
                               }/>                        
                         <CardContent className={classes.cardConent}>
                             {editMode && itemEdit.id === item.id 
-                                ? <TextField variant="outlined" multiline rows="3" value={itemEdit.value} onChange={(e) => setItemEdit({...itemEdit, value: e.target.value})}/> 
+                                ? <TextField variant="outlined" multiline rows="3" maxLength="1000" value={itemEdit.value} onChange={(e) => setItemEdit({...itemEdit, value: e.target.value})}/> 
                                 : item.value}
                         </CardContent>
                         <CardActions className={classes.cardAction}>
-                            <Avatar className={classes.votes}>{ getUsersVoteCount(item) }</Avatar>
-                            <IconButton disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>
-                                <ThumbUp  />
-                            </IconButton>
-                            <IconButton disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)}>
+                            <div className={classes.voteContainer}>
+                                <Avatar className={classes.votes}>{ getUsersVoteCount(item) }</Avatar>
+                                <IconButton disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>
+                                    <ThumbUp  />
+                                </IconButton>
                                 {showThumbsDown(item.id) 
-                                ? <ThumbDown />: <div className={classes.iconPlaceHolder}></div> }
-                            </IconButton>
-                            {auth.userId === item.userId ? (
-                                editMode && itemEdit.id === item.id ?
-                                <div>
-                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleUpdateItem.bind(this)}>
+                                ? <Button className={classes.remove} disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)} vairant="outlined" sizeSmall>Remove Vote</Button> 
+                                : null }
+                            </div>
+                            {auth.userId === item.userId 
+                            ? (editMode && itemEdit.id === item.id ?
+                                <div className={classes.editContainer}>
+                                    <IconButton disabled={!props.isActive} onClick={handleUpdateItem.bind(this)}>
                                         <SaveIcon />
                                     </IconButton>
-                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={resetEditMode.bind(this, item)}>
+                                    <IconButton disabled={!props.isActive} onClick={resetEditMode.bind(this, item)}>
                                         <CancelIcon />
                                     </IconButton>
                                 </div>
                                 :
-                                <div> 
-                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
+                                <div className={classes.editContainer}> 
+                                    <IconButton disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton className={classes.actionIcon} disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
+                                    <IconButton disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </div>
