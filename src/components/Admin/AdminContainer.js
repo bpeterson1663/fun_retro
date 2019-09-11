@@ -19,7 +19,12 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import useStyles from './AdminContainer.styles';
 import SnackBar from '../Common/SnackBar';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+//TODO: Move Dialog into a common component
 const AdminContainer = () => {
     const [nameValue, setNameValue] = useState('');
     const [startDateValue, setStartDateValue] = useState('');
@@ -28,6 +33,9 @@ const AdminContainer = () => {
     const [voteValue, setVoteValue] = useState(6);
     const [editStatus, setEditStatus] = useState(false);
     const [editRetro, setEditRetro] = useState({});
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+    const [retroIdToDelete, setRetroIdToDelete] = useState('')
+
     const [messageState, setMessageState] = useState({
         message: '',
         messageStatus: '',
@@ -121,6 +129,16 @@ const AdminContainer = () => {
         });
     };
 
+    const handleConfirmOpen = (id) => {
+        setRetroIdToDelete(id)
+        setConfirmDialogOpen(true);
+    };
+    
+    const handleConfirmClose = () => {
+        setRetroIdToDelete('')
+        setConfirmDialogOpen(false);
+    };
+
     const handleRetroDelete = (id) => {
         setIsLoading(true);
         const promises = columnMaps.map(column => {
@@ -141,6 +159,7 @@ const AdminContainer = () => {
                 .doc(id)
                 .delete()
                 .then(() =>{
+                    handleConfirmClose();
                     dispatch({type: 'REMOVE', payload: id});
                 });
             });
@@ -235,8 +254,8 @@ const AdminContainer = () => {
                                         <EditIcon />
                                     </IconButton>
                                 }
-                                    <IconButton className={classes.icon} onClick={handleRetroDelete.bind(this, retro.id)}>
-                                        <DeleteIcon>Delete</DeleteIcon>
+                                    <IconButton className={classes.icon} onClick={handleConfirmOpen.bind(this, retro.id)}>
+                                        <DeleteIcon data-id="delete_button">Delete</DeleteIcon>
                                     </IconButton>
                                 </CardActions>
                             </Card>
@@ -251,6 +270,28 @@ const AdminContainer = () => {
                     status={messageState.messageStatus} 
                     close={handleMessageClose}/> 
                 : null }
+            <Dialog
+                data-id="warning_dialog"
+                open={confirmDialogOpen}
+                onClose={handleConfirmClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Delete Retro?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to say goodbye to this retro and delete it?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button data-id="confirm-delete_button" onClick={handleRetroDelete.bind(this, retroIdToDelete)} color="secondary" variant="contained">
+                        Delete It! 
+                    </Button>
+                    <Button data-id="cancel-delete_button" onClick={handleConfirmClose.bind(this)} color="primary" variant="contained" autoFocus>
+                        No, Keep it.
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );  
 };
