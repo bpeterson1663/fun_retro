@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/retro', RetroCtrl.createRetro);
 router.get('/retro/:id', RetroCtrl.getRetroById);
-router.get('/retros', RetroCtrl.getRetros);
+router.get('/retros/:userId', RetroCtrl.getRetros);
 
 module.exports = router;

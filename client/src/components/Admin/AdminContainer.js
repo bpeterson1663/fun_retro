@@ -1,5 +1,6 @@
 import React, {useReducer, useEffect, useState, useContext} from 'react';
 import {db} from '../../firebase';
+import api from '../../api/index';
 import AuthContext from '../../context/auth-context';
 import _ from 'lodash';
 import Container from '@material-ui/core/Container';
@@ -75,36 +76,23 @@ const AdminContainer = () => {
     const [retroList, dispatch] = useReducer(itemListReducer, []);
 
     useEffect(() => {
-        db.collection('retros')
-        .where('userId', '==', auth.userId)
-        .get()
-        .then(querySnapshot => {
-            dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => {
-                const data = doc.data();
-                data.id = doc.id;
-                return data;
-            })});
-        });
+        getAllRetros(auth.userId);
     }, [auth.userId]);
 
-    const getAllRetros = () => {
-        db.collection('retros')
-        .where('userId', '==', auth.userId)
-        .get()
-        .then(querySnapshot => {
-            dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => {
-                const data = doc.data();
-                data.id = doc.id;
-                return data;
-            })});
-        });
+    const getAllRetros = (userId) => {
+        api.getAllRetros(userId)
+            .then(querySnapshot => {
+                dispatch({type: 'SET', payload: querySnapshot.data.data.map(doc => {
+                    doc.id = doc._id;
+                    return doc;
+                })});
+            });
     };
 
-    const onSubmitHandler = (event) => {
+    const onSubmitHandler = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        db.collection('retros')
-          .add({
+        await api.createRetro({
               name: nameValue,
               startDate: startDateValue,
               endDate: endDateValue,
@@ -112,7 +100,7 @@ const AdminContainer = () => {
               numberOfVotes: voteValue,
               isActive: true
             })
-          .then((res) =>{
+        .then((res) =>{
             setNameValue('');
             setEndDateValue('');
             setStartDateValue('');
@@ -125,6 +113,13 @@ const AdminContainer = () => {
                     startDate: startDateValue, 
                     id: res.id
                 }
+            });
+        })
+        .catch(error => {
+            setMessageState({
+                displayMessage: true,
+                message: error.errorMessage,
+                messageStatus: 'error',
             });
         });
     };

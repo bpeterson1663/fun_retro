@@ -35,7 +35,7 @@ getRetroById = async (req, res) => {
 };
 
 getRetros = async (req, res) => {
-    await Retro.find({}, (err, retros) => {
+    await Retro.find({userId: req.params.userId}, (err, retros) => {
         if(err){
             return res.status(400).json({success: false, error: err});
         }
