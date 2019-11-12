@@ -1,8 +1,7 @@
 import React, {useReducer, useEffect, useState, useContext} from 'react';
-import {db} from '../../firebase';
+import moment from 'moment';
 import api from '../../api/index';
 import AuthContext from '../../context/auth-context';
-import _ from 'lodash';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -41,12 +40,7 @@ const AdminContainer = () => {
         message: '',
         messageStatus: '',
         displayMessage: false,
-    });
-    const columnMaps = [
-        {title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588'},
-        {title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63'},
-        {title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0'}
-    ];            
+    });           
     const auth = useContext(AuthContext);
     const classes = useStyles();
     const itemListReducer = (state, action) => {
@@ -89,10 +83,10 @@ const AdminContainer = () => {
             });
     };
 
-    const onSubmitHandler = async (event) => {
+    const onSubmitHandler = (event) => {
         event.preventDefault();
         setIsLoading(true);
-        await api.createRetro({
+        api.createRetro({
               name: nameValue,
               startDate: startDateValue,
               endDate: endDateValue,
@@ -100,7 +94,7 @@ const AdminContainer = () => {
               numberOfVotes: voteValue,
               isActive: true
             })
-        .then((res) =>{
+        .then( res => {
             setNameValue('');
             setEndDateValue('');
             setStartDateValue('');
@@ -111,14 +105,14 @@ const AdminContainer = () => {
                     name: nameValue, 
                     endDate: endDateValue, 
                     startDate: startDateValue, 
-                    id: res.id
+                    id: res.data.id
                 }
             });
         })
-        .catch(error => {
+        .catch(err => {
             setMessageState({
                 displayMessage: true,
-                message: error.errorMessage,
+                message: err.message,
                 messageStatus: 'error',
             });
         });
@@ -136,29 +130,19 @@ const AdminContainer = () => {
 
     const handleRetroDelete = (id) => {
         setIsLoading(true);
-        const promises = columnMaps.map(column => {
-            return db.collection(column.value)
-                    .where('retroId', '==', id)
-                    .get();
-        });
-
-        Promise.all(promises).then((res) => {
-            const batchDeletes = db.batch();
-            _.each(res, (querySnapshot) => {
-                _.each(querySnapshot.docs, doc => {
-                    batchDeletes.delete(doc.ref);
+        //TODO: Delete all associated items
+        api.deleteRetroById(id)
+            .then(() => {
+                handleConfirmClose();
+                dispatch({type: 'REMOVE', payload: id});
+            })
+            .catch(err => {
+                setMessageState({
+                    displayMessage: true,
+                    message: err.message,
+                    messageStatus: 'error',
                 });
-            });
-            batchDeletes.commit().then(() => {
-                db.collection('retros')
-                .doc(id)
-                .delete()
-                .then(() =>{
-                    handleConfirmClose();
-                    dispatch({type: 'REMOVE', payload: id});
-                });
-            });
-        });        
+            });      
     };
 
     const handleEditItem = (retro) => {
@@ -168,13 +152,11 @@ const AdminContainer = () => {
 
     const handleUpdateRetro = () => {
         setIsLoading(true);
-        db.collection('retros')
-          .doc(editRetro.id)
-          .update(editRetro)
+        api.updateRetroById(editRetro.id, editRetro)
           .then(() => {
               setEditRetro({});
               setEditStatus(false);
-              getAllRetros();
+              getAllRetros(auth.userId);
               setMessageState({
                 displayMessage: true,
                 message: `Oh yea! Way to make those changes!`,
@@ -228,7 +210,7 @@ const AdminContainer = () => {
                                         <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} value={editRetro.endDate} label="End of Sprint" onChange={(e) => setEditRetro({...editRetro, endDate: e.target.value})}/>
                                     </div>    
                                         :
-                                        `${retro.startDate} through ${retro.endDate}`
+                                        `${moment(retro.startDate).format('MM-DD-YYYY')} through ${moment(retro.endDate).format('MM-DD-YYYY')}`
 
                                     }
                                     <br/>
