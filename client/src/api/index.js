@@ -15,7 +15,7 @@ const apis = {
     getAllRetros,
     updateRetroById,
     deleteRetroById,
-    getRetroById,
+    getRetroById
 };
 
 export default apis;
