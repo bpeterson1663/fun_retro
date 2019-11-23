@@ -30,7 +30,7 @@ getRetroById = async (req, res) => {
             return res.status(400).json({success: false, error: err});
         }
 
-        return res.status(200).json({success: true, data: retro});
+        return res.status(200).json({success: true, retro: retro});
     }).catch(err => console.log(err));
 };
 
@@ -45,7 +45,7 @@ getRetros = async (req, res) => {
                 error: 'No Retros found'
             });
         }
-        return res.status(200).json({success: true, data: retros});
+        return res.status(200).json({success: true, retros: retros});
     });
 };
 
