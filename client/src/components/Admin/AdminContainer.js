@@ -76,9 +76,9 @@ const AdminContainer = () => {
     const getAllRetros = (userId) => {
         api.getAllRetros(userId)
             .then(querySnapshot => {
-                dispatch({type: 'SET', payload: querySnapshot.data.data.map(doc => {
-                    doc.id = doc._id;
-                    return doc;
+                dispatch({type: 'SET', payload: querySnapshot.data.retros.map(retro => {
+                    retro.id = retro._id;
+                    return retro;
                 })});
             });
     };
