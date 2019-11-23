@@ -4,6 +4,7 @@ import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
 import useStyles from './Retro.styles';
 import {db} from '../../firebase';
+import api from '../../api/index';
 import AuthContext from '../../context/auth-context';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container/Container';
@@ -26,17 +27,17 @@ const RetroContainer = (props) => {
         {title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0'}
     ];
     useEffect(() => {
-        const unsubscribe = db.collection('retros').doc(retroId)
-            .onSnapshot((doc) => {
-                if(doc.exists){
-                    setRetroData(doc.data());
-                    setRetroStatus(retroData.isActive);
-                    setRemaingVotes(retroData.numberOfVotes);
-                }else{
-                    setRetroExists(false);
-                }
-            });
-        return () => unsubscribe();
+        api.getRetroById(retroId).then(retro =>{
+            if(retro.data){
+                setRetroData(retro.data.retro);
+                setRetroStatus(retroData.isActive);
+                setRemaingVotes(retroData.numberOfVotes);
+            }else{
+                setRetroExists(false);
+            }
+        }).catch( err => {
+            setRetroExists(false);
+        });
     },[retroId, retroData.isActive, retroData.numberOfVotes]);
 
     const handleRetroStatus = () => {

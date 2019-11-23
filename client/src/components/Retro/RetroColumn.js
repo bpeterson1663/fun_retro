@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {db, incrementCounter, decrementCounter} from '../../firebase';
+import api from '../../api/index';
 import AuthContext from '../../context/auth-context';
 import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
@@ -32,34 +33,52 @@ const RetroColumn = (props) => {
     const auth = useContext(AuthContext);
     const vote = useContext(VoteContext);
     const classes = useStyles();
+
     useEffect(() => {
-        const unsubscribe = db.collection(props.columnName)
-            .where('retroId', '==', props.retroId)
-            .onSnapshot(querySnapshot => {
-                const columnData = querySnapshot.docs.map(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    return data;
-                }).sort((a,b) => {return a.timestamp - b.timestamp});
+        //TODO: Replace with Stream
+        api.getAllItems(props.retroId, props.columnName)
+            .then( items => {
+                const columnData = items.data.items.map(item => {
+                    item.id = item._id;
+                    return item;
+                }).sort((a,b) => {return moment(a.createdAt).valueOf() - moment(b.createdAt).valueOf() });
                 setItemList(columnData);
                 setLoading(false);
+            })
+            .catch( err => {
+                setLoading(false);
             });
-        return () => unsubscribe();
+
     }, [props.columnName, props.retroId]);
+    
+    const getColumnList = () => {
+        api.getAllItems(props.retroId, props.columnName)
+            .then( items => {
+                const columnData = items.data.items.map(item => {
+                    item.id = item._id;
+                    return item;
+                }).sort((a,b) => {return moment(a.createdAt).valueOf() - moment(b.createdAt).valueOf() });
+                setItemList(columnData);
+                setLoading(false);
+            })
+    };
 
     const handleItemSubmit = (event) => {
         setLoading(true);
         event.preventDefault();
         setItemValue('')
-        db.collection(props.columnName)
-          .add({
-              value: itemValue,
-              retroId: props.retroId,
-              userId: auth.userId,
-              votes: 0,
-              timestamp: new moment().valueOf()
-            })
-            .finally(() => setLoading(false));
+        api.createItem({
+                value: itemValue,
+                retroId: props.retroId,
+                userId: auth.userId,
+                votes: 0,
+                columnName: props.columnName,
+                timestamp: new moment().valueOf()
+            }).then(() => {
+                setLoading(false);
+                //TODO: Replace with Stream
+                getColumnList();
+            });
     };
 
     const trackVote = (id, remove) => {
@@ -87,11 +106,17 @@ const RetroColumn = (props) => {
 
     const handleItemDelete = (id) => {
         setLoading(true);
-        removeAllVotes(id);
-        db.collection(props.columnName)
-            .doc(id)
-            .delete()
-            .finally(() => setLoading(false));
+        api.deleteItem(id).then(() => {
+            setLoading(false);
+            //TODO: Replace with Stream
+            getColumnList(); 
+        })
+        .catch(err => {
+            //TODO: Display Error Message
+            setLoading(false);
+            //TODO: Replace with Stream
+            getColumnList();
+        });
     };
 
     const handleEditItem = (item) => {
@@ -106,13 +131,18 @@ const RetroColumn = (props) => {
 
     const handleUpdateItem = () => {
         setLoading(true);
-        db.collection(props.columnName)
-          .doc(itemEdit.id)
-          .update({
-              value: itemEdit.value
-          })
-          .then(() => resetEditMode())
-          .finally(() => setLoading(false));
+        api.updateItem(itemEdit.id, itemEdit)
+        .then(() => {
+            resetEditMode();
+            //TODO: Replace with Stream
+            getColumnList();
+            setLoading(false);
+        })
+        .catch(err => {
+            setLoading(false);
+            //TODO: Replace with Stream
+            getColumnList();
+        });
     };
 
     const removeAllVotes = (id) => {
@@ -188,7 +218,7 @@ const RetroColumn = (props) => {
                                     <IconButton disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
+                                    <IconButton disabled={!props.isActive || isLoading} onClick={handleItemDelete.bind(this, item.id)}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </div>
