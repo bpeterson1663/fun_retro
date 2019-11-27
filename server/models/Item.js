@@ -7,7 +7,7 @@ const Item = new Schema(
         value: { type: String, required: true }, 
         retroId: { type: String, required: true },
         userId: { type: String, required: true },
-        votes: { type: Number, required: true, default: 0 },
+        votes: { type: Array, required: true, default: [] },
     },
     { timestamps: true}
 );
