@@ -28,7 +28,6 @@ const RetroContainer = (props) => {
     ];
     useEffect(() => {
         //TODO: figure out why useEffect is being triggered twice
-        console.log('USE EFFECT CALLED');
         api.getRetroById(retroId).then(retro =>{
             if(retro.data){
                 setRetroData(retro.data.retro);
@@ -38,8 +37,6 @@ const RetroContainer = (props) => {
                     _.each(data.data.items, item => {
                         voteCount = voteCount + _.filter(item.votes, (vote) => vote === auth.userId).length;
                     });
-                    console.log("voteCount: ", voteCount);
-                    debugger;
                     if(typeof retroData.numberOfVotes === 'number'){
                         setRemaingVotes(retroData.numberOfVotes - (typeof voteCount === 'number' ? voteCount : 0) );
                     }

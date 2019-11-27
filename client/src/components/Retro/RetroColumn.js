@@ -154,7 +154,6 @@ const RetroColumn = (props) => {
 
     const disableDeleteVotes = (item) => {
         const votesExist = _.filter(item.votes, vote => vote === auth.userId);
-        console.log("votesExist: ", votesExist);
         return vote.votes === props.votesPerPerson || votesExist.length === 0;
     };
 
