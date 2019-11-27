@@ -3,7 +3,6 @@ import RetroColumn from './RetroColumn';
 import VoteContext from '../../context/vote-context';
 import _ from 'lodash';
 import useStyles from './Retro.styles';
-import {db} from '../../firebase';
 import api from '../../api/index';
 import AuthContext from '../../context/auth-context';
 import Grid from '@material-ui/core/Grid';
@@ -50,9 +49,7 @@ const RetroContainer = (props) => {
     },[retroId, retroData.isActive, retroData.numberOfVotes, auth.userId]);
 
     const handleRetroStatus = () => {
-        
-        db.collection('retros').doc(retroId)
-            .update({isActive: !retroStatus })
+        api.updateRetroById(retroId, {...retroData, isActive: !retroStatus})
             .then(() =>{
                 setRetroStatus(!retroStatus);
             });
