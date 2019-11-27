@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {db, incrementCounter, decrementCounter} from '../../firebase';
 import api from '../../api/index';
 import AuthContext from '../../context/auth-context';
 import VoteContext from '../../context/vote-context';
@@ -25,7 +24,6 @@ import useStyles from './Retro.styles';
 
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
-    const [trackedVotes, setTrackedVotes] = useState([]);
     const [itemValue, setItemValue] = useState('');
     const [isLoading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
@@ -140,16 +138,6 @@ const RetroColumn = (props) => {
             //TODO: Replace with Stream
             getColumnList();
         });
-    };
-
-    const removeAllVotes = (id) => {
-        let count = 0;
-        const newTrackedVotes = _.filter(trackedVotes, (trackedId) => {
-            if(trackedId === id){count++}
-            return trackedId !== id;
-        });
-        vote.setRemaingVotes(vote.votes + count);
-        setTrackedVotes(newTrackedVotes);
     };
 
     const disableDeleteVotes = (item) => {
