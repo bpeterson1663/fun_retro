@@ -36,7 +36,7 @@ const RetroColumn = (props) => {
 
     useEffect(() => {
         //TODO: Replace with Stream
-        api.getAllItems(props.retroId, props.columnName)
+        api.getAllItemsByColumn(props.retroId, props.columnName)
             .then( items => {
                 const columnData = items.data.items.map(item => {
                     item.id = item._id;
@@ -52,7 +52,7 @@ const RetroColumn = (props) => {
     }, [props.columnName, props.retroId]);
     
     const getColumnList = () => {
-        api.getAllItems(props.retroId, props.columnName)
+        api.getAllItemsByColumn(props.retroId, props.columnName)
             .then( items => {
                 const columnData = items.data.items.map(item => {
                     item.id = item._id;
@@ -71,7 +71,7 @@ const RetroColumn = (props) => {
                 value: itemValue,
                 retroId: props.retroId,
                 userId: auth.userId,
-                votes: 0,
+                votes: [],
                 columnName: props.columnName,
                 timestamp: new moment().valueOf()
             }).then(() => {
@@ -81,27 +81,24 @@ const RetroColumn = (props) => {
             });
     };
 
-    const trackVote = (id, remove) => {
-        if(remove){
-            trackedVotes.splice(trackedVotes.indexOf(id), 1);
-            setTrackedVotes(trackedVotes);
-        } else{
-            trackedVotes.push(id);
-            setTrackedVotes(trackedVotes);
-        }
-    }
-
     const handleItemVote = (operation, item) =>{
-        const itemRef = db.collection(props.columnName).doc(item.id);
-        if(operation === 'addVote') {
-            itemRef.update({votes: incrementCounter})
-            vote.setRemaingVotes(--vote.votes);
-            trackVote(item.id, false);
-        }else {
-            itemRef.update({votes: decrementCounter});
-            vote.setRemaingVotes(++vote.votes);
-            trackVote(item.id, true);
-        }
+        api.getItemById(item.id).then( res => {
+            let resItem = res.data.item;
+            if(operation === 'addVote') {
+                resItem.votes.push(auth.userId);
+
+            }else {
+                resItem.votes.splice(resItem.votes.indexOf(auth.userId), 1);
+            }
+            api.updateItem(resItem._id, resItem).then(() => {
+                vote.setRemaingVotes(operation === 'addVote' ? --vote.votes : ++vote.votes);
+                //TODO: Replace with Stream
+                getColumnList();
+            }).catch(err => {
+                console.log(err);
+            });
+        });
+        
     };
 
     const handleItemDelete = (id) => {
@@ -155,17 +152,18 @@ const RetroColumn = (props) => {
         setTrackedVotes(newTrackedVotes);
     };
 
-    const disableDeleteVotes = (id) => {
-        const votesExist = _.filter(trackedVotes, (trackedId) => trackedId === id);
+    const disableDeleteVotes = (item) => {
+        const votesExist = _.filter(item.votes, vote => vote === auth.userId);
+        console.log("votesExist: ", votesExist);
         return vote.votes === props.votesPerPerson || votesExist.length === 0;
     };
 
-    const showThumbsDown = (id) => {
-        return _.filter(trackedVotes, (trackedId) => trackedId === id).length > 0;
+    const showThumbsDown = (item) => {
+        return _.filter(item.votes, (vote) => vote === auth.userId).length > 0;
     };
 
     const getUsersVoteCount = (item) => {
-        return _.filter(trackedVotes, (id) => id === item.id).length;
+        return _.filter(item.votes, (vote) => vote === auth.userId).length;
     };
     
     return(
@@ -185,7 +183,7 @@ const RetroColumn = (props) => {
                             className={classes.cardHeader}
                             avatar={
                                 <Avatar className={classes.avatar}>
-                                  {item.votes}
+                                  {item.votes.length}
                                 </Avatar>
                               }/>                        
                         <CardContent className={classes.cardConent}>
@@ -199,8 +197,8 @@ const RetroColumn = (props) => {
                                 <IconButton disabled={vote.votes === 0 || !props.isActive} onClick={handleItemVote.bind(this, 'addVote', item)}>
                                     <ThumbUp  />
                                 </IconButton>
-                                {showThumbsDown(item.id) 
-                                ? <Button className={classes.remove} disabled={disableDeleteVotes(item.id) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)} vairant="outlined" sizeSmall>Remove Vote</Button> 
+                                {showThumbsDown(item) 
+                                ? <Button className={classes.remove} disabled={disableDeleteVotes(item) || !props.isActive} onClick={handleItemVote.bind(this, 'removeVote', item)} vairant="outlined" sizeSmall>Remove Vote</Button> 
                                 : null }
                             </div>
                             {auth.userId === item.userId 
