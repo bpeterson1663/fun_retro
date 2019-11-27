@@ -14,6 +14,7 @@ export const createItem = payload => api.post(`/item`, payload);
 export const getAllItems = (retroId, columnName) => api.get(`/retro/${retroId}/items/${columnName}`);
 export const deleteItem = id => api.delete(`/item/${id}`);
 export const updateItem = (id, payload) => api.put(`/item/${id}`, payload);
+export const getItemById = id => api.get(`/item/${id}`);
 
 const apis = {
     createRetro,
@@ -24,7 +25,8 @@ const apis = {
     createItem,
     getAllItems,
     deleteItem,
-    updateItem
+    updateItem,
+    getItemById
 };
 
 export default apis;
