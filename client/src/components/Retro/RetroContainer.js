@@ -27,18 +27,30 @@ const RetroContainer = (props) => {
         {title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0'}
     ];
     useEffect(() => {
+        //TODO: figure out why useEffect is being triggered twice
+        console.log('USE EFFECT CALLED');
         api.getRetroById(retroId).then(retro =>{
             if(retro.data){
                 setRetroData(retro.data.retro);
                 setRetroStatus(retroData.isActive);
-                setRemaingVotes(retroData.numberOfVotes);
+                api.getAllItems(retroId).then(data => {
+                    let voteCount = 0;
+                    _.each(data.data.items, item => {
+                        voteCount = voteCount + _.filter(item.votes, (vote) => vote === auth.userId).length;
+                    });
+                    console.log("voteCount: ", voteCount);
+                    debugger;
+                    if(typeof retroData.numberOfVotes === 'number'){
+                        setRemaingVotes(retroData.numberOfVotes - (typeof voteCount === 'number' ? voteCount : 0) );
+                    }
+                });
             }else{
                 setRetroExists(false);
             }
         }).catch( err => {
             setRetroExists(false);
         });
-    },[retroId, retroData.isActive, retroData.numberOfVotes]);
+    },[retroId, retroData.isActive, retroData.numberOfVotes, auth.userId]);
 
     const handleRetroStatus = () => {
         
