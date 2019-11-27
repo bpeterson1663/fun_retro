@@ -59,36 +59,25 @@ const RetroContainer = (props) => {
     };
 
     const handleGenerateReport = () => {
-        const promises = columnMaps.map(column => {
-            return db.collection(column.value)
-                    .where('retroId', '==', retroId)
-                    .get();
-        });
-        Promise.all(promises)
+        api.getAllItems(retroId)
             .then((res) => {
-                const allData = []
-                _.each(res, (querySnapshot) => {
-                    allData.push(querySnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        data.id = doc.id;
-                        return data;
-                    }));
-                });
+                const allData = res.data.items;
                 let doc = new jsPDF();
 
                 _.each(columnMaps, (column, i) => {
-                    let columnHeader = [column.title, 'Votes']
+                    let columnHeader = [column.title, 'Votes'];
                     let rows = [];
-                    _.each(allData[i], item => {
-                        rows.push([item.value, item.votes]);
+                    const section = _.filter(allData, item => item.columnName === column.value);
+                    _.each(section, item => {
+                        rows.push([item.value, item.votes.length]);
                     });                   
                     doc.autoTable({
                         headStyles: {fillColor: column.backgroundColor, halign: 'center'},
                         head: [columnHeader],
                         body:  _.orderBy(rows, x => x[1], ['desc']),
                         columnStyles: {
-                            0: {columnWidth: 85},
-                            1: {columnWidth: 20, halign: 'center'},
+                            0: {cellWidth: 85},
+                            1: {cellWidth: 20, halign: 'center'},
                           },
                         theme: 'grid'
                     });
