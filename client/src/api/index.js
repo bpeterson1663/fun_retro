@@ -11,7 +11,8 @@ export const deleteRetroById = id => api.delete(`/retro/${id}`);
 export const getRetroById = id => api.get(`/retro/${id}`);
 
 export const createItem = payload => api.post(`/item`, payload);
-export const getAllItems = (retroId, columnName) => api.get(`/retro/${retroId}/items/${columnName}`);
+export const getAllItemsByColumn = (retroId, columnName) => api.get(`/retro/${retroId}/items/${columnName}`);
+export const getAllItems = retroId => api.get(`/retro/${retroId}/allitems`);
 export const deleteItem = id => api.delete(`/item/${id}`);
 export const updateItem = (id, payload) => api.put(`/item/${id}`, payload);
 export const getItemById = id => api.get(`/item/${id}`);
@@ -23,6 +24,7 @@ const apis = {
     deleteRetroById,
     getRetroById,
     createItem,
+    getAllItemsByColumn,
     getAllItems,
     deleteItem,
     updateItem,

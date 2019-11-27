@@ -43,6 +43,15 @@ getItems = async (req, res) => {
     });
 };
 
+getAllItems = async (req, res) => {
+    await Item.find({retroId: req.params.id}, (err, items) => {
+        if(err){
+            return res.status(400).json({success: false, error: err});
+        }
+        return res.status(200).json({success: true, items: items});
+    });
+};
+
 updateItem = (req, res) => {
     if(!req.body) {
         return res.status(400).json({
@@ -58,7 +67,7 @@ updateItem = (req, res) => {
             });
         }
         item.value = req.body.value;
-
+        item.votes = req.body.votes;
         item.save()
             .then(() => {
                 return res.status(200).json({
@@ -93,6 +102,7 @@ module.exports = {
     createItem,
     getItemById,
     getItems,
+    getAllItems,
     updateItem,
     deleteItem
 };
