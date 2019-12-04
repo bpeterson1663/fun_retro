@@ -6,6 +6,7 @@ const cors = require('cors');
 const db = require('./db');
 const retroRouter = require('./routes/retro.router');
 const itemRouter = require('./routes/item.router');
+const authRouter = require('./routes/auth.router');
 
 const PORT = 4000;
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
+app.use('/api', authRouter);
 app.use('/api', retroRouter);
 app.use('/api', itemRouter);
 
