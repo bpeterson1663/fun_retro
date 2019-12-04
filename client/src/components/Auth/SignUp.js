@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import firebase from 'firebase';
+import api from '../../api/index';
 import AuthContext from '../../context/auth-context';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -30,15 +30,14 @@ const SignUp = (props) => {
     const submitHandler = event => {
         setLoading(true);
         event.preventDefault();
-        firebase.auth()
-            .createUserWithEmailAndPassword(emailValue, passwordValue)
-            .then((res) => {
+        api.createUser({email: emailValue, password: passwordValue})
+            .then(res => {
                 auth.login(true);
                 retroId ?
                     props.history.push('/retro/'+retroId) :
                     props.history.push('/retroList');
             })
-            .catch(function(error) {
+            .catch( error => {
                 setMessageState({
                     displayMessage: true,
                     message: error.message,
