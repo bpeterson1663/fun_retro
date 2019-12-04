@@ -80,6 +80,12 @@ const AdminContainer = () => {
                     retro.id = retro._id;
                     return retro;
                 })});
+            })
+            .catch(err => {
+                console.error(err);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
@@ -115,6 +121,9 @@ const AdminContainer = () => {
                 message: err.message,
                 messageStatus: 'error',
             });
+        })
+        .finally( () => {
+            setIsLoading(false);
         });
     };
 
