@@ -17,6 +17,8 @@ export const deleteItem = id => api.delete(`/item/${id}`);
 export const updateItem = (id, payload) => api.put(`/item/${id}`, payload);
 export const getItemById = id => api.get(`/item/${id}`);
 
+export const createUser = payload => api.post('/signup', payload);
+
 const apis = {
     createRetro,
     getAllRetros,
@@ -28,7 +30,8 @@ const apis = {
     getAllItems,
     deleteItem,
     updateItem,
-    getItemById
+    getItemById,
+    createUser
 };
 
 export default apis;
