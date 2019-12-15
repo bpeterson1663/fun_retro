@@ -20,12 +20,12 @@ import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
+import CreateItem from './Items/CreateItem';
 import useStyles from './Retro.styles';
 
 const RetroColumn = (props) => {
     const [itemList, setItemList] = useState([]);
     const [trackedVotes, setTrackedVotes] = useState([]);
-    const [itemValue, setItemValue] = useState('');
     const [isLoading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
     const [itemEdit, setItemEdit] = useState({})
@@ -47,13 +47,11 @@ const RetroColumn = (props) => {
         return () => unsubscribe();
     }, [props.columnName, props.retroId]);
 
-    const handleItemSubmit = (event) => {
+    const handleItemSubmit = (value) => {
         setLoading(true);
-        event.preventDefault();
-        setItemValue('')
         db.collection(props.columnName)
           .add({
-              value: itemValue,
+              value: value,
               retroId: props.retroId,
               userId: auth.userId,
               votes: 0,
@@ -142,12 +140,7 @@ const RetroColumn = (props) => {
         <Container>
             {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
             <Typography variant="h6" className={classes.header}>{props.title}</Typography>
-            <form onSubmit={handleItemSubmit}> 
-                <TextField placeholder="Start Typing"
-                            required 
-                            className={classes.inputField} variant="outlined" multiline rows="4" disabled={!props.isActive} value={itemValue} onChange={(e) => setItemValue(e.target.value)}></TextField>
-                <Button className={classes.button} size="small" variant="contained" color="secondary" disabled={!props.isActive} type="submit" value="Add">Add</Button>
-            </form>
+            <CreateItem isActive={props.isActive} itemSubmit={handleItemSubmit}/>
             {itemList.map((item, i) => {
                 return (
                     <Card key={i} className={classes.card}>   
