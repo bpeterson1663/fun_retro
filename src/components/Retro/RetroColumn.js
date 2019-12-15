@@ -137,7 +137,7 @@ const RetroColumn = (props) => {
     };
     
     return(
-        <Container>
+        <Container style={{padding: '8px'}}>
             {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
             <Typography variant="h6" className={classes.header}>{props.title}</Typography>
             <CreateItem isActive={props.isActive} itemSubmit={handleItemSubmit}/>
