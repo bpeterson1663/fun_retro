@@ -2,6 +2,7 @@ import React, {useReducer, useEffect, useState, useContext} from 'react';
 import {db} from '../../firebase';
 import AuthContext from '../../context/auth-context';
 import _ from 'lodash';
+import moment from 'moment';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -57,7 +58,17 @@ const AdminContainer = () => {
                     message: `Way to go! You just created a Super Fun Retro!`,
                     messageStatus: 'success',
                 });
-                return state.concat(action.payload);
+                const newState = action.payload;
+                return [newState].concat(state);
+            case 'UPDATE':
+                setMessageState({
+                    displayMessage: true,
+                    message: `Oh yea! Way to make those changes!`,
+                    messageStatus: 'success',
+                });
+                const itemIndex = state.findIndex(item => item.id === action.payload.id);
+                state[itemIndex] = action.payload;
+                return state;
             case 'SET':
                 return action.payload;
             case 'REMOVE':
@@ -83,22 +94,9 @@ const AdminContainer = () => {
                 const data = doc.data();
                 data.id = doc.id;
                 return data;
-            })});
+            }).sort((a,b) => {return b.timestamp - a.timestamp})});
         });
     }, [auth.userId]);
-
-    const getAllRetros = () => {
-        db.collection('retros')
-        .where('userId', '==', auth.userId)
-        .get()
-        .then(querySnapshot => {
-            dispatch({type: 'SET', payload: querySnapshot.docs.map(doc => {
-                const data = doc.data();
-                data.id = doc.id;
-                return data;
-            })});
-        });
-    };
 
     const onSubmitHandler = (event) => {
         event.preventDefault();
@@ -110,22 +108,24 @@ const AdminContainer = () => {
               endDate: endDateValue,
               userId: auth.userId,
               numberOfVotes: voteValue,
-              isActive: true
+              isActive: true,
+              timestamp: new moment().valueOf()
             })
           .then((res) =>{
-            setNameValue('');
-            setEndDateValue('');
-            setStartDateValue('');
-            setVoteValue(6);
             dispatch({
                 type: 'ADD', 
                 payload: {
                     name: nameValue, 
                     endDate: endDateValue, 
                     startDate: startDateValue, 
+                    numberOfVotes: voteValue,
                     id: res.id
                 }
             });
+            setNameValue('');
+            setEndDateValue('');
+            setStartDateValue('');
+            setVoteValue(6);
         });
     };
 
@@ -179,12 +179,10 @@ const AdminContainer = () => {
           .then(() => {
               setEditRetro({});
               setEditStatus(false);
-              getAllRetros();
-              setMessageState({
-                displayMessage: true,
-                message: `Oh yea! Way to make those changes!`,
-                messageStatus: 'success',
-            });
+                dispatch({
+                    type: 'UPDATE',
+                    payload: editRetro
+                })
           })
           .finally(() => setIsLoading(false));
     };
@@ -207,7 +205,7 @@ const AdminContainer = () => {
                         <TextField name="retro_vote" required className={classes.inputField} type="number" label="Votes Per Person" value={voteValue} onChange={(e) => setVoteValue(e.target.value)}/>
                         <TextField name="retro_start" required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="Start of Sprint" value={startDateValue} onChange={(e) => setStartDateValue(e.target.value)}/>
                         <TextField name="retro_end" required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="End of Sprint" value={endDateValue} onChange={(e) => setEndDateValue(e.target.value)}/>
-                        <Button type="submit" value="Submit" color="secondary" variant="contained" className={classes.submit}>Create</Button>
+                        <Button disabled={isLoading} type="submit" value="Submit" color="secondary" variant="contained" className={classes.submit}>Create</Button>
                     </form>
                 </Grid>
                 <Grid item>
@@ -243,19 +241,19 @@ const AdminContainer = () => {
                                    {editStatus && editRetro.id === retro.id ?
                                     <div className={classes.icon}>
                                         <IconButton onClick={handleUpdateRetro.bind(this, retro)}>
-                                            <SaveIcon />
+                                            <SaveIcon disabled={isLoading}  />
                                         </IconButton>
                                         <IconButton onClick={() => setEditStatus(false)}>
-                                            <CancelIcon />
+                                            <CancelIcon disabled={isLoading} />
                                         </IconButton>
                                     </div>
                                     : 
                                     <IconButton className={classes.icon} onClick={handleEditItem.bind(this, retro)}>
-                                        <EditIcon />
+                                        <EditIcon disabled={isLoading}  />
                                     </IconButton>
                                 }
                                     <IconButton className={classes.icon} onClick={handleConfirmOpen.bind(this, retro.id)}>
-                                        <DeleteIcon data-id="delete_button">Delete</DeleteIcon>
+                                        <DeleteIcon disabled={isLoading} data-id="delete_button">Delete</DeleteIcon>
                                     </IconButton>
                                 </CardActions>
                             </Card>
