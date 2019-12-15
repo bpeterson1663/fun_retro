@@ -25,13 +25,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CreateRetro from './Retros/CreateRetro';
 //TODO: Move Dialog into a common component
 const AdminContainer = () => {
-    const [nameValue, setNameValue] = useState('');
-    const [startDateValue, setStartDateValue] = useState('');
-    const [endDateValue, setEndDateValue] = useState('')
     const [isLoading, setIsLoading] = useState(true);
-    const [voteValue, setVoteValue] = useState(6);
     const [editStatus, setEditStatus] = useState(false);
     const [editRetro, setEditRetro] = useState({});
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -98,16 +95,15 @@ const AdminContainer = () => {
         });
     }, [auth.userId]);
 
-    const onSubmitHandler = (event) => {
-        event.preventDefault();
+    const onSubmitHandler = (retro) => {
         setIsLoading(true);
         db.collection('retros')
           .add({
-              name: nameValue,
-              startDate: startDateValue,
-              endDate: endDateValue,
+              name: retro.name,
+              startDate: retro.startDate,
+              endDate: retro.endDate,
               userId: auth.userId,
-              numberOfVotes: voteValue,
+              numberOfVotes: retro.numberOfVotes,
               isActive: true,
               timestamp: new moment().valueOf()
             })
@@ -115,17 +111,13 @@ const AdminContainer = () => {
             dispatch({
                 type: 'ADD', 
                 payload: {
-                    name: nameValue, 
-                    endDate: endDateValue, 
-                    startDate: startDateValue, 
-                    numberOfVotes: voteValue,
+                    name: retro.name, 
+                    endDate: retro.endDate, 
+                    startDate: retro.startDate, 
+                    numberOfVotes: retro.numberOfVotes,
                     id: res.id
                 }
             });
-            setNameValue('');
-            setEndDateValue('');
-            setStartDateValue('');
-            setVoteValue(6);
         });
     };
 
@@ -198,35 +190,21 @@ const AdminContainer = () => {
         <Container data-id="admin_container">
             {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}
             <Grid container justify="center" spacing={0}>
-                <Grid item>
-                    <Typography variant="h3">Create New Retro</Typography>
-                    <form onSubmit={onSubmitHandler} className={classes.form}>
-                        <TextField name="retro_name" required className={classes.inputField} type="text" label="Retro Name" value={nameValue} onChange={(e) => setNameValue(e.target.value)}/>
-                        <TextField name="retro_vote" required className={classes.inputField} type="number" label="Votes Per Person" value={voteValue} onChange={(e) => setVoteValue(e.target.value)}/>
-                        <TextField name="retro_start" required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="Start of Sprint" value={startDateValue} onChange={(e) => setStartDateValue(e.target.value)}/>
-                        <TextField name="retro_end" required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="End of Sprint" value={endDateValue} onChange={(e) => setEndDateValue(e.target.value)}/>
-                        <Button disabled={isLoading} type="submit" value="Submit" color="secondary" variant="contained" className={classes.submit}>Create</Button>
-                    </form>
-                </Grid>
+                <CreateRetro submitRetro={onSubmitHandler} isLoading={isLoading}/>
                 <Grid item>
                     {retroList.length > 0 ? <Typography variant="h3">Retro List</Typography> : null } 
                     {retroList.map((retro, i) => {
                         return (
                             <Card className={classes.card} key={i}>
-                                {editStatus && editRetro.id === retro.id ?
-                                <div>
-                                    <TextField required className={classes.inputField} type="text" value={editRetro.name} label="Retro Name" onChange={(e) => setEditRetro({...editRetro, name: e.target.value})}/>
-                                    <TextField required className={classes.inputField} type="number" label="Votes Per Person" value={editRetro.numberOfVotes} onChange={(e) => setEditRetro({...editRetro, numberOfVotes: e.target.value})}/>
-                                </div>
-                                :
                                 <CardHeader
                                     className={classes.cardHeader}
                                     title={retro.name}
                                     />
-                                }
                                 <CardContent className={classes.cardContent}>
                                     { editStatus && editRetro.id === retro.id ?
                                     <div>
+                                        <TextField required className={classes.inputField} type="text" value={editRetro.name} label="Retro Name" onChange={(e) => setEditRetro({...editRetro, name: e.target.value})}/>
+                                        <TextField required className={classes.inputField} type="number" label="Votes Per Person" value={editRetro.numberOfVotes} onChange={(e) => setEditRetro({...editRetro, numberOfVotes: e.target.value})}/>
                                         <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} value={editRetro.startDate} label="Start of Sprint" onChange={(e) => setEditRetro({...editRetro, startDate: e.target.value})} />
                                         <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} value={editRetro.endDate} label="End of Sprint" onChange={(e) => setEditRetro({...editRetro, endDate: e.target.value})}/>
                                     </div>    
