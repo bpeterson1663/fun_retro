@@ -90,8 +90,8 @@ const RetroContainer = (props) => {
 
 
     const retroContainer = (
-        <Container data-id="retro_container">
-            <Typography variant="h3">{retroData.name}</Typography>
+        <Container style={{padding: '8px'}} data-id="retro_container" >
+            <Typography variant="h4">{retroData.name}</Typography>
             <Typography variant="subtitle1">{retroData.startDate} through {retroData.endDate}</Typography>
             <Typography variant="subtitle2">{retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}</Typography>
             {retroData.userId === auth.userId ? <Button size="small" color="secondary" onClick={handleRetroStatus}>{retroStatus ? `End Retro` : `Activate Retro`} </Button> : null}
