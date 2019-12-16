@@ -153,7 +153,7 @@ const RetroColumn = (props) => {
                               }/>                        
                         <CardContent className={classes.cardConent}>
                             {editMode && itemEdit.id === item.id 
-                                ? <TextField variant="outlined" multiline rows="3" maxLength="1000" value={itemEdit.value} onChange={(e) => setItemEdit({...itemEdit, value: e.target.value})}/> 
+                                ? <TextField variant="outlined" multiline rows="3" maxLength="1000" className={classes.editTextBox} value={itemEdit.value} onChange={(e) => setItemEdit({...itemEdit, value: e.target.value})}/> 
                                 : item.value}
                         </CardContent>
                         <CardActions className={classes.cardAction}>
