@@ -85,6 +85,9 @@ const useStyles = makeStyles(theme =>({
         display: 'flex',
         flexFlow: 'row wrap',
         justifyContent: 'space-around',
+    },
+    editTextBox: {
+        width: '100%'
     }
 
 }));
