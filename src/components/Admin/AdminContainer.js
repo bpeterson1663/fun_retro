@@ -11,15 +11,11 @@ import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography/Typography';
-import useStyles from './AdminContainer.styles';
-import SnackBar from '../Common/SnackBar';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CreateRetro from './Retros/CreateRetro';
-import EditRetro from './Retros/EditRetro';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -27,7 +23,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-
+import CreateRetroDialog from './Dialogs/CreateRetroDialog';
+import EditRetroDialog from './Dialogs/EditRetroDialog';
+import ShowLinkDialog from './Dialogs/ShowLinkDialog';
+import SnackBar from '../Common/SnackBar';
+import useStyles from './AdminContainer.styles';
 //TODO: Move Dialog into a common component
 const AdminContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +36,9 @@ const AdminContainer = () => {
     const [editRetro, setEditRetro] = useState({});
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const [retroIdToDelete, setRetroIdToDelete] = useState('')
-    
+    const [retroLink, setRetroLink] = useState('');
+    const [showLinkStatus, setShowLinkStatus] = useState(false);
+
     const [messageState, setMessageState] = useState({
         message: '',
         messageStatus: '',
@@ -146,6 +148,16 @@ const AdminContainer = () => {
         setEditStatus(false);
     };
 
+    const handleShowLink = (retro) => {
+        setShowLinkStatus(true);
+        setRetroLink(retro);
+    };
+
+    const handleShowLinkClose = () => {
+        setShowLinkStatus(false);
+        setRetroLink('');
+    };
+
     const handleRetroDelete = (id) => {
         setIsLoading(true);
         const promises = columnMaps.map(column => {
@@ -211,24 +223,24 @@ const AdminContainer = () => {
                         <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
-                            <TableCell>Link</TableCell>
-                            <TableCell>Start Date</TableCell>
-                            <TableCell>End Date</TableCell>
-                            <TableCell>Edit</TableCell>
-                            <TableCell>Delete</TableCell>
+                            <TableCell align="center">Link</TableCell>
+                            <TableCell align="center">Start Date</TableCell>
+                            <TableCell align="center">End Date</TableCell>
+                            <TableCell align="center">Edit</TableCell>
+                            <TableCell align="center">Delete</TableCell>
                         </TableRow>
                         </TableHead>
                         <TableBody>
                         {retroList.map(retro => (
                             <TableRow key={retro.id}>
-                                <TableCell component="th" scope="row" className={classes.nameCell}>
+                                <TableCell className={classes.nameCell}>
                                     {retro.name}
                                 </TableCell>
-                                <TableCell align="right"><a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a></TableCell>
-                                <TableCell omponent="th" scope="row" >
+                                <TableCell align="center"><Button size="small" variant="outlined" color="secondary" onClick={() => handleShowLink(retro)}>Show Link</Button></TableCell>
+                                <TableCell>
                                     {retro.startDate}
                                 </TableCell>
-                                <TableCell omponent="th" scope="row" >
+                                <TableCell>
                                     {retro.endDate}
                                 </TableCell>
                                 <TableCell>
@@ -290,16 +302,21 @@ const AdminContainer = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <EditRetro 
+            <EditRetroDialog 
                 retro={editRetro}
                 updateRetro={handleUpdateRetro}
                 editStatus={editStatus}
                 handleEditClose={handleEditClose}
                 />
-            <CreateRetro
+            <CreateRetroDialog
                 submitRetro={onSubmitHandler}
                 createStatus={createStatus}
                 handleCreateClose={handleCreateClose}/>
+            <ShowLinkDialog
+                showLinkStatus={showLinkStatus}
+                handleShowLinkClose={handleShowLinkClose}
+                retroLink={retroLink}
+                />
         </Container>
     );  
 };

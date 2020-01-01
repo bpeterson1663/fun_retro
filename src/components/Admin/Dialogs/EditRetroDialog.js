@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import SnackBar from '../../Common/SnackBar';
 import useStyles from '../AdminContainer.styles';
 
-const EditRetro = (props) => {
+const EditRetroDialog = (props) => {
     const {name, startDate, endDate, numberOfVotes, id } = props.retro;
 
     const [nameValue, setNameValue] = useState();
@@ -66,4 +66,4 @@ const EditRetro = (props) => {
     );
 };
 
-export default EditRetro;
+export default EditRetroDialog;
