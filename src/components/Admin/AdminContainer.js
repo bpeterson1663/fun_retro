@@ -4,20 +4,13 @@ import AuthContext from '../../context/auth-context';
 import _ from 'lodash';
 import moment from 'moment';
 import Container from '@material-ui/core/Container';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography/Typography';
-import SaveIcon from '@material-ui/icons/Save';
-import CancelIcon from '@material-ui/icons/Cancel';
 import useStyles from './AdminContainer.styles';
 import SnackBar from '../Common/SnackBar';
 import Dialog from '@material-ui/core/Dialog';
@@ -26,14 +19,24 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CreateRetro from './Retros/CreateRetro';
+import EditRetro from './Retros/EditRetro';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
 //TODO: Move Dialog into a common component
 const AdminContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [editStatus, setEditStatus] = useState(false);
+    const [createStatus, setCreateStatus] = useState(false);
     const [editRetro, setEditRetro] = useState({});
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const [retroIdToDelete, setRetroIdToDelete] = useState('')
-
+    
     const [messageState, setMessageState] = useState({
         message: '',
         messageStatus: '',
@@ -131,6 +134,18 @@ const AdminContainer = () => {
         setConfirmDialogOpen(false);
     };
 
+    const handleCreateOpen = () => {
+        setCreateStatus(true);
+    };
+
+    const handleCreateClose = () => {
+        setCreateStatus(false);
+    };
+
+    const handleEditClose = () => {
+        setEditStatus(false);
+    };
+
     const handleRetroDelete = (id) => {
         setIsLoading(true);
         const promises = columnMaps.map(column => {
@@ -163,17 +178,17 @@ const AdminContainer = () => {
         setEditRetro(retro);
     };
 
-    const handleUpdateRetro = () => {
+    const handleUpdateRetro = (retro) => {
         setIsLoading(true);
         db.collection('retros')
-          .doc(editRetro.id)
-          .update(editRetro)
+          .doc(retro.id)
+          .update(retro)
           .then(() => {
               setEditRetro({});
               setEditStatus(false);
                 dispatch({
                     type: 'UPDATE',
-                    payload: editRetro
+                    payload: retro
                 })
           })
           .finally(() => setIsLoading(false));
@@ -186,59 +201,67 @@ const AdminContainer = () => {
             messageStatus: '',
         });
     };
-    return (
-        <Container data-id="admin_container">
-            {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}
-            <Grid container justify="center" spacing={0}>
-                <CreateRetro submitRetro={onSubmitHandler} isLoading={isLoading}/>
-                <Grid item>
-                    {retroList.length > 0 ? <Typography variant="h3">Retro List</Typography> : null } 
-                    {retroList.map((retro, i) => {
-                        return (
-                            <Card className={classes.card} key={i}>
-                                <CardHeader
-                                    className={classes.cardHeader}
-                                    title={retro.name}
-                                    />
-                                <CardContent className={classes.cardContent}>
-                                    { editStatus && editRetro.id === retro.id ?
-                                    <div>
-                                        <TextField required className={classes.inputField} type="text" value={editRetro.name} label="Retro Name" onChange={(e) => setEditRetro({...editRetro, name: e.target.value})}/>
-                                        <TextField required className={classes.inputField} type="number" label="Votes Per Person" value={editRetro.numberOfVotes} onChange={(e) => setEditRetro({...editRetro, numberOfVotes: e.target.value})}/>
-                                        <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} value={editRetro.startDate} label="Start of Sprint" onChange={(e) => setEditRetro({...editRetro, startDate: e.target.value})} />
-                                        <TextField required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} value={editRetro.endDate} label="End of Sprint" onChange={(e) => setEditRetro({...editRetro, endDate: e.target.value})}/>
-                                    </div>    
-                                        :
-                                        `${retro.startDate} through ${retro.endDate}`
 
-                                    }
-                                    <br/>
-                                    Retro Link: <a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a><br/>
-                                </CardContent>
-                                <CardActions>
-                                   {editStatus && editRetro.id === retro.id ?
-                                    <div className={classes.icon}>
-                                        <IconButton onClick={handleUpdateRetro.bind(this, retro)}>
-                                            <SaveIcon disabled={isLoading}  />
-                                        </IconButton>
-                                        <IconButton onClick={() => setEditStatus(false)}>
-                                            <CancelIcon disabled={isLoading} />
-                                        </IconButton>
-                                    </div>
-                                    : 
+    const RetroData = () => {
+        return (
+            <div>
+                <Typography variant="h5">Retro List</Typography> 
+                <TableContainer className={classes.tableContainer} component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Link</TableCell>
+                            <TableCell>Start Date</TableCell>
+                            <TableCell>End Date</TableCell>
+                            <TableCell>Edit</TableCell>
+                            <TableCell>Delete</TableCell>
+                        </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {retroList.map(retro => (
+                            <TableRow key={retro.id}>
+                                <TableCell component="th" scope="row" className={classes.nameCell}>
+                                    {retro.name}
+                                </TableCell>
+                                <TableCell align="right"><a  rel="noopener noreferrer" target="_blank" href={"https://superfunretro.herokuapp.com/retro/"+retro.id}>https://superfunretro.herokuapp.com/retro/{retro.id}</a></TableCell>
+                                <TableCell omponent="th" scope="row" >
+                                    {retro.startDate}
+                                </TableCell>
+                                <TableCell omponent="th" scope="row" >
+                                    {retro.endDate}
+                                </TableCell>
+                                <TableCell>
                                     <IconButton className={classes.icon} onClick={handleEditItem.bind(this, retro)}>
                                         <EditIcon disabled={isLoading}  />
-                                    </IconButton>
-                                }
+                                    </IconButton>  
+                                </TableCell>
+                                <TableCell>
                                     <IconButton className={classes.icon} onClick={handleConfirmOpen.bind(this, retro.id)}>
                                         <DeleteIcon disabled={isLoading} data-id="delete_button">Delete</DeleteIcon>
                                     </IconButton>
-                                </CardActions>
-                            </Card>
-                        )
-                    })}
-                </Grid>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+        );
+    };
+    return (
+        <Container data-id="admin_container">
+            <div className={classes.actionButtons}>
+                <Button onClick={handleCreateOpen} variant="contained" color="primary">Create New Retro</Button>
+            </div>
+
+            {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}         
+            <Grid container justify="center" spacing={0}>
+                {retroList.length > 0 
+                    ? <RetroData />
+                    : null}
             </Grid>
+            
             {messageState.displayMessage 
                 ? <SnackBar 
                     open={messageState.displayMessage} 
@@ -251,8 +274,7 @@ const AdminContainer = () => {
                 open={confirmDialogOpen}
                 onClose={handleConfirmClose}
                 aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
+                aria-describedby="alert-dialog-description">
                 <DialogTitle id="alert-dialog-title">{"Delete Retro?"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
@@ -268,6 +290,16 @@ const AdminContainer = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <EditRetro 
+                retro={editRetro}
+                updateRetro={handleUpdateRetro}
+                editStatus={editStatus}
+                handleEditClose={handleEditClose}
+                />
+            <CreateRetro
+                submitRetro={onSubmitHandler}
+                createStatus={createStatus}
+                handleCreateClose={handleCreateClose}/>
         </Container>
     );  
 };
