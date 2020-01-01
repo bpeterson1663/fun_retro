@@ -5,6 +5,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import SnackBar from '../../Common/SnackBar';
 import useStyles from '../AdminContainer.styles';
 
@@ -48,7 +51,12 @@ const CreateRetroDialog = props => {
             data-id="create_dialog"
             open={props.createStatus}
             onClose={handleCreateClose}>
-            <DialogTitle>Create New Retro</DialogTitle>
+            <DialogTitle>
+                <Typography variant="h6">Create New Retro</Typography>
+                <IconButton className={classes.closeButton} onClick={handleCreateClose}>
+                    <CloseIcon />
+                </IconButton>
+            </DialogTitle>
             <DialogContent className={classes.dialogContent}>
                     <TextField name="retro_name" required className={[classes.inputField, classes.inputFieldText]} type="text" label="Retro Name" value={nameValue} onChange={(e) => setNameValue(e.target.value)}/>
                     <TextField name="retro_start" required className={classes.inputField} type="date" InputLabelProps={{ shrink: true }} label="Start of Sprint" value={startDateValue} onChange={(e) => setStartDateValue(e.target.value)}/>

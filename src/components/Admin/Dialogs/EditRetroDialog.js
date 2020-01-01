@@ -5,6 +5,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import SnackBar from '../../Common/SnackBar';
 import useStyles from '../AdminContainer.styles';
 
@@ -47,7 +50,12 @@ const EditRetroDialog = (props) => {
             data-id="create_dialog"
             open={props.editStatus}
             onClose={handleEditClose}>
-            <DialogTitle>Edit Retro</DialogTitle>
+            <DialogTitle>
+                <Typography variant="h6">Edit Retro - {name}</Typography>
+                <IconButton className={classes.closeButton} onClick={handleEditClose}>
+                    <CloseIcon />
+                </IconButton>
+            </DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 <TextField name="retro_name" required className={[classes.inputField, classes.inputFieldText]} type="text" label="Retro Name" value={nameValue} onChange={(e) => setNameValue(e.target.value)}/>
                 <TextField name="retro_vote" required className={classes.inputField} type="number" label="Votes Per Person" value={voteValue} onChange={(e) => setVoteValue(e.target.value)}/>
