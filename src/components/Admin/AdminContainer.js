@@ -264,7 +264,7 @@ const AdminContainer = () => {
     return (
         <Container data-id="admin_container">
             <div className={classes.actionButtons}>
-                <Button onClick={handleCreateOpen} variant="contained" color="primary">Create New Retro</Button>
+                <Button onClick={handleCreateOpen} variant="contained" color="secondary">Create New Retro</Button>
             </div>
 
             {isLoading ? <LinearProgress variant="query"/> : <div className={classes.placeholder}></div>}         
