@@ -4,6 +4,9 @@ const useStyles = makeStyles(theme => ({
     inputField: {
       margin: theme.spacing(2),
     },
+    inputFieldText: {
+        width: 350
+    },
     icon: {
         marginLeft: "auto"
     },
@@ -18,10 +21,6 @@ const useStyles = makeStyles(theme => ({
     placeholder: {
         height: 5
     },
-    submit:{
-        display: 'block',
-        margin: 'auto'
-    },
     columnInfo: {
         width: '100%%',
         margin: 'auto'
@@ -29,10 +28,26 @@ const useStyles = makeStyles(theme => ({
     cardConent: {
         paddingBottom: 0
     },
-    form: {
+    dialogContent: {
         width: 400,
-        margin: 'auto'
-    }
+        margin: 'auto',
+        display: 'flex',
+        flexFlow: 'row wrap',
+        justifyContent: 'center'
+    },
+    actionButtons: {
+        display: 'flex',
+        flexFlow: 'row-reverse wrap' 
+    },
+    tableContainer: {
+        maxWidth: 1200
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+      }
 }));
 
 export default useStyles;
