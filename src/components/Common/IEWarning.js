@@ -50,10 +50,10 @@ const IEWarning = () => {
           </p>
           <p>
             But hey, nobody should force you to make a decision. So if you want
-            to use IE go ahead! But I can't guarantee you will have a positive
-            experience using Super Fun Retro. When you are ready to make that
-            move to a better browser, Super Fun Retro will be ready for you with
-            open arms!
+            to use IE go ahead! But I can&apos;t guarantee you will have a
+            positive experience using Super Fun Retro. When you are ready to
+            make that move to a better browser, Super Fun Retro will be ready
+            for you with open arms!
           </p>
           With much love from your friend,
           <br />

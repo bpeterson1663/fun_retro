@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -117,6 +118,13 @@ const CreateRetroDialog = props => {
       />
     </Dialog>
   );
+};
+
+CreateRetroDialog.propTypes = {
+  submitRetro: PropTypes.func,
+  handleCreateClose: PropTypes.func,
+  createStatus: PropTypes.bool,
+  isLoading: PropTypes.bool
 };
 
 export default CreateRetroDialog;

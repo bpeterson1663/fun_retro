@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography/Typography";
@@ -133,9 +134,9 @@ const FAQ = props => {
           <Typography>
             Absolutely nothing! It is free to use! No limits on how many people
             can sign up, no limits on how many retrospectives you can create,
-            and no limits on how long you can use it! Other so called "Fun
-            Retros" charge you after a certain time period, which isn't really
-            fun in my opinion.
+            and no limits on how long you can use it! Other retro softwares out
+            there charge you after a certain time period, which isn&apos;t
+            really fun in my opinion.
           </Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>
@@ -162,6 +163,10 @@ const FAQ = props => {
       </ExpansionPanel>
     </Container>
   );
+};
+
+FAQ.propTypes = {
+  history: PropTypes.array
 };
 
 export default FAQ;

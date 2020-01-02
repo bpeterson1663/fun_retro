@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     textDecoration: "none"
   }
 }));
-const Navigation = props => {
+const Navigation = () => {
   const auth = useContext(AuthContext);
   const handleLogOut = () => {
     firebase

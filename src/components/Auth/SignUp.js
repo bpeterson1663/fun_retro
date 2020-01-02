@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import PropTypes from "prop-types";
 import firebase from "firebase";
 import AuthContext from "../../context/auth-context";
 import TextField from "@material-ui/core/TextField";
@@ -33,7 +34,7 @@ const SignUp = props => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(emailValue, passwordValue)
-      .then(res => {
+      .then(() => {
         auth.login(true);
         retroId
           ? props.history.push("/retro/" + retroId)
@@ -127,6 +128,11 @@ const SignUp = props => {
       ) : null}
     </Container>
   );
+};
+
+SignUp.propTypes = {
+  location: PropTypes.object,
+  history: PropTypes.array
 };
 
 export default SignUp;

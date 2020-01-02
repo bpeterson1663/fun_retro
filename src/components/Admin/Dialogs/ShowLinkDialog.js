@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -61,6 +62,12 @@ const ShowLinkDialog = props => {
       />
     </Dialog>
   );
+};
+
+ShowLinkDialog.propTypes = {
+  retroLink: PropTypes.object,
+  showLinkStatus: PropTypes.bool,
+  handleShowLinkClose: PropTypes.func
 };
 
 export default ShowLinkDialog;

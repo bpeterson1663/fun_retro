@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import useStyles from "../Retro.styles";
@@ -39,6 +40,11 @@ const CreateItem = props => {
       </Button>
     </form>
   );
+};
+
+CreateItem.propTypes = {
+  itemSubmit: PropTypes.func,
+  isActive: PropTypes.bool
 };
 
 export default CreateItem;

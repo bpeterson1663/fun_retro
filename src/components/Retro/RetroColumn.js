@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import { db, incrementCounter, decrementCounter } from "../../firebase";
 import AuthContext from "../../context/auth-context";
 import VoteContext from "../../context/vote-context";
@@ -240,6 +241,14 @@ const RetroColumn = props => {
       })}
     </Container>
   );
+};
+
+RetroColumn.propTypes = {
+  columnName: PropTypes.string,
+  isActive: PropTypes.bool,
+  title: PropTypes.string,
+  votesPerPerson: PropTypes.number,
+  retroId: PropTypes.string
 };
 
 export default RetroColumn;

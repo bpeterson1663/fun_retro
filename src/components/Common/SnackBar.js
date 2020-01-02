@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -64,6 +65,13 @@ const SnackBar = props => {
       />
     </Snackbar>
   );
+};
+
+SnackBar.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.bool,
+  message: PropTypes.string,
+  status: PropTypes.string
 };
 
 export default SnackBar;

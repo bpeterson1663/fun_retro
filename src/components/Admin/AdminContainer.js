@@ -52,6 +52,8 @@ const AdminContainer = () => {
   const auth = useContext(AuthContext);
   const classes = useStyles();
   const itemListReducer = (state, action) => {
+    const newState = action.payload;
+    const itemIndex = state.findIndex(item => item.id === action.payload.id);
     setIsLoading(false);
     switch (action.type) {
       case "ADD":
@@ -60,7 +62,6 @@ const AdminContainer = () => {
           message: `Way to go! You just created a Super Fun Retro!`,
           messageStatus: "success"
         });
-        const newState = action.payload;
         return [newState].concat(state);
       case "UPDATE":
         setMessageState({
@@ -68,9 +69,6 @@ const AdminContainer = () => {
           message: `Oh yea! Way to make those changes!`,
           messageStatus: "success"
         });
-        const itemIndex = state.findIndex(
-          item => item.id === action.payload.id
-        );
         state[itemIndex] = action.payload;
         return state;
       case "SET":
