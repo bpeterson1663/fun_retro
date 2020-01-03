@@ -145,8 +145,7 @@ const RetroContainer = props => {
           <Grid className={classes.keepDoing}>
             <RetroColumn
               retroId={retroId}
-              votesPerPerson={props.numberOfVotes}
-              getUserVoteStatus={getUserVoteStatus}
+              votesPerPerson={retroData.numberOfVotes}
               remainingVotes={remainingVotes}
               title="Keep Doing"
               columnName="keepDoing"
@@ -156,8 +155,7 @@ const RetroContainer = props => {
           <Grid className={classes.stopDoing}>
             <RetroColumn
               retroId={retroId}
-              votesPerPerson={props.numberOfVotes}
-              getUserVoteStatus={getUserVoteStatus}
+              votesPerPerson={retroData.numberOfVotes}
               remainingVotes={remainingVotes}
               title="Stop Doing"
               columnName="stopDoing"
@@ -167,8 +165,7 @@ const RetroContainer = props => {
           <Grid className={classes.startDoing}>
             <RetroColumn
               retroId={retroId}
-              votesPerPerson={props.numberOfVotes}
-              getUserVoteStatus={getUserVoteStatus}
+              votesPerPerson={retroData.numberOfVotes}
               remainingVotes={remainingVotes}
               title="Start Doing"
               columnName="startDoing"
