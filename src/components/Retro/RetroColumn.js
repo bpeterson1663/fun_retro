@@ -26,7 +26,6 @@ import useStyles from "./Retro.styles";
 
 const RetroColumn = props => {
   const [itemList, setItemList] = useState([]);
-  const [trackedVotes, setTrackedVotes] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [itemEdit, setItemEdit] = useState({});
@@ -61,37 +60,35 @@ const RetroColumn = props => {
         retroId: props.retroId,
         userId: auth.userId,
         votes: 0,
+        voteMap: [],
         timestamp: new moment().valueOf()
       })
       .finally(() => setLoading(false));
   };
 
-  const trackVote = (id, remove) => {
-    if (remove) {
-      trackedVotes.splice(trackedVotes.indexOf(id), 1);
-      setTrackedVotes(trackedVotes);
-    } else {
-      trackedVotes.push(id);
-      setTrackedVotes(trackedVotes);
-    }
-  };
-
   const handleItemVote = (operation, item) => {
     const itemRef = db.collection(props.columnName).doc(item.id);
     if (operation === "addVote") {
-      itemRef.update({ votes: incrementCounter });
+      if (item.voteMap) {
+        item.voteMap.push(auth.userId);
+      } else {
+        item.voteMap = [auth.userId];
+      }
+      itemRef.update({ votes: incrementCounter, voteMap: item.voteMap });
       vote.setRemaingVotes(--vote.votes);
-      trackVote(item.id, false);
     } else {
-      itemRef.update({ votes: decrementCounter });
+      if (item.voteMap) {
+        item.voteMap.splice(item.voteMap.indexOf(auth.userId), 1);
+      } else {
+        item.voteMap = [];
+      }
+      itemRef.update({ votes: decrementCounter, voteMap: item.voteMap });
       vote.setRemaingVotes(++vote.votes);
-      trackVote(item.id, true);
     }
   };
 
   const handleItemDelete = id => {
     setLoading(true);
-    removeAllVotes(id);
     db.collection(props.columnName)
       .doc(id)
       .delete()
@@ -119,29 +116,16 @@ const RetroColumn = props => {
       .finally(() => setLoading(false));
   };
 
-  const removeAllVotes = id => {
-    let count = 0;
-    const newTrackedVotes = _.filter(trackedVotes, trackedId => {
-      if (trackedId === id) {
-        count++;
-      }
-      return trackedId !== id;
-    });
-    vote.setRemaingVotes(vote.votes + count);
-    setTrackedVotes(newTrackedVotes);
-  };
-
-  const disableDeleteVotes = id => {
-    const votesExist = _.filter(trackedVotes, trackedId => trackedId === id);
-    return vote.votes === props.votesPerPerson || votesExist.length === 0;
-  };
-
-  const showThumbsDown = id => {
-    return _.filter(trackedVotes, trackedId => trackedId === id).length > 0;
-  };
-
   const getUsersVoteCount = item => {
-    return _.filter(trackedVotes, id => id === item.id).length;
+    return _.filter(item.voteMap, id => auth.userId === id).length;
+  };
+
+  const disableDeleteVotes = item => {
+    return vote.votes === props.votesPerPerson || getUsersVoteCount(item) === 0;
+  };
+
+  const showRemoveVote = item => {
+    return getUsersVoteCount(item) > 0;
   };
 
   return (
@@ -190,10 +174,10 @@ const RetroColumn = props => {
                 >
                   <ThumbUp />
                 </IconButton>
-                {showThumbsDown(item.id) ? (
+                {showRemoveVote(item) ? (
                   <Button
                     className={classes.remove}
-                    disabled={disableDeleteVotes(item.id) || !props.isActive}
+                    disabled={disableDeleteVotes(item) || !props.isActive}
                     onClick={handleItemVote.bind(this, "removeVote", item)}
                     vairant="outlined"
                     sizeSmall
@@ -248,7 +232,8 @@ RetroColumn.propTypes = {
   isActive: PropTypes.bool,
   title: PropTypes.string,
   votesPerPerson: PropTypes.number,
-  retroId: PropTypes.string
+  retroId: PropTypes.string,
+  remaingVotes: PropTypes.number
 };
 
 export default RetroColumn;

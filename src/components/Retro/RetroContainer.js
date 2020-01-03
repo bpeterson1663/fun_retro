@@ -13,7 +13,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 const RetroContainer = props => {
-  const [remaingVotes, setRemaingVotes] = useState("");
+  const [remaingVotes, setRemaingVotes] = useState(0);
   const [retroData, setRetroData] = useState({});
   const [retroStatus, setRetroStatus] = useState(true);
   const [retroExists, setRetroExists] = useState(true);
@@ -33,11 +33,29 @@ const RetroContainer = props => {
         if (doc.exists) {
           setRetroData(doc.data());
           setRetroStatus(retroData.isActive);
-          setRemaingVotes(retroData.numberOfVotes);
         } else {
           setRetroExists(false);
         }
       });
+    //Get Current Users votes for all columns
+    const promises = columnMaps.map(column => {
+      return db
+        .collection(column.value)
+        .where("retroId", "==", retroId)
+        .get();
+    });
+    let allVotes = [];
+    Promise.all(promises).then(res => {
+      _.each(res, querySnapshot => {
+        _.each(querySnapshot.docs, doc => {
+          const data = doc.data();
+          allVotes = allVotes.concat(data.voteMap);
+        });
+      });
+      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length;
+      setRemaingVotes(retroData.numberOfVotes - userVoteCount);
+    });
+
     return () => unsubscribe();
   }, [retroId, retroData.isActive, retroData.numberOfVotes]);
 
@@ -117,6 +135,7 @@ const RetroContainer = props => {
             <RetroColumn
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
+              remaingVotes={remaingVotes}
               title="Keep Doing"
               columnName="keepDoing"
               isActive={retroStatus}
@@ -126,6 +145,7 @@ const RetroContainer = props => {
             <RetroColumn
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
+              remaingVotes={remaingVotes}
               title="Stop Doing"
               columnName="stopDoing"
               isActive={retroStatus}
@@ -135,6 +155,7 @@ const RetroContainer = props => {
             <RetroColumn
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
+              remaingVotes={remaingVotes}
               title="Start Doing"
               columnName="startDoing"
               isActive={retroStatus}
