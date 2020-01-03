@@ -25,7 +25,7 @@ import CreateItem from "./Items/CreateItem";
 import useStyles from "./Retro.styles";
 
 const RetroColumn = props => {
-  const {columnName, retroId, getUserVoteStatus } = props;
+  const { columnName, retroId, getUserVoteStatus } = props;
   const [itemList, setItemList] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
@@ -39,15 +39,15 @@ const RetroColumn = props => {
       .where("retroId", "==", retroId)
       .onSnapshot(querySnapshot => {
         querySnapshot.docChanges().forEach(function(change) {
-            if (change.type === "removed") {
-              getUserVoteStatus()
-            }
+          if (change.type === "removed") {
+            getUserVoteStatus();
+          }
         });
         const columnData = querySnapshot.docs
           .map(doc => {
             const data = doc.data();
             data.id = doc.id;
-            if(!data.voteMap){
+            if (!data.voteMap) {
               data.voteMap = [];
             }
             return data;

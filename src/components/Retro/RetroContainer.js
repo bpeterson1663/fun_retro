@@ -59,7 +59,9 @@ const RetroContainer = props => {
         });
       });
       const userVoteCount = _.filter(allVotes, id => id === auth.userId).length;
-      isNaN(retroData.numberOfVotes - userVoteCount) === true ? setRemainingVotes(0) : setRemainingVotes(retroData.numberOfVotes - userVoteCount);
+      isNaN(retroData.numberOfVotes - userVoteCount) === true
+        ? setRemainingVotes(0)
+        : setRemainingVotes(retroData.numberOfVotes - userVoteCount);
     });
   };
 
@@ -135,7 +137,10 @@ const RetroContainer = props => {
       </Button>
       <Grid container justify="center" spacing={0}>
         <VoteContext.Provider
-          value={{ votes: remainingVotes, setRemainingVotes: setRemainingVotes }}
+          value={{
+            votes: remainingVotes,
+            setRemainingVotes: setRemainingVotes
+          }}
         >
           <Grid className={classes.keepDoing}>
             <RetroColumn
