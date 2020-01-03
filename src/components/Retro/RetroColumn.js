@@ -84,7 +84,7 @@ const RetroColumn = props => {
         item.voteMap = [auth.userId];
       }
       itemRef.update({ votes: incrementCounter, voteMap: item.voteMap });
-      vote.setRemaingVotes(--vote.votes);
+      vote.setRemainingVotes(--vote.votes);
     } else {
       if (item.voteMap) {
         item.voteMap.splice(item.voteMap.indexOf(auth.userId), 1);
@@ -92,7 +92,7 @@ const RetroColumn = props => {
         item.voteMap = [];
       }
       itemRef.update({ votes: decrementCounter, voteMap: item.voteMap });
-      vote.setRemaingVotes(++vote.votes);
+      vote.setRemainingVotes(++vote.votes);
     }
   };
 
