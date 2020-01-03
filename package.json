@@ -5,7 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.8.0",
     "@material-ui/icons": "^4.5.1",
-    "firebase": "^6.3.1",
+    "firebase": "^6.6.2",
     "jslint": "^0.12.1",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.1.3",

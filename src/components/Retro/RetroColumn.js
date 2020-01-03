@@ -25,6 +25,7 @@ import CreateItem from "./Items/CreateItem";
 import useStyles from "./Retro.styles";
 
 const RetroColumn = props => {
+  const {columnName, retroId, getUserVoteStatus } = props;
   const [itemList, setItemList] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
@@ -34,13 +35,21 @@ const RetroColumn = props => {
   const classes = useStyles();
   useEffect(() => {
     const unsubscribe = db
-      .collection(props.columnName)
-      .where("retroId", "==", props.retroId)
+      .collection(columnName)
+      .where("retroId", "==", retroId)
       .onSnapshot(querySnapshot => {
+        querySnapshot.docChanges().forEach(function(change) {
+            if (change.type === "removed") {
+              getUserVoteStatus()
+            }
+        });
         const columnData = querySnapshot.docs
           .map(doc => {
             const data = doc.data();
             data.id = doc.id;
+            if(!data.voteMap){
+              data.voteMap = [];
+            }
             return data;
           })
           .sort((a, b) => {
@@ -50,14 +59,14 @@ const RetroColumn = props => {
         setLoading(false);
       });
     return () => unsubscribe();
-  }, [props.columnName, props.retroId]);
+  }, [columnName, retroId, getUserVoteStatus]);
 
   const handleItemSubmit = value => {
     setLoading(true);
-    db.collection(props.columnName)
+    db.collection(columnName)
       .add({
         value: value,
-        retroId: props.retroId,
+        retroId: retroId,
         userId: auth.userId,
         votes: 0,
         voteMap: [],
@@ -67,7 +76,7 @@ const RetroColumn = props => {
   };
 
   const handleItemVote = (operation, item) => {
-    const itemRef = db.collection(props.columnName).doc(item.id);
+    const itemRef = db.collection(columnName).doc(item.id);
     if (operation === "addVote") {
       if (item.voteMap) {
         item.voteMap.push(auth.userId);
@@ -89,7 +98,7 @@ const RetroColumn = props => {
 
   const handleItemDelete = id => {
     setLoading(true);
-    db.collection(props.columnName)
+    db.collection(columnName)
       .doc(id)
       .delete()
       .finally(() => setLoading(false));
@@ -107,7 +116,7 @@ const RetroColumn = props => {
 
   const handleUpdateItem = () => {
     setLoading(true);
-    db.collection(props.columnName)
+    db.collection(columnName)
       .doc(itemEdit.id)
       .update({
         value: itemEdit.value
@@ -233,7 +242,8 @@ RetroColumn.propTypes = {
   title: PropTypes.string,
   votesPerPerson: PropTypes.number,
   retroId: PropTypes.string,
-  remaingVotes: PropTypes.number
+  remaingVotes: PropTypes.number,
+  getUserVoteStatus: PropTypes.func
 };
 
 export default RetroColumn;
