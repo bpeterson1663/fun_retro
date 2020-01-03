@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.2.1",
-    "@material-ui/icons": "^4.2.1",
-    "firebase": "^6.3.1",
+    "@material-ui/core": "^4.8.0",
+    "@material-ui/icons": "^4.5.1",
+    "firebase": "^6.6.2",
     "jslint": "^0.12.1",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.1.3",
@@ -13,17 +13,21 @@
     "lodash": "^4.17.15",
     "lodash.template": "^4.5.0",
     "moment": "^2.24.0",
-    "react": "^16.8.6",
+    "react": "^16.12.0",
     "react-app-polyfill": "^1.0.1",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "^3.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm install -g serve && serve -s build",
+    "start-local": "react-scripts --max_old_space_size=4096 start",
+    "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -42,5 +46,8 @@
       "last 1 ie version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "prettier": "^1.19.1"
+  }
 }
