@@ -25,7 +25,8 @@ const RetroContainer = props => {
     { title: "Stop Doing", value: "stopDoing", backgroundColor: "#E91D63" },
     { title: "Start Doing", value: "startDoing", backgroundColor: "#9C28B0" }
   ];
-  useEffect(() => {
+
+  const init = () => {
     const unsubscribe = db
       .collection("retros")
       .doc(retroId)
@@ -33,10 +34,15 @@ const RetroContainer = props => {
         if (doc.exists) {
           setRetroData(doc.data());
           setRetroStatus(retroData.isActive);
+          getUserVoteStatus();
         } else {
           setRetroExists(false);
         }
       });
+    return () => unsubscribe();
+  };
+
+  const getUserVoteStatus = () => {
     //Get Current Users votes for all columns
     const promises = columnMaps.map(column => {
       return db
@@ -55,9 +61,9 @@ const RetroContainer = props => {
       const userVoteCount = _.filter(allVotes, id => id === auth.userId).length;
       setRemaingVotes(retroData.numberOfVotes - userVoteCount);
     });
+  };
 
-    return () => unsubscribe();
-  }, [retroId, retroData.isActive, retroData.numberOfVotes]);
+  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes]);
 
   const handleRetroStatus = () => {
     db.collection("retros")
@@ -135,6 +141,7 @@ const RetroContainer = props => {
             <RetroColumn
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
+              getUserVoteStatus={getUserVoteStatus}
               remaingVotes={remaingVotes}
               title="Keep Doing"
               columnName="keepDoing"
@@ -145,6 +152,7 @@ const RetroContainer = props => {
             <RetroColumn
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
+              getUserVoteStatus={getUserVoteStatus}
               remaingVotes={remaingVotes}
               title="Stop Doing"
               columnName="stopDoing"
@@ -155,6 +163,7 @@ const RetroContainer = props => {
             <RetroColumn
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
+              getUserVoteStatus={getUserVoteStatus}
               remaingVotes={remaingVotes}
               title="Start Doing"
               columnName="startDoing"
