@@ -25,7 +25,7 @@ import CreateItem from "./Items/CreateItem";
 import useStyles from "./Retro.styles";
 
 const RetroColumn = props => {
-  const { columnName, retroId, getUserVoteStatus } = props;
+  const { columnName, retroId, votesPerPerson } = props;
   const [itemList, setItemList] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
@@ -33,12 +33,18 @@ const RetroColumn = props => {
   const auth = useContext(AuthContext);
   const vote = useContext(VoteContext);
   const classes = useStyles();
-  useEffect(() => {
+  const columnMaps = [
+    { title: "Keep Doing", value: "keepDoing", backgroundColor: "#009588" },
+    { title: "Stop Doing", value: "stopDoing", backgroundColor: "#E91D63" },
+    { title: "Start Doing", value: "startDoing", backgroundColor: "#9C28B0" }
+  ];
+
+  const init = () => {
     const unsubscribe = db
       .collection(columnName)
       .where("retroId", "==", retroId)
       .onSnapshot(querySnapshot => {
-        querySnapshot.docChanges().forEach(function(change) {
+        _.each(querySnapshot.docChanges(), change => {
           if (change.type === "removed") {
             getUserVoteStatus();
           }
@@ -59,7 +65,28 @@ const RetroColumn = props => {
         setLoading(false);
       });
     return () => unsubscribe();
-  }, [columnName, retroId, getUserVoteStatus]);
+  };
+  const getUserVoteStatus = () => {
+    //Get Current Users votes for all columns
+    const promises = columnMaps.map(column => {
+      return db
+        .collection(column.value)
+        .where("retroId", "==", retroId)
+        .get();
+    });
+    let allVotes = [];
+    Promise.all(promises).then(res => {
+      _.each(res, querySnapshot => {
+        _.each(querySnapshot.docs, doc => {
+          const data = doc.data();
+          allVotes = allVotes.concat(data.voteMap);
+        });
+      });
+      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length;
+      vote.setRemainingVotes(votesPerPerson - userVoteCount);
+    });
+  };
+  useEffect(init, [votesPerPerson]);
 
   const handleItemSubmit = value => {
     setLoading(true);
@@ -130,7 +157,7 @@ const RetroColumn = props => {
   };
 
   const disableDeleteVotes = item => {
-    return vote.votes === props.votesPerPerson || getUsersVoteCount(item) === 0;
+    return vote.votes === votesPerPerson || getUsersVoteCount(item) === 0;
   };
 
   const showRemoveVote = item => {
@@ -242,8 +269,7 @@ RetroColumn.propTypes = {
   title: PropTypes.string,
   votesPerPerson: PropTypes.number,
   retroId: PropTypes.string,
-  remaingVotes: PropTypes.number,
-  getUserVoteStatus: PropTypes.func
+  remaingVotes: PropTypes.number
 };
 
 export default RetroColumn;
