@@ -13,7 +13,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 const RetroContainer = props => {
-  const [remaingVotes, setRemaingVotes] = useState(0);
+  const [remainingVotes, setRemainingVotes] = useState(0);
   const [retroData, setRetroData] = useState({});
   const [retroStatus, setRetroStatus] = useState(true);
   const [retroExists, setRetroExists] = useState(true);
@@ -59,7 +59,7 @@ const RetroContainer = props => {
         });
       });
       const userVoteCount = _.filter(allVotes, id => id === auth.userId).length;
-      setRemaingVotes(retroData.numberOfVotes - userVoteCount);
+      isNaN(retroData.numberOfVotes - userVoteCount) === true ? setRemainingVotes(0) : setRemainingVotes(retroData.numberOfVotes - userVoteCount);
     });
   };
 
@@ -123,7 +123,7 @@ const RetroContainer = props => {
         {retroData.startDate} through {retroData.endDate}
       </Typography>
       <Typography variant="subtitle2">
-        {retroStatus ? `Remaining Votes: ${remaingVotes}` : `Retro Has Ended`}
+        {retroStatus ? `Remaining Votes: ${remainingVotes}` : `Retro Has Ended`}
       </Typography>
       {retroData.userId === auth.userId ? (
         <Button size="small" color="secondary" onClick={handleRetroStatus}>
@@ -135,14 +135,14 @@ const RetroContainer = props => {
       </Button>
       <Grid container justify="center" spacing={0}>
         <VoteContext.Provider
-          value={{ votes: remaingVotes, setRemaingVotes: setRemaingVotes }}
+          value={{ votes: remainingVotes, setRemainingVotes: setRemainingVotes }}
         >
           <Grid className={classes.keepDoing}>
             <RetroColumn
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
               getUserVoteStatus={getUserVoteStatus}
-              remaingVotes={remaingVotes}
+              remainingVotes={remainingVotes}
               title="Keep Doing"
               columnName="keepDoing"
               isActive={retroStatus}
@@ -153,7 +153,7 @@ const RetroContainer = props => {
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
               getUserVoteStatus={getUserVoteStatus}
-              remaingVotes={remaingVotes}
+              remainingVotes={remainingVotes}
               title="Stop Doing"
               columnName="stopDoing"
               isActive={retroStatus}
@@ -164,7 +164,7 @@ const RetroContainer = props => {
               retroId={retroId}
               votesPerPerson={props.numberOfVotes}
               getUserVoteStatus={getUserVoteStatus}
-              remaingVotes={remaingVotes}
+              remainingVotes={remainingVotes}
               title="Start Doing"
               columnName="startDoing"
               isActive={retroStatus}
