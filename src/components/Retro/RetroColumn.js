@@ -47,6 +47,9 @@ const RetroColumn = props => {
           .map(doc => {
             const data = doc.data();
             data.id = doc.id;
+            if(!data.voteMap){
+              data.voteMap = [];
+            }
             return data;
           })
           .sort((a, b) => {
