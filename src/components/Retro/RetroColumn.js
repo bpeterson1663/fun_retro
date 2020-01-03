@@ -66,21 +66,20 @@ const RetroColumn = props => {
       .finally(() => setLoading(false));
   };
 
-
   const handleItemVote = (operation, item) => {
     const itemRef = db.collection(props.columnName).doc(item.id);
     if (operation === "addVote") {
-      if(item.voteMap){
+      if (item.voteMap) {
         item.voteMap.push(auth.userId);
-      }else{
+      } else {
         item.voteMap = [auth.userId];
       }
       itemRef.update({ votes: incrementCounter, voteMap: item.voteMap });
       vote.setRemaingVotes(--vote.votes);
     } else {
-      if(item.voteMap){
+      if (item.voteMap) {
         item.voteMap.splice(item.voteMap.indexOf(auth.userId), 1);
-      } else{
+      } else {
         item.voteMap = [];
       }
       itemRef.update({ votes: decrementCounter, voteMap: item.voteMap });
@@ -128,8 +127,6 @@ const RetroColumn = props => {
   const showRemoveVote = item => {
     return getUsersVoteCount(item) > 0;
   };
-
-  
 
   return (
     <Container style={{ padding: "8px" }}>

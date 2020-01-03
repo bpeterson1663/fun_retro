@@ -39,8 +39,9 @@ const RetroContainer = props => {
       });
     //Get Current Users votes for all columns
     const promises = columnMaps.map(column => {
-      return db.collection(column.value)
-        .where('retroId', '==', retroId)
+      return db
+        .collection(column.value)
+        .where("retroId", "==", retroId)
         .get();
     });
     let allVotes = [];
@@ -51,8 +52,8 @@ const RetroContainer = props => {
           allVotes = allVotes.concat(data.voteMap);
         });
       });
-      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length
-      setRemaingVotes(retroData.numberOfVotes - userVoteCount)
+      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length;
+      setRemaingVotes(retroData.numberOfVotes - userVoteCount);
     });
 
     return () => unsubscribe();
