@@ -49,7 +49,7 @@ const Navigation = () => {
         </Button>
       </Link>
       <Link
-        data-id="sign_out"
+        data-testid="sign_out"
         to="/login"
         style={{ textDecoration: "none" }}
         onClick={handleLogOut.bind(this)}

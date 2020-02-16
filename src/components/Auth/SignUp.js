@@ -80,6 +80,7 @@ const SignUp = props => {
           }}
           as={
             <TextField
+              data-testid="signup_email"
               className={classes.inputField}
               type="email"
               placeholder="Email"
@@ -100,6 +101,7 @@ const SignUp = props => {
           }}
           as={
             <TextField
+              data-testid="signup_password"
               className={classes.inputField}
               type="password"
               placeholder="Password"
@@ -117,6 +119,7 @@ const SignUp = props => {
           }}
           as={
             <TextField
+              data-testid="signup_confirm-password"
               className={classes.inputField}
               type="password"
               placeholder="Confirm Password"
@@ -125,6 +128,7 @@ const SignUp = props => {
             />}
           />
         <Button
+          data-testid="signup_submit"
           type="submit"
           value="Sign Up"
           color="secondary"
