@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useForm, Controller } from 'react-hook-form';
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import AuthContext from "../../context/auth-context";
@@ -12,8 +13,7 @@ import SnackBar from "../Common/SnackBar";
 import useStyles from "./Auth.styles";
 
 const SignUp = props => {
-  const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
+  const { handleSubmit, control, errors, watch } = useForm()
   const [messageState, setMessageState] = useState({
     message: "",
     messageStatus: "",
@@ -28,12 +28,11 @@ const SignUp = props => {
     retroId = props.location.state.retroId;
   }
 
-  const submitHandler = event => {
+  const submitHandler = data => {
     setLoading(true);
-    event.preventDefault();
     firebase
       .auth()
-      .createUserWithEmailAndPassword(emailValue, passwordValue)
+      .createUserWithEmailAndPassword(data.email, data.password)
       .then(() => {
         auth.login(true);
         retroId
@@ -49,19 +48,6 @@ const SignUp = props => {
         auth.login(false);
       })
       .finally(() => setLoading(false));
-  };
-
-  const onChangeHandler = (event, value) => {
-    switch (value) {
-      case "email":
-        setEmailValue(event.target.value);
-        break;
-      case "password":
-        setPasswordValue(event.target.value);
-        break;
-      default:
-        return;
-    }
   };
 
   const handleMessageClose = () => {
@@ -84,21 +70,60 @@ const SignUp = props => {
       <Typography variant="subtitle2">
         Start making your sprint retrospectives super fun!
       </Typography>
-      <form onSubmit={submitHandler.bind(this)}>
-        <TextField
-          className={classes.inputField}
-          type="email"
-          placeholder="Email"
-          value={emailValue}
-          onChange={event => onChangeHandler(event, "email")}
+      <form className={classes.form} onSubmit={handleSubmit(submitHandler)}>
+        <Controller
+          name="email" 
+          control={control}
+          defaultValue={''}
+          rules={{
+            required: "You must provide a valid email address"
+          }}
+          as={
+            <TextField
+              className={classes.inputField}
+              type="email"
+              placeholder="Email"
+              helperText={errors.email && errors.email.message}
+              error={errors.email}
+            />}
         />
-        <TextField
-          className={classes.inputField}
-          type="password"
-          placeholder="Password"
-          value={passwordValue}
-          onChange={event => onChangeHandler(event, "password")}
-        />
+        <Controller
+          name="password" 
+          control={control}
+          defaultValue={''}
+          rules={{
+            required: "You must specify a password",
+            minLength: {
+              value: 8,
+              message: "Password must have at least 8 characters"
+            }
+          }}
+          as={
+            <TextField
+              className={classes.inputField}
+              type="password"
+              placeholder="Password"
+              helperText={errors.password && errors.password.message}
+              error={errors.password}
+            />}
+          />
+        <Controller
+          control={control}
+          name="confirmPassword" 
+          defaultValue={''}
+          rules={{
+            required: "You must confirm your password",
+            validate: (value) => value === watch('password') || "Passwords do not match"
+          }}
+          as={
+            <TextField
+              className={classes.inputField}
+              type="password"
+              placeholder="Confirm Password"
+              helperText={errors.confirmPassword && errors.confirmPassword.message}
+              error={errors.confirmPassword}
+            />}
+          />
         <Button
           type="submit"
           value="Sign Up"
@@ -115,8 +140,7 @@ const SignUp = props => {
           state: { retroId: retroId }
         }}
       >
-        {" "}
-        Log In{" "}
+        Log In
       </Link>
       {messageState.displayMessage ? (
         <SnackBar
