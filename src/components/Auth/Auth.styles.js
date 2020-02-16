@@ -1,6 +1,12 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
+  form: {
+    display: 'flex',
+    'flex-direction': 'column',
+    'max-width': 400,
+    margin: '0 auto'
+  },
   inputField: {
     margin: theme.spacing(2)
   },
