@@ -88,7 +88,7 @@ const Login = props => {
       <Typography variant="subtitle2">
         and start your Super Fun Retro experience!
       </Typography>
-      <form onSubmit={submitHandler.bind(this)}>
+      <form className={classes.form} onSubmit={submitHandler.bind(this)}>
         <TextField
           className={classes.inputField}
           type="email"
@@ -116,7 +116,7 @@ const Login = props => {
         Forgot Your Password?
       </Link>
       <Link
-        data-id="signup_from_login"
+        data-testid="signup_from_login"
         className={classes.links}
         to={{
           pathname: "/signup",

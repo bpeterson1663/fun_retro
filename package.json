@@ -17,6 +17,7 @@
     "react-app-polyfill": "^1.0.1",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
+    "react-hook-form": "^4.9.3",
     "react-router-dom": "^5.0.1",
     "react-scripts": "^3.3.0"
   },

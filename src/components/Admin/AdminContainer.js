@@ -269,7 +269,7 @@ const AdminContainer = () => {
                       className={classes.icon}
                       onClick={handleConfirmOpen.bind(this, retro.id)}
                     >
-                      <DeleteIcon disabled={isLoading} data-id="delete_button">
+                      <DeleteIcon disabled={isLoading} data-testid="admin_delete-retro-button">
                         Delete
                       </DeleteIcon>
                     </IconButton>
@@ -283,9 +283,10 @@ const AdminContainer = () => {
     );
   };
   return (
-    <Container data-id="admin_container">
+    <Container data-testid="admin_container">
       <div className={classes.actionButtons}>
         <Button
+          data-testid="admin_create-retro"
           onClick={handleCreateOpen}
           variant="contained"
           color="secondary"
@@ -312,7 +313,7 @@ const AdminContainer = () => {
         />
       ) : null}
       <Dialog
-        data-id="warning_dialog"
+        data-testid="delete-warning_dialog"
         open={confirmDialogOpen}
         onClose={handleConfirmClose}
         aria-labelledby="alert-dialog-title"
@@ -326,7 +327,7 @@ const AdminContainer = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            data-id="confirm-delete_button"
+            data-testid="confirm-delete_button"
             onClick={handleRetroDelete.bind(this, retroIdToDelete)}
             color="secondary"
             variant="contained"
@@ -334,7 +335,7 @@ const AdminContainer = () => {
             Delete It!
           </Button>
           <Button
-            data-id="cancel-delete_button"
+            data-testid="cancel-delete_button"
             onClick={handleConfirmClose.bind(this)}
             color="primary"
             variant="contained"
