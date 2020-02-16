@@ -49,7 +49,7 @@ const CreateRetroDialog = props => {
 
   return (
     <Dialog
-      data-id="create_dialog"
+      data-testid="create_dialog"
       open={props.createStatus}
       onClose={handleCreateClose}
     >
@@ -101,6 +101,7 @@ const CreateRetroDialog = props => {
       </DialogContent>
       <DialogActions>
         <Button
+          data-testid="admin_submit-retro"
           disabled={props.isLoading}
           onClick={onSubmitHandler}
           color="secondary"
