@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import AuthContext from "../../context/auth-context";
@@ -13,7 +13,7 @@ import SnackBar from "../Common/SnackBar";
 import useStyles from "./Auth.styles";
 
 const SignUp = props => {
-  const { handleSubmit, control, errors, watch } = useForm()
+  const { handleSubmit, control, errors, watch } = useForm();
   const [messageState, setMessageState] = useState({
     message: "",
     messageStatus: "",
@@ -72,9 +72,9 @@ const SignUp = props => {
       </Typography>
       <form className={classes.form} onSubmit={handleSubmit(submitHandler)}>
         <Controller
-          name="email" 
+          name="email"
           control={control}
-          defaultValue={''}
+          defaultValue={""}
           rules={{
             required: "You must provide a valid email address"
           }}
@@ -86,12 +86,13 @@ const SignUp = props => {
               placeholder="Email"
               helperText={errors.email && errors.email.message}
               error={errors.email}
-            />}
+            />
+          }
         />
         <Controller
-          name="password" 
+          name="password"
           control={control}
-          defaultValue={''}
+          defaultValue={""}
           rules={{
             required: "You must specify a password",
             minLength: {
@@ -107,15 +108,17 @@ const SignUp = props => {
               placeholder="Password"
               helperText={errors.password && errors.password.message}
               error={errors.password}
-            />}
-          />
+            />
+          }
+        />
         <Controller
           control={control}
-          name="confirmPassword" 
-          defaultValue={''}
+          name="confirmPassword"
+          defaultValue={""}
           rules={{
             required: "You must confirm your password",
-            validate: (value) => value === watch('password') || "Passwords do not match"
+            validate: value =>
+              value === watch("password") || "Passwords do not match"
           }}
           as={
             <TextField
@@ -123,10 +126,13 @@ const SignUp = props => {
               className={classes.inputField}
               type="password"
               placeholder="Confirm Password"
-              helperText={errors.confirmPassword && errors.confirmPassword.message}
+              helperText={
+                errors.confirmPassword && errors.confirmPassword.message
+              }
               error={errors.confirmPassword}
-            />}
-          />
+            />
+          }
+        />
         <Button
           data-testid="signup_submit"
           type="submit"

@@ -269,7 +269,10 @@ const AdminContainer = () => {
                       className={classes.icon}
                       onClick={handleConfirmOpen.bind(this, retro.id)}
                     >
-                      <DeleteIcon disabled={isLoading} data-testid="admin_delete-retro-button">
+                      <DeleteIcon
+                        disabled={isLoading}
+                        data-testid="admin_delete-retro-button"
+                      >
                         Delete
                       </DeleteIcon>
                     </IconButton>
