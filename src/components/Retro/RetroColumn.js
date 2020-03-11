@@ -234,13 +234,13 @@ const RetroColumn = props => {
                   }
                 />
               ) : (
-                item.value
+              <Typography variant="body1">{item.value}</Typography>
               )}
               {item.comments.length > 0
                 ? item.comments.map((comment, i) => {
                     return (
                       <div className={classes.commentContainer} key={i}>
-                        {comment.value}
+                        <Typography className={classes.comment} variant="body2">{comment.value}</Typography>
                         {comment.userId === auth.userId ? (
                           <IconButton
                             onClick={() => handleCommentDelete(comment, item)}

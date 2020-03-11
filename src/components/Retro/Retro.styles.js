@@ -112,6 +112,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "#DDD",
     padding: "5px 0 0 10px",
     margin: 8
+  },
+  comment: {
+    width: "82%"
   }
 }));
 
