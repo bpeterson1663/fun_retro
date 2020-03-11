@@ -119,7 +119,10 @@ const RetroContainer = props => {
   };
 
   const retroContainer = (
-    <Container style={{ padding: "8px", maxWidth: "100%" }} data-testid="retro_container">
+    <Container
+      style={{ padding: "8px", maxWidth: "100%" }}
+      data-testid="retro_container"
+    >
       <Typography variant="h4">{retroData.name}</Typography>
       <Typography variant="subtitle1">
         {retroData.startDate} through {retroData.endDate}
