@@ -87,6 +87,31 @@ const useStyles = makeStyles(theme => ({
   },
   editTextBox: {
     width: "100%"
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500]
+  },
+  dialogContent: {
+    width: 400,
+    margin: "auto",
+    display: "flex",
+    flexFlow: "row wrap",
+    justifyContent: "center"
+  },
+  commentContainer: {
+    width: "90%",
+    minHeight: 43,
+    verticalAlign: "middle",
+    display: "flex",
+    flexFlow: "row wrap",
+    justifyContent: "space-between",
+    borderRadius: 5,
+    backgroundColor: "#DDD",
+    padding: "5px 0 0 10px",
+    margin: 8
   }
 }));
 

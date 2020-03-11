@@ -21,7 +21,9 @@ import Avatar from "@material-ui/core/Avatar";
 import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
 import CancelIcon from "@material-ui/icons/Cancel";
+import CommentIcon from "@material-ui/icons/Comment";
 import CreateItem from "./Items/CreateItem";
+import CommentItemDialog from "./Items/CommentItemDialog";
 import useStyles from "./Retro.styles";
 
 const RetroColumn = props => {
@@ -30,6 +32,7 @@ const RetroColumn = props => {
   const [isLoading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [itemEdit, setItemEdit] = useState({});
+  const [showCommentDialog, setShowCommentDialog] = useState({});
   const auth = useContext(AuthContext);
   const vote = useContext(VoteContext);
   const classes = useStyles();
@@ -55,6 +58,9 @@ const RetroColumn = props => {
             data.id = doc.id;
             if (!data.voteMap) {
               data.voteMap = [];
+            }
+            if (!data.comments) {
+              data.comments = [];
             }
             return data;
           })
@@ -97,7 +103,8 @@ const RetroColumn = props => {
         userId: auth.userId,
         votes: 0,
         voteMap: [],
-        timestamp: new moment().valueOf()
+        timestamp: new moment().valueOf(),
+        comments: []
       })
       .finally(() => setLoading(false));
   };
@@ -164,6 +171,37 @@ const RetroColumn = props => {
     return getUsersVoteCount(item) > 0;
   };
 
+  const handleCommentClose = () => {
+    setShowCommentDialog({});
+  };
+
+  const handleAddComment = (val, item) => {
+    setLoading(true);
+    item.comments.push({ value: val, userId: auth.userId });
+    db.collection(columnName)
+      .doc(item.id)
+      .update({
+        comments: item.comments
+      })
+      .then(() => handleCommentClose({}))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  };
+
+  const handleCommentDelete = (comment, item) => {
+    setLoading(true);
+    const newComments = item.comments.filter(function(obj) {
+      return obj !== comment;
+    });
+    db.collection(columnName)
+      .doc(item.id)
+      .update({
+        comments: newComments
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  };
+
   return (
     <Container style={{ padding: "8px" }}>
       {isLoading ? (
@@ -198,6 +236,22 @@ const RetroColumn = props => {
               ) : (
                 item.value
               )}
+              {item.comments.length > 0
+                ? item.comments.map((comment, i) => {
+                    return (
+                      <div className={classes.commentContainer} key={i}>
+                        {comment.value}
+                        {comment.userId === auth.userId ? (
+                          <IconButton
+                            onClick={() => handleCommentDelete(comment, item)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        ) : null}
+                      </div>
+                    );
+                  })
+                : null}
             </CardContent>
             <CardActions className={classes.cardAction}>
               <div className={classes.voteContainer}>
@@ -221,6 +275,11 @@ const RetroColumn = props => {
                     Remove Vote
                   </Button>
                 ) : null}
+                <IconButton
+                  onClick={() => setShowCommentDialog({ item: item })}
+                >
+                  <CommentIcon />
+                </IconButton>
               </div>
               {auth.userId === item.userId ? (
                 editMode && itemEdit.id === item.id ? (
@@ -259,6 +318,11 @@ const RetroColumn = props => {
           </Card>
         );
       })}
+      <CommentItemDialog
+        showCommentDialog={showCommentDialog}
+        handleCommentClose={handleCommentClose}
+        addComment={handleAddComment}
+      />
     </Container>
   );
 };
