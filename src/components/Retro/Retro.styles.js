@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
   cardAction: {
     width: "100%",
     display: "flex",
-    justifyContent: "space-evenly"
+    justifyContent: "space-between"
   },
   remove: {
     fontSize: 8,
@@ -76,15 +76,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: "auto"
   },
   voteContainer: {
-    width: "49%",
     display: "flex",
     flexFlow: "row wrap",
-    justifyContent: "flex-start"
+    padding: "0 10px"
   },
   editContainer: {
+    padding: "0 10px",
     display: "flex",
-    flexFlow: "row wrap",
-    justifyContent: "space-around"
+    flexFlow: "row wrap"
   },
   editTextBox: {
     width: "100%"
