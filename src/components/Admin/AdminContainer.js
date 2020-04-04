@@ -22,6 +22,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import TablePagination from '@material-ui/core/TablePagination';
 import Paper from "@material-ui/core/Paper";
 import CreateRetroDialog from "./Dialogs/CreateRetroDialog";
 import EditRetroDialog from "./Dialogs/EditRetroDialog";
@@ -38,7 +39,8 @@ const AdminContainer = () => {
   const [retroIdToDelete, setRetroIdToDelete] = useState("");
   const [retroLink, setRetroLink] = useState("");
   const [showLinkStatus, setShowLinkStatus] = useState(false);
-
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [messageState, setMessageState] = useState({
     message: "",
     messageStatus: "",
@@ -221,11 +223,27 @@ const AdminContainer = () => {
       messageStatus: ""
     });
   };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const RetroData = () => {
     return (
       <div>
         <Typography variant="h5">Retro List</Typography>
+        <TablePagination
+          rowsPerPageOptions={[10, 20, 30]}
+          component="div"
+          count={retroList.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
         <TableContainer className={classes.tableContainer} component={Paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -239,7 +257,7 @@ const AdminContainer = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {retroList.map(retro => (
+              {retroList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(retro => (
                 <TableRow key={retro.id}>
                   <TableCell className={classes.nameCell}>
                     {retro.name}
