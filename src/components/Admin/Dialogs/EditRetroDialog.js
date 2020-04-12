@@ -52,7 +52,7 @@ const EditRetroDialog = props => {
       onClose={handleEditClose}
     >
       <DialogTitle>
-        <Typography variant="h6">Edit Retro - {name}</Typography>
+        <Typography>Edit Retro - {name}</Typography>
         <IconButton className={classes.closeButton} onClick={handleEditClose}>
           <CloseIcon />
         </IconButton>
@@ -61,7 +61,7 @@ const EditRetroDialog = props => {
         <TextField
           name="retro_name"
           required
-          className={[classes.inputField, classes.inputFieldText]}
+          className={`${classes.inputField} ${classes.inputFieldText}`}
           type="text"
           label="Retro Name"
           value={nameValue}

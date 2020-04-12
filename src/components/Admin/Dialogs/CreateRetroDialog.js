@@ -54,22 +54,24 @@ const CreateRetroDialog = props => {
       onClose={handleCreateClose}
     >
       <DialogTitle>
-        <Typography variant="h6">Create New Retro</Typography>
+        <Typography>Create New Retro</Typography>
         <IconButton className={classes.closeButton} onClick={handleCreateClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
         <TextField
+          inputProps={{ "data-testid": "retro_name" }}
           name="retro_name"
           required
-          className={[classes.inputField, classes.inputFieldText]}
+          className={`${classes.inputField} ${classes.inputFieldText}`}
           type="text"
           label="Retro Name"
           value={nameValue}
           onChange={e => setNameValue(e.target.value)}
         />
         <TextField
+          inputProps={{ "data-testid": "retro_start" }}
           name="retro_start"
           required
           className={classes.inputField}
@@ -80,6 +82,7 @@ const CreateRetroDialog = props => {
           onChange={e => setStartDateValue(e.target.value)}
         />
         <TextField
+          inputProps={{ "data-testid": "retro_end" }}
           name="retro_end"
           required
           className={classes.inputField}
@@ -90,6 +93,7 @@ const CreateRetroDialog = props => {
           onChange={e => setEndDateValue(e.target.value)}
         />
         <TextField
+          inputProps={{ "data-testid": "retro_vote" }}
           name="retro_vote"
           required
           className={classes.inputField}
