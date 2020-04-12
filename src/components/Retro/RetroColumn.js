@@ -234,13 +234,15 @@ const RetroColumn = props => {
                   }
                 />
               ) : (
-              <Typography variant="body1">{item.value}</Typography>
+                <Typography variant="body1">{item.value}</Typography>
               )}
               {item.comments.length > 0
                 ? item.comments.map((comment, i) => {
                     return (
                       <div className={classes.commentContainer} key={i}>
-                        <Typography className={classes.comment} variant="body2">{comment.value}</Typography>
+                        <Typography className={classes.comment} variant="body2">
+                          {comment.value}
+                        </Typography>
                         {comment.userId === auth.userId ? (
                           <IconButton
                             disabled={!props.isActive}

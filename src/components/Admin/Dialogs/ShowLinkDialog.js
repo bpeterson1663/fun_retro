@@ -27,7 +27,7 @@ const ShowLinkDialog = props => {
       onClose={handleShowLinkClose}
     >
       <DialogTitle>
-        <Typography variant="h6">Retro Link - {retroLink.name}</Typography>
+        <Typography>Retro Link - {retroLink.name}</Typography>
         <IconButton
           className={classes.closeButton}
           onClick={handleShowLinkClose}

@@ -22,7 +22,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TablePagination from '@material-ui/core/TablePagination';
+import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import CreateRetroDialog from "./Dialogs/CreateRetroDialog";
 import EditRetroDialog from "./Dialogs/EditRetroDialog";
@@ -227,7 +227,7 @@ const AdminContainer = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -257,46 +257,48 @@ const AdminContainer = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {retroList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(retro => (
-                <TableRow key={retro.id}>
-                  <TableCell className={classes.nameCell}>
-                    {retro.name}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      color="secondary"
-                      onClick={() => handleShowLink(retro)}
-                    >
-                      Show Link
-                    </Button>
-                  </TableCell>
-                  <TableCell>{retro.startDate}</TableCell>
-                  <TableCell>{retro.endDate}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      className={classes.icon}
-                      onClick={handleEditItem.bind(this, retro)}
-                    >
-                      <EditIcon disabled={isLoading} />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      className={classes.icon}
-                      onClick={handleConfirmOpen.bind(this, retro.id)}
-                    >
-                      <DeleteIcon
-                        disabled={isLoading}
-                        data-testid="admin_delete-retro-button"
+              {retroList
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map(retro => (
+                  <TableRow key={retro.id}>
+                    <TableCell className={classes.nameCell}>
+                      {retro.name}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => handleShowLink(retro)}
                       >
-                        Delete
-                      </DeleteIcon>
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        Show Link
+                      </Button>
+                    </TableCell>
+                    <TableCell>{retro.startDate}</TableCell>
+                    <TableCell>{retro.endDate}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        className={classes.icon}
+                        onClick={handleEditItem.bind(this, retro)}
+                      >
+                        <EditIcon disabled={isLoading} />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        className={classes.icon}
+                        onClick={handleConfirmOpen.bind(this, retro.id)}
+                      >
+                        <DeleteIcon
+                          disabled={isLoading}
+                          data-testid="admin_delete-retro-button"
+                        >
+                          Delete
+                        </DeleteIcon>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
