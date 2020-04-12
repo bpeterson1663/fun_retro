@@ -36,7 +36,7 @@ const SnackBar = props => {
   const classes = useStyles();
   return (
     <Snackbar
-      data-testid="snackbar_message"
+      inputProps={{ "data-testid": "snackbar_message" }}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       open={props.open}
       autoHideDuration={6000}
@@ -69,7 +69,7 @@ const SnackBar = props => {
 
 SnackBar.propTypes = {
   open: PropTypes.bool,
-  close: PropTypes.bool,
+  close: PropTypes.func,
   message: PropTypes.string,
   status: PropTypes.string
 };
