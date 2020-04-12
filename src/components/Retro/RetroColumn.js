@@ -243,6 +243,7 @@ const RetroColumn = props => {
                         <Typography className={classes.comment} variant="body2">{comment.value}</Typography>
                         {comment.userId === auth.userId ? (
                           <IconButton
+                            disabled={!props.isActive}
                             onClick={() => handleCommentDelete(comment, item)}
                           >
                             <DeleteIcon />
@@ -276,6 +277,7 @@ const RetroColumn = props => {
                   </Button>
                 ) : null}
                 <IconButton
+                  disabled={!props.isActive}
                   onClick={() => setShowCommentDialog({ item: item })}
                 >
                   <CommentIcon />
