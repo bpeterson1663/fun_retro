@@ -22,7 +22,6 @@ const useStyles = makeStyles(theme => ({
   },
   faqButton: {
     color: "#fff",
-    maxWidth: 250,
     "&:hover": {
       cursor: "auto"
     }
