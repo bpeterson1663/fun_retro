@@ -36,7 +36,7 @@ const SnackBar = props => {
   const classes = useStyles();
   return (
     <Snackbar
-      inputProps={{ "data-testid": "snackbar_message" }}
+      data-testid="snackbar_message"
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       open={props.open}
       autoHideDuration={6000}
