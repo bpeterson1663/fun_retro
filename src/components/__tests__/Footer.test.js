@@ -4,5 +4,9 @@ import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 
 it("Footer Loads", () => {
-  render(<BrowserRouter><Footer /></BrowserRouter>);
+  render(
+    <BrowserRouter>
+      <Footer />
+    </BrowserRouter>
+  );
 });

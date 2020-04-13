@@ -1,15 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import HelpIcon from '@material-ui/icons/Help';
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import HelpIcon from "@material-ui/icons/Help";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
     height: 50,
     position: "fixed",
     bottom: 0,
@@ -18,18 +18,18 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.main
   },
   copyright: {
-    color: "#fff",
+    color: "#fff"
   },
-  faqButton:{
-    color: '#fff',
+  faqButton: {
+    color: "#fff",
     maxWidth: 250,
-    '&:hover':{
-      cursor: 'auto'
+    "&:hover": {
+      cursor: "auto"
     }
   },
   faq: {
-    textDecoration: 'none',
-    color: '#fff',
+    textDecoration: "none",
+    color: "#fff"
   },
   gridContainer: {
     margin: 0
@@ -47,15 +47,20 @@ const Footer = () => {
       <BottomNavigationAction
         className={classes.copyright}
         component="div"
-        label={`Copyright \u00A9 ${currentYear.format("YYYY")} BJP Software All rights
-        reserved`}/>
+        label={`Copyright \u00A9 ${currentYear.format(
+          "YYYY"
+        )} BJP Software All rights
+        reserved`}
+      />
       <BottomNavigationAction
-          className={classes.faqButton}
-          label="Frequently Asked Questions"
-          icon={<Link
-          to="/faq"
-          className={classes.faq}
-        ><HelpIcon/></Link>}/>
+        className={classes.faqButton}
+        label="Frequently Asked Questions"
+        icon={
+          <Link to="/faq" className={classes.faq}>
+            <HelpIcon />
+          </Link>
+        }
+      />
     </BottomNavigation>
   );
 };
