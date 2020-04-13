@@ -37,7 +37,7 @@ const AdminContainer = () => {
   const [editRetro, setEditRetro] = useState({});
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [retroIdToDelete, setRetroIdToDelete] = useState("");
-  const [retroLink, setRetroLink] = useState("");
+  const [retroLink, setRetroLink] = useState({});
   const [showLinkStatus, setShowLinkStatus] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);

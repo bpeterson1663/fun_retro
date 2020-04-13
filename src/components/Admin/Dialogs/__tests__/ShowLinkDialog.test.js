@@ -6,12 +6,12 @@ import ShowLinkDialog from "../ShowLinkDialog";
 test("show link dialog should render", () => {
   render(
     <ShowLinkDialog
-        retroLink={{
-          name: 'Test Retro',
-          startDate: '2020-01-01',
-          endDate: '2020-01-15',
-          numberOfVotes: 6,
-          id: 'MroWInV20rxNENup0Caq'
+      retroLink={{
+        name: "Test Retro",
+        startDate: "2020-01-01",
+        endDate: "2020-01-15",
+        numberOfVotes: 6,
+        id: "MroWInV20rxNENup0Caq"
       }}
       handleShowLinkClose={() => {}}
       showLinkStatus={true}

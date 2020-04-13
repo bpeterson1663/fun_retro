@@ -166,7 +166,7 @@ const SignUp = props => {
 
 SignUp.propTypes = {
   location: PropTypes.object,
-  history: PropTypes.array
+  history: PropTypes.object
 };
 
 export default SignUp;
