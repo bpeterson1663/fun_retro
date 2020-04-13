@@ -52,7 +52,7 @@ const FAQ = props => {
       <Button
         color="secondary"
         variant="contained"
-        sizeSmall
+        size="small"
         className={classes.back}
         onClick={() => props.history.goBack()}
       >
@@ -72,7 +72,7 @@ const FAQ = props => {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography className={[classes.heading, classes.green]}>
+          <Typography className={`${classes.heading} ${classes.green}`}>
             What is Super Fun Retro?
           </Typography>
         </ExpansionPanelSummary>
@@ -98,7 +98,7 @@ const FAQ = props => {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography className={[classes.heading, classes.pink]}>
+          <Typography className={`${classes.heading} ${classes.pink}`}>
             How does Fun Retro work?
           </Typography>
         </ExpansionPanelSummary>
@@ -126,7 +126,7 @@ const FAQ = props => {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography className={[classes.heading, classes.purple]}>
+          <Typography className={`${classes.heading} ${classes.purple}`}>
             How much does it cost?
           </Typography>
         </ExpansionPanelSummary>
@@ -150,7 +150,7 @@ const FAQ = props => {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography className={[classes.heading, classes.green]}>
+          <Typography className={`${classes.heading} ${classes.green}`}>
             Does everyone have to have an account that uses Super Fun Retro?
           </Typography>
         </ExpansionPanelSummary>
