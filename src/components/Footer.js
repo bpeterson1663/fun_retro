@@ -22,7 +22,6 @@ const useStyles = makeStyles(theme => ({
   },
   faqButton: {
     color: "#fff",
-    maxWidth: 250,
     "&:hover": {
       cursor: "auto"
     }
@@ -54,7 +53,7 @@ const Footer = () => {
       />
       <BottomNavigationAction
         className={classes.faqButton}
-        label="Frequently Asked Questions"
+        label="FAQ"
         icon={
           <Link to="/faq" className={classes.faq}>
             <HelpIcon />
