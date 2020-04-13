@@ -166,7 +166,7 @@ const FAQ = props => {
 };
 
 FAQ.propTypes = {
-  history: PropTypes.array
+  history: PropTypes.object
 };
 
 export default FAQ;

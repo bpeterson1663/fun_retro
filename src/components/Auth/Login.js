@@ -141,6 +141,6 @@ const Login = props => {
 Login.propTypes = {
   location: PropTypes.object,
   match: PropTypes.object,
-  history: PropTypes.array
+  history: PropTypes.object
 };
 export default Login;
