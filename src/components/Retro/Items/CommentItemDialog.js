@@ -29,7 +29,7 @@ const CommentItemDialog = props => {
   return (
     <Dialog
       data-testid="comment_dialog"
-      open={showCommentDialog.item}
+      open={!!showCommentDialog.item}
       onClose={handleCommentClose}
     >
       <DialogTitle>
