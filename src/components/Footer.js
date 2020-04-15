@@ -18,7 +18,11 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.main
   },
   copyright: {
-    color: "#fff"
+    color: "#fff",
+    maxWidth: 300,
+    "&:hover": {
+      cursor: "auto"
+    }
   },
   faqButton: {
     color: "#fff",
@@ -45,6 +49,7 @@ const Footer = () => {
     <BottomNavigation className={classes.root} showLabels>
       <BottomNavigationAction
         className={classes.copyright}
+        disabled
         component="div"
         label={`Copyright \u00A9 ${currentYear.format(
           "YYYY"
