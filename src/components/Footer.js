@@ -1,13 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
-import Button from "@material-ui/core/Button";
-import { Link } from "react-router-dom";
-import Typography from "@material-ui/core/Typography/Typography";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import HelpIcon from "@material-ui/icons/Help";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
+    display: "flex",
+    justifyContent: "space-between",
     height: 50,
     position: "fixed",
     bottom: 0,
@@ -17,13 +19,20 @@ const useStyles = makeStyles(theme => ({
   },
   copyright: {
     color: "#fff",
-    paddingTop: 10,
-    height: 30,
-    margin: "5px auto 0 10px"
+    maxWidth: 300,
+    "&:hover": {
+      cursor: "auto"
+    }
   },
-  link: {
+  faqButton: {
+    color: "#fff",
+    "&:hover": {
+      cursor: "auto"
+    }
+  },
+  faq: {
     textDecoration: "none",
-    margin: "5px 10px 0 auto"
+    color: "#fff"
   },
   gridContainer: {
     margin: 0
@@ -35,21 +44,27 @@ const useStyles = makeStyles(theme => ({
 const Footer = () => {
   const currentYear = new moment();
   const classes = useStyles();
+
   return (
-    <BottomNavigation className={classes.root}>
-      <Typography
+    <BottomNavigation className={classes.root} showLabels>
+      <BottomNavigationAction
         className={classes.copyright}
-        variant="caption"
-        display="block"
-      >
-        Copyright &copy; {currentYear.format("YYYY")} BJP Software All rights
-        reserved
-      </Typography>
-      <Link to="/faq" className={classes.link}>
-        <Button color="secondary" variant="contained">
-          FAQ
-        </Button>
-      </Link>
+        disabled
+        component="div"
+        label={`Copyright \u00A9 ${currentYear.format(
+          "YYYY"
+        )} BJP Software All rights
+        reserved`}
+      />
+      <BottomNavigationAction
+        className={classes.faqButton}
+        label="FAQ"
+        icon={
+          <Link to="/faq" className={classes.faq}>
+            <HelpIcon />
+          </Link>
+        }
+      />
     </BottomNavigation>
   );
 };
