@@ -274,8 +274,8 @@ const AdminContainer = () => {
                         Show Link
                       </Button>
                     </TableCell>
-                    <TableCell>{retro.startDate}</TableCell>
-                    <TableCell>{retro.endDate}</TableCell>
+                    <TableCell>{moment(retro.startDate).format("L")}</TableCell>
+                    <TableCell>{moment(retro.endDate).format("L")}</TableCell>
                     <TableCell>
                       <IconButton
                         className={classes.icon}

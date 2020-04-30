@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import RetroColumn from "./RetroColumn";
 import VoteContext from "../../context/vote-context";
+import moment from "moment";
 import _ from "lodash";
 import useStyles from "./Retro.styles";
 import { db } from "../../firebase";
@@ -125,7 +126,8 @@ const RetroContainer = props => {
     >
       <Typography variant="h4">{retroData.name}</Typography>
       <Typography variant="subtitle1">
-        {retroData.startDate} through {retroData.endDate}
+        {moment(retroData.startDate).format("L")} through{" "}
+        {moment(retroData.endDate).format("L")}
       </Typography>
       <Typography variant="subtitle2">
         {retroStatus ? `Remaining Votes: ${remainingVotes}` : `Retro Has Ended`}

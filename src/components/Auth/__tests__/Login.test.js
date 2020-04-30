@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 it("CreateItem Renders", () => {
   render(
     <BrowserRouter>
-        <Login location={{}} match={{params: {id: 1}}} history={{}}/>
-    </BrowserRouter>);
+      <Login location={{}} match={{ params: { id: 1 } }} history={{}} />
+    </BrowserRouter>
+  );
 });

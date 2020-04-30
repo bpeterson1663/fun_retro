@@ -24,6 +24,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import CommentIcon from "@material-ui/icons/Comment";
 import CreateItem from "./Items/CreateItem";
 import CommentItemDialog from "./Items/CommentItemDialog";
+import EditCommentDialog from "./Items/EditCommentDialog";
 import useStyles from "./Retro.styles";
 
 const RetroColumn = props => {
@@ -33,6 +34,7 @@ const RetroColumn = props => {
   const [editMode, setEditMode] = useState(false);
   const [itemEdit, setItemEdit] = useState({});
   const [showCommentDialog, setShowCommentDialog] = useState({});
+  const [editCommentValue, setEditCommentValue] = useState({});
   const auth = useContext(AuthContext);
   const vote = useContext(VoteContext);
   const classes = useStyles();
@@ -173,6 +175,7 @@ const RetroColumn = props => {
 
   const handleCommentClose = () => {
     setShowCommentDialog({});
+    setEditCommentValue({});
   };
 
   const handleAddComment = (val, item) => {
@@ -183,7 +186,7 @@ const RetroColumn = props => {
       .update({
         comments: item.comments
       })
-      .then(() => handleCommentClose({}))
+      .then(() => handleCommentClose())
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   };
@@ -198,6 +201,24 @@ const RetroColumn = props => {
       .update({
         comments: newComments
       })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  };
+
+  const handleEditComment = (comment, originalComment, item, i) => {
+    setLoading(true);
+    const newComments = item.comments.map((obj, index) => {
+      if (obj.value === originalComment && index === i) {
+        obj.value = comment;
+      }
+      return obj;
+    });
+    db.collection(columnName)
+      .doc(item.id)
+      .update({
+        comments: newComments
+      })
+      .then(() => handleCommentClose())
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   };
@@ -244,12 +265,26 @@ const RetroColumn = props => {
                           {comment.value}
                         </Typography>
                         {comment.userId === auth.userId ? (
-                          <IconButton
-                            disabled={!props.isActive}
-                            onClick={() => handleCommentDelete(comment, item)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                          <div>
+                            <IconButton
+                              disabled={!props.isActive}
+                              onClick={() => handleCommentDelete(comment, item)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                            <IconButton
+                              disabled={!props.isActive}
+                              onClick={() =>
+                                setEditCommentValue({
+                                  i,
+                                  item: item,
+                                  originalComment: comment.value
+                                })
+                              }
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </div>
                         ) : null}
                       </div>
                     );
@@ -273,7 +308,7 @@ const RetroColumn = props => {
                     disabled={disableDeleteVotes(item) || !props.isActive}
                     onClick={handleItemVote.bind(this, "removeVote", item)}
                     vairant="outlined"
-                    sizeSmall
+                    size="small"
                   >
                     Remove Vote
                   </Button>
@@ -326,6 +361,11 @@ const RetroColumn = props => {
         showCommentDialog={showCommentDialog}
         handleCommentClose={handleCommentClose}
         addComment={handleAddComment}
+      />
+      <EditCommentDialog
+        handleCommentClose={handleCommentClose}
+        editComment={editCommentValue}
+        editCommentHandler={handleEditComment}
       />
     </Container>
   );

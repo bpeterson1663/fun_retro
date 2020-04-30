@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -11,11 +11,16 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import useStyles from "../Retro.styles";
 
-const CommentItemDialog = props => {
-  const { showCommentDialog } = props;
+const EditCommentDialog = props => {
+  const { originalComment, item, i } = props.editComment;
   const classes = useStyles();
 
   const [commentValue, setCommentValue] = useState("");
+
+  useEffect(() => {
+    setCommentValue(originalComment);
+  }, [originalComment]);
+
   const handleCommentClose = () => {
     props.handleCommentClose();
     setCommentValue("");
@@ -23,17 +28,17 @@ const CommentItemDialog = props => {
 
   const onSubmitHandler = event => {
     event.preventDefault();
-    props.addComment(commentValue, showCommentDialog.item);
+    props.editCommentHandler(commentValue, originalComment, item, i);
     setCommentValue("");
   };
   return (
     <Dialog
-      data-testid="comment_dialog"
-      open={!!showCommentDialog.item}
+      data-testid="edit-comment_dialog"
+      open={!!item}
       onClose={handleCommentClose}
     >
       <DialogTitle>
-        <Typography>Add a constructive comment</Typography>
+        <Typography>Edit comment</Typography>
         <IconButton
           className={classes.closeButton}
           onClick={handleCommentClose}
@@ -49,7 +54,7 @@ const CommentItemDialog = props => {
           maxLength="1000"
           className={`${classes.inputField} ${classes.inputFieldText}`}
           type="text"
-          label="Start Typing"
+          label="Keep Typing"
           value={commentValue}
           onChange={e => setCommentValue(e.target.value)}
         />
@@ -61,16 +66,16 @@ const CommentItemDialog = props => {
           color="secondary"
           variant="contained"
         >
-          Add Comment
+          Edit Comment
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-CommentItemDialog.propTypes = {
-  showCommentDialog: PropTypes.object,
+EditCommentDialog.propTypes = {
+  editComment: PropTypes.object,
   handleCommentClose: PropTypes.func,
-  addComment: PropTypes.func
+  editCommentHandler: PropTypes.func
 };
-export default CommentItemDialog;
+export default EditCommentDialog;
