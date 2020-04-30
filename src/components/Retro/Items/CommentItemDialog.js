@@ -33,9 +33,7 @@ const CommentItemDialog = props => {
       onClose={handleCommentClose}
     >
       <DialogTitle>
-        <Typography variant="h6">Add a constructive comment</Typography>
-        <Typography variant="subtitle1">Keep it positive!</Typography>
-
+        <Typography>Add a constructive comment</Typography>
         <IconButton
           className={classes.closeButton}
           onClick={handleCommentClose}
@@ -49,7 +47,7 @@ const CommentItemDialog = props => {
           multiline
           rows="3"
           maxLength="1000"
-          className={[classes.inputField, classes.inputFieldText]}
+          className={`${classes.inputField} ${classes.inputFieldText}`}
           type="text"
           label="Start Typing"
           value={commentValue}
@@ -57,7 +55,12 @@ const CommentItemDialog = props => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onSubmitHandler} color="secondary" variant="contained">
+        <Button
+          disabled={!commentValue}
+          onClick={onSubmitHandler}
+          color="secondary"
+          variant="contained"
+        >
           Add Comment
         </Button>
       </DialogActions>
