@@ -51,12 +51,14 @@ const Login = props => {
     authFirebase
       .signInWithEmailAndPassword(emailValue, passwordValue)
       .then(() => {
+        setLoading(false)
         auth.login(true);
         retroId
           ? props.history.push("/retro/" + retroId)
           : props.history.push("/retroList");
       })
       .catch(error => {
+        setLoading(false)
         setMessageState({
           displayMessage: true,
           message: error.message,
@@ -64,7 +66,6 @@ const Login = props => {
         });
         auth.login(false);
       })
-      .finally(() => setLoading(false));
   };
 
   const handleMessageClose = () => {

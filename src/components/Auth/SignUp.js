@@ -33,12 +33,14 @@ const SignUp = props => {
     authFirebase
       .createUserWithEmailAndPassword(data.email, data.password)
       .then(() => {
+        setLoading(false)
         auth.login(true);
         retroId
           ? props.history.push("/retro/" + retroId)
           : props.history.push("/retroList");
       })
       .catch(function(error) {
+        setLoading(false)
         setMessageState({
           displayMessage: true,
           message: error.message,
@@ -46,7 +48,6 @@ const SignUp = props => {
         });
         auth.login(false);
       })
-      .finally(() => setLoading(false));
   };
 
   const handleMessageClose = () => {
