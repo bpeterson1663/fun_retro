@@ -9,7 +9,7 @@ import Footer from "./components/Footer";
 import AuthContext from "./context/auth-context";
 import AdminContainer from "./components/Admin/AdminContainer";
 import FAQ from "./components/FAQ/FAQ";
-import firebase from "firebase";
+import { authFirebase } from "./firebase";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
@@ -29,7 +29,7 @@ const App = () => {
     setAuthId(status);
   };
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
+    authFirebase.onAuthStateChanged(user => {
       if (user) {
         setAuthId(user.uid);
       } else {
