@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import firebase from "firebase";
+import { authFirebase } from "../../firebase";
 import AuthContext from "../../context/auth-context";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -48,8 +48,7 @@ const Login = props => {
   const submitHandler = event => {
     setLoading(true);
     event.preventDefault();
-    firebase
-      .auth()
+    authFirebase
       .signInWithEmailAndPassword(emailValue, passwordValue)
       .then(() => {
         auth.login(true);

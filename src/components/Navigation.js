@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
-import firebase from "firebase";
+import { authFirebase } from "../firebase";
 import Typography from "@material-ui/core/Typography/Typography";
 
 const useStyles = makeStyles(theme => ({
@@ -26,8 +26,7 @@ const useStyles = makeStyles(theme => ({
 const Navigation = () => {
   const auth = useContext(AuthContext);
   const handleLogOut = () => {
-    firebase
-      .auth()
+    authFirebase
       .signOut()
       .then(function() {
         auth.login(false);

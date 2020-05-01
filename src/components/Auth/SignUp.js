@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
-import firebase from "firebase";
+import { authFirebase } from "../../firebase";
 import AuthContext from "../../context/auth-context";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -30,8 +30,7 @@ const SignUp = props => {
 
   const submitHandler = data => {
     setLoading(true);
-    firebase
-      .auth()
+    authFirebase
       .createUserWithEmailAndPassword(data.email, data.password)
       .then(() => {
         auth.login(true);
