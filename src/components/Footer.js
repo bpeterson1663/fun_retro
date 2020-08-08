@@ -1,49 +1,49 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-import HelpIcon from "@material-ui/icons/Help";
-import moment from "moment";
-import { Link } from "react-router-dom";
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import BottomNavigation from '@material-ui/core/BottomNavigation'
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
+import HelpIcon from '@material-ui/icons/Help'
+import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex",
-    justifyContent: "space-between",
+    display: 'flex',
+    justifyContent: 'space-between',
     height: 50,
-    position: "fixed",
+    position: 'fixed',
     bottom: 0,
     marginTop: 40,
-    width: "100%",
-    backgroundColor: theme.palette.primary.main
+    width: '100%',
+    backgroundColor: theme.palette.primary.main,
   },
   copyright: {
-    color: "#fff",
+    color: '#fff',
     maxWidth: 300,
-    "&:hover": {
-      cursor: "auto"
-    }
+    '&:hover': {
+      cursor: 'auto',
+    },
   },
   faqButton: {
-    color: "#fff",
-    "&:hover": {
-      cursor: "auto"
-    }
+    color: '#fff',
+    '&:hover': {
+      cursor: 'auto',
+    },
   },
   faq: {
-    textDecoration: "none",
-    color: "#fff"
+    textDecoration: 'none',
+    color: '#fff',
   },
   gridContainer: {
-    margin: 0
+    margin: 0,
   },
   gridItem: {
-    padding: 0
-  }
-}));
+    padding: 0,
+  },
+}))
 const Footer = () => {
-  const currentYear = new moment();
-  const classes = useStyles();
+  const currentYear = new moment()
+  const classes = useStyles()
 
   return (
     <BottomNavigation className={classes.root} showLabels>
@@ -51,9 +51,7 @@ const Footer = () => {
         className={classes.copyright}
         disabled
         component="div"
-        label={`Copyright \u00A9 ${currentYear.format(
-          "YYYY"
-        )} BJP Software All rights
+        label={`Copyright \u00A9 ${currentYear.format('YYYY')} BJP Software All rights
         reserved`}
       />
       <BottomNavigationAction
@@ -66,7 +64,7 @@ const Footer = () => {
         }
       />
     </BottomNavigation>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

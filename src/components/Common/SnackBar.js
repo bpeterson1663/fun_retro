@@ -1,43 +1,43 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Snackbar from "@material-ui/core/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import { green } from "@material-ui/core/colors";
-import SnackbarContent from "@material-ui/core/SnackbarContent/SnackbarContent";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { makeStyles } from '@material-ui/core/styles'
+import Snackbar from '@material-ui/core/Snackbar'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
+import { green } from '@material-ui/core/colors'
+import SnackbarContent from '@material-ui/core/SnackbarContent/SnackbarContent'
 
 const useStyles = makeStyles(theme => ({
   inputField: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
   },
   placeHolder: {
-    height: 5
+    height: 5,
   },
   submit: {
-    display: "block",
-    margin: "10px auto"
+    display: 'block',
+    margin: '10px auto',
   },
   error: {
-    backgroundColor: theme.palette.error.dark
+    backgroundColor: theme.palette.error.dark,
   },
   success: {
-    backgroundColor: green[600]
+    backgroundColor: green[600],
   },
   message: {
-    display: "flex",
-    alignItems: "center"
+    display: 'flex',
+    alignItems: 'center',
   },
   links: {
-    margin: 10
-  }
-}));
+    margin: 10,
+  },
+}))
 const SnackBar = props => {
-  const classes = useStyles();
+  const classes = useStyles()
   return (
     <Snackbar
       data-testid="snackbar_message"
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={props.open}
       autoHideDuration={6000}
       onClose={props.close}
@@ -53,25 +53,20 @@ const SnackBar = props => {
         }
         className={classes[props.status]}
         action={[
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={props.close}
-          >
+          <IconButton key="close" aria-label="Close" color="inherit" onClick={props.close}>
             <CloseIcon />
-          </IconButton>
+          </IconButton>,
         ]}
       />
     </Snackbar>
-  );
-};
+  )
+}
 
 SnackBar.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
   message: PropTypes.string,
-  status: PropTypes.string
-};
+  status: PropTypes.string,
+}
 
-export default SnackBar;
+export default SnackBar
