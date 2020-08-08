@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import RetroColumn from "./RetroColumn";
+import ActionItemDialog from "./ActionItem/ActionItemDialog";
 import VoteContext from "../../context/vote-context";
 import moment from "moment";
 import _ from "lodash";
@@ -10,6 +11,8 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container/Container";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography/Typography";
+import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import SnackBar from "../Common/SnackBar";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -18,6 +21,13 @@ const RetroContainer = props => {
   const [retroData, setRetroData] = useState({});
   const [retroStatus, setRetroStatus] = useState(true);
   const [retroExists, setRetroExists] = useState(true);
+  const [isLoading, setLoading] = useState(false);
+  const [showActionItemDialog, setShowActionItemDialog] = useState(false);
+  const [messageState, setMessageState] = useState({
+    message: "",
+    messageStatus: "",
+    displayMessage: false
+  });
   const auth = useContext(AuthContext);
   const retroId = props.match.params.id;
   const classes = useStyles();
@@ -119,11 +129,60 @@ const RetroContainer = props => {
     });
   };
 
+  const handleActionItemDialog = () => setShowActionItemDialog(true);
+
+  const handleActionItemDialogClose = () => setShowActionItemDialog(false);
+
+  const createActionItem = item => {
+    setLoading(true);
+    db.collection("actionItems")
+      .add({
+        value: item,
+        retroId: retroId
+      })
+      .then(() => {
+        setLoading(false);
+        setShowActionItemDialog(false);
+        setMessageState({
+          displayMessage: true,
+          message: `Way to take action!`,
+          messageStatus: "success"
+        });
+      })
+      .catch(err => {
+        setMessageState({
+          displayMessage: true,
+          message: `${err}`,
+          messageStatus: "error"
+        });
+      });
+  };
+
+  const handleMessageClose = () => {
+    setMessageState({
+      displayMessage: false,
+      message: "",
+      messageStatus: ""
+    });
+  };
   const retroContainer = (
     <Container
       style={{ padding: "8px", maxWidth: "100%" }}
       data-testid="retro_container"
     >
+      {isLoading ? (
+        <LinearProgress variant="query" />
+      ) : (
+        <div className={classes.placeHolder}></div>
+      )}
+      {messageState.displayMessage ? (
+        <SnackBar
+          open={messageState.displayMessage}
+          message={messageState.message}
+          status={messageState.messageStatus}
+          close={handleMessageClose}
+        />
+      ) : null}
       <Typography variant="h4">{retroData.name}</Typography>
       <Typography variant="subtitle1">
         {moment(retroData.startDate).format("L")} through{" "}
@@ -140,6 +199,11 @@ const RetroContainer = props => {
       <Button size="small" color="secondary" onClick={handleGenerateReport}>
         Generate Report{" "}
       </Button>
+      {retroData.userId === auth.userId ? (
+        <Button size="small" color="secondary" onClick={handleActionItemDialog}>
+          Create Action Item
+        </Button>
+      ) : null}
       <Grid container justify="center" spacing={0}>
         <VoteContext.Provider
           value={{
@@ -179,6 +243,11 @@ const RetroContainer = props => {
           </Grid>
         </VoteContext.Provider>
       </Grid>
+      <ActionItemDialog
+        showActionItemDialog={showActionItemDialog}
+        handleActionItemDialogClose={handleActionItemDialogClose}
+        createActionItem={createActionItem}
+      />
     </Container>
   );
 
