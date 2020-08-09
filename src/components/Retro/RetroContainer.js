@@ -219,36 +219,20 @@ const RetroContainer = props => {
             setRemainingVotes: setRemainingVotes,
           }}
         >
-          <Grid className={classes.keepDoing}>
-            <RetroColumn
-              retroId={retroId}
-              votesPerPerson={retroData.numberOfVotes}
-              remainingVotes={remainingVotes}
-              title="Keep Doing"
-              columnName="keepDoing"
-              isActive={retroStatus}
-            />
-          </Grid>
-          <Grid className={classes.stopDoing}>
-            <RetroColumn
-              retroId={retroId}
-              votesPerPerson={retroData.numberOfVotes}
-              remainingVotes={remainingVotes}
-              title="Stop Doing"
-              columnName="stopDoing"
-              isActive={retroStatus}
-            />
-          </Grid>
-          <Grid className={classes.startDoing}>
-            <RetroColumn
-              retroId={retroId}
-              votesPerPerson={retroData.numberOfVotes}
-              remainingVotes={remainingVotes}
-              title="Start Doing"
-              columnName="startDoing"
-              isActive={retroStatus}
-            />
-          </Grid>
+          {columnMaps.map(column => {
+            return (
+          <Grid key={column.value} className={classes[column.value]}>
+              <RetroColumn
+                retroId={retroId}
+                votesPerPerson={retroData.numberOfVotes}
+                remainingVotes={remainingVotes}
+                title={column.title}
+                columnName={column.value}
+                isActive={retroStatus}
+              />
+            </Grid>
+            )
+          })}
         </VoteContext.Provider>
       </Grid>
       <ActionItemDialog
