@@ -41,10 +41,10 @@ const RetroContainer = props => {
   ]
 
   const reportSections = [
+    { title: 'Action Items', value: 'actionItems', backgroundColor: '#2196f3' },
     { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
     { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
     { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
-    { title: 'Action Items', value: 'actionItems', backgroundColor: '#2196f3' },
   ]
   const init = () => {
     const unsubscribe = db
