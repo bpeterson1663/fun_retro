@@ -12,6 +12,7 @@ import Container from '@material-ui/core/Container/Container'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
+import ViewActionItemDialog from './ActionItem/ViewActionItemDialog'
 import SnackBar from '../Common/SnackBar'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
@@ -21,8 +22,10 @@ const RetroContainer = props => {
   const [retroData, setRetroData] = useState({})
   const [retroStatus, setRetroStatus] = useState(true)
   const [retroExists, setRetroExists] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [isLoading, setLoading] = useState(false)
   const [showActionItemDialog, setShowActionItemDialog] = useState(false)
+  const [showViewActionDialog, setShowViewActionDialog] = useState(false)
   const [messageState, setMessageState] = useState({
     message: '',
     messageStatus: '',
@@ -43,6 +46,7 @@ const RetroContainer = props => {
       .doc(retroId)
       .onSnapshot(doc => {
         if (doc.exists) {
+          setIsAdmin(retroData.userId === auth.userId)
           setRetroData(doc.data())
           setRetroStatus(retroData.isActive)
           getUserVoteStatus()
@@ -133,6 +137,10 @@ const RetroContainer = props => {
 
   const handleActionItemDialogClose = () => setShowActionItemDialog(false)
 
+  const handleViewActionDialog = () => setShowViewActionDialog(true)
+
+  const handleViewActionDialogClose = () => setShowViewActionDialog(false)
+
   const createActionItem = item => {
     setLoading(true)
     db.collection('actionItems')
@@ -196,6 +204,9 @@ const RetroContainer = props => {
           Create Action Item
         </Button>
       ) : null}
+      <Button size="small" color="secondary" onClick={handleViewActionDialog}>
+        View Action Items
+      </Button>
       <Grid container justify="center" spacing={0}>
         <VoteContext.Provider
           value={{
@@ -239,6 +250,13 @@ const RetroContainer = props => {
         showActionItemDialog={showActionItemDialog}
         handleActionItemDialogClose={handleActionItemDialogClose}
         createActionItem={createActionItem}
+      />
+      <ViewActionItemDialog
+        showViewActionDialog={showViewActionDialog}
+        handleViewActionDialogClose={handleViewActionDialogClose}
+        retroName={retroData.name}
+        retroId={retroId}
+        isAdmin={isAdmin}
       />
     </Container>
   )
