@@ -40,6 +40,12 @@ const RetroContainer = props => {
     { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
   ]
 
+  const reportSections = [
+    { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
+    { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
+    { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
+    { title: 'Action Items', value: 'actionItems', backgroundColor: '#2196f3' },
+  ]
   const init = () => {
     const unsubscribe = db
       .collection('retros')
@@ -92,7 +98,7 @@ const RetroContainer = props => {
   }
 
   const handleGenerateReport = () => {
-    const promises = columnMaps.map(column => {
+    const promises = reportSections.map(column => {
       return db
         .collection(column.value)
         .where('retroId', '==', retroId)
@@ -110,12 +116,11 @@ const RetroContainer = props => {
         )
       })
       let doc = new jsPDF()
-
-      _.each(columnMaps, (column, i) => {
-        let columnHeader = [column.title, 'Votes']
+      _.each(reportSections, (column, i) => {
+        let columnHeader = column.value === 'actionItems' ? [column.title] : [column.title, 'Votes']
         let rows = []
         _.each(allData[i], item => {
-          rows.push([item.value, item.votes])
+          column.value === 'actionItems' ? rows.push([item.value]) : rows.push([item.value, item.votes])
         })
         doc.autoTable({
           headStyles: { fillColor: column.backgroundColor, halign: 'center' },
