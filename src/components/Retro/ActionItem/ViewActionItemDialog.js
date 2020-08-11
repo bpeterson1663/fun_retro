@@ -7,7 +7,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
 import useStyles from '../Retro.styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -19,6 +18,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import TextField from '@material-ui/core/TextField'
 import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
+import Button from '@material-ui/core/Button'
 
 const ViewActionItemDialog = props => {
   const { showViewActionDialog, handleViewActionDialogClose, retroName, retroId, isAdmin } = props
@@ -39,7 +39,7 @@ const ViewActionItemDialog = props => {
         })
         setActionItems(docs)
       })
-  }, [retroId])
+  }, [retroId, showViewActionDialog])
 
   const handleEditItem = (id, value) => {
     setEditItem(id)
@@ -144,16 +144,21 @@ const ViewActionItemDialog = props => {
     <Dialog data-testid="actionitem_dialog" open={showViewActionDialog} onClose={handleViewActionDialogClose}>
       <DialogTitle>
         <Typography>Action Items for {retroName} </Typography>
-        <IconButton className={classes.closeButton} onClick={handleViewActionDialogClose}>
-          <CloseIcon />
-        </IconButton>
       </DialogTitle>
       <DialogContent>
         <TableContainer>
-          <Table>{isAdmin ? <AdminActionsTable /> : <UserActionsTable />}</Table>
+          {actionItems.length > 0 ? (
+            <Table>{isAdmin ? <AdminActionsTable /> : <UserActionsTable />}</Table>
+          ) : (
+            <Typography>No action items...yet!</Typography>
+          )}
         </TableContainer>
       </DialogContent>
-      <DialogActions></DialogActions>
+      <DialogActions>
+        <Button onClick={handleViewActionDialogClose} color="secondary" variant="contained">
+          Close
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }
