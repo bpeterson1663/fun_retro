@@ -11,30 +11,24 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useStyles from '../Retro.styles'
 
-const CommentItemDialog = props => {
-  const { showCommentDialog } = props
+const ActionItemDialog = props => {
+  const { showActionItemDialog, handleActionItemDialogClose, createActionItem } = props
   const classes = useStyles()
+  const [itemValue, setItemValue] = useState('')
 
-  const [commentValue, setCommentValue] = useState('')
-  const handleCommentClose = () => {
-    props.handleCommentClose()
-    setCommentValue('')
-  }
-
-  const onSubmitHandler = event => {
-    event.preventDefault()
-    props.addComment(commentValue, showCommentDialog.item)
-    setCommentValue('')
+  const handleCreateActionItem = () => {
+    createActionItem(itemValue)
+    setItemValue('')
   }
   return (
-    <Dialog data-testid="comment_dialog" open={!!showCommentDialog.item} onClose={handleCommentClose}>
+    <Dialog data-testid="actionitem_dialog" open={showActionItemDialog} onClose={handleActionItemDialogClose}>
       <DialogTitle>
-        <Typography>Add a constructive comment</Typography>
-        <IconButton className={classes.closeButton} onClick={handleCommentClose}>
+        <Typography>Create Action Item</Typography>
+        <IconButton className={classes.closeButton} onClick={handleActionItemDialogClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent>
         <TextField
           variant="outlined"
           multiline
@@ -43,22 +37,21 @@ const CommentItemDialog = props => {
           className={`${classes.inputField} ${classes.inputFieldText}`}
           type="text"
           label="Start Typing"
-          value={commentValue}
-          onChange={e => setCommentValue(e.target.value)}
+          value={itemValue}
+          onChange={e => setItemValue(e.target.value)}
         />
       </DialogContent>
       <DialogActions>
-        <Button disabled={!commentValue} onClick={onSubmitHandler} color="secondary" variant="contained">
-          Add Comment
+        <Button color="secondary" variant="contained" onClick={handleCreateActionItem}>
+          Create Action Item
         </Button>
       </DialogActions>
     </Dialog>
   )
 }
-
-CommentItemDialog.propTypes = {
-  showCommentDialog: PropTypes.object,
-  handleCommentClose: PropTypes.func,
-  addComment: PropTypes.func,
+ActionItemDialog.propTypes = {
+  showActionItemDialog: PropTypes.bool,
+  handleActionItemDialogClose: PropTypes.func,
+  createActionItem: PropTypes.func,
 }
-export default CommentItemDialog
+export default ActionItemDialog

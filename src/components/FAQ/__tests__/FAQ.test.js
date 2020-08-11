@@ -1,7 +1,7 @@
-import React from "react";
-import FAQ from "../FAQ";
-import { render } from "@testing-library/react";
+import React from 'react'
+import FAQ from '../FAQ'
+import { render } from '@testing-library/react'
 
-it("Colomn Renders", () => {
-  render(<FAQ />);
-});
+it('Colomn Renders', () => {
+  render(<FAQ />)
+})

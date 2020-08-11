@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import useStyles from "../Retro.styles";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import useStyles from '../Retro.styles'
 
 const CreateItem = props => {
-  const [itemValue, setItemValue] = useState("");
+  const [itemValue, setItemValue] = useState('')
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   const handleSubmit = event => {
-    event.preventDefault();
-    props.itemSubmit(itemValue);
-    setItemValue("");
-  };
+    event.preventDefault()
+    props.itemSubmit(itemValue)
+    setItemValue('')
+  }
   return (
     <form onSubmit={handleSubmit}>
       <TextField
@@ -39,12 +39,12 @@ const CreateItem = props => {
         Add
       </Button>
     </form>
-  );
-};
+  )
+}
 
 CreateItem.propTypes = {
   itemSubmit: PropTypes.func,
-  isActive: PropTypes.bool
-};
+  isActive: PropTypes.bool,
+}
 
-export default CreateItem;
+export default CreateItem

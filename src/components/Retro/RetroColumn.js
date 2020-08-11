@@ -1,103 +1,103 @@
-import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
-import { db, incrementCounter, decrementCounter } from "../../firebase";
-import AuthContext from "../../context/auth-context";
-import VoteContext from "../../context/vote-context";
-import _ from "lodash";
-import moment from "moment";
-import Container from "@material-ui/core/Container";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import DeleteIcon from "@material-ui/icons/DeleteForeverOutlined";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
-import ThumbUp from "@material-ui/icons/ThumbUp";
-import Typography from "@material-ui/core/Typography/Typography";
-import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
-import Avatar from "@material-ui/core/Avatar";
-import EditIcon from "@material-ui/icons/Edit";
-import SaveIcon from "@material-ui/icons/Save";
-import CancelIcon from "@material-ui/icons/Cancel";
-import CommentIcon from "@material-ui/icons/Comment";
-import CreateItem from "./Items/CreateItem";
-import CommentItemDialog from "./Items/CommentItemDialog";
-import EditCommentDialog from "./Items/EditCommentDialog";
-import useStyles from "./Retro.styles";
+import React, { useState, useEffect, useContext } from 'react'
+import PropTypes from 'prop-types'
+import { db, incrementCounter, decrementCounter } from '../../firebase'
+import AuthContext from '../../context/auth-context'
+import VoteContext from '../../context/vote-context'
+import _ from 'lodash'
+import moment from 'moment'
+import Container from '@material-ui/core/Container'
+import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import IconButton from '@material-ui/core/IconButton'
+import ThumbUp from '@material-ui/icons/ThumbUp'
+import Typography from '@material-ui/core/Typography/Typography'
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
+import Avatar from '@material-ui/core/Avatar'
+import EditIcon from '@material-ui/icons/Edit'
+import SaveIcon from '@material-ui/icons/Save'
+import CancelIcon from '@material-ui/icons/Cancel'
+import CommentIcon from '@material-ui/icons/Comment'
+import CreateItem from './Items/CreateItem'
+import CommentItemDialog from './Items/CommentItemDialog'
+import EditCommentDialog from './Items/EditCommentDialog'
+import useStyles from './Retro.styles'
 
 const RetroColumn = props => {
-  const { columnName, retroId, votesPerPerson } = props;
-  const [itemList, setItemList] = useState([]);
-  const [isLoading, setLoading] = useState(true);
-  const [editMode, setEditMode] = useState(false);
-  const [itemEdit, setItemEdit] = useState({});
-  const [showCommentDialog, setShowCommentDialog] = useState({});
-  const [editCommentValue, setEditCommentValue] = useState({});
-  const auth = useContext(AuthContext);
-  const vote = useContext(VoteContext);
-  const classes = useStyles();
+  const { columnName, retroId, votesPerPerson } = props
+  const [itemList, setItemList] = useState([])
+  const [isLoading, setLoading] = useState(true)
+  const [editMode, setEditMode] = useState(false)
+  const [itemEdit, setItemEdit] = useState({})
+  const [showCommentDialog, setShowCommentDialog] = useState({})
+  const [editCommentValue, setEditCommentValue] = useState({})
+  const auth = useContext(AuthContext)
+  const vote = useContext(VoteContext)
+  const classes = useStyles()
   const columnMaps = [
-    { title: "Keep Doing", value: "keepDoing", backgroundColor: "#009588" },
-    { title: "Stop Doing", value: "stopDoing", backgroundColor: "#E91D63" },
-    { title: "Start Doing", value: "startDoing", backgroundColor: "#9C28B0" }
-  ];
+    { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
+    { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
+    { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
+  ]
 
   const init = () => {
     const unsubscribe = db
       .collection(columnName)
-      .where("retroId", "==", retroId)
+      .where('retroId', '==', retroId)
       .onSnapshot(querySnapshot => {
         _.each(querySnapshot.docChanges(), change => {
-          if (change.type === "removed") {
-            getUserVoteStatus();
+          if (change.type === 'removed') {
+            getUserVoteStatus()
           }
-        });
+        })
         const columnData = querySnapshot.docs
           .map(doc => {
-            const data = doc.data();
-            data.id = doc.id;
+            const data = doc.data()
+            data.id = doc.id
             if (!data.voteMap) {
-              data.voteMap = [];
+              data.voteMap = []
             }
             if (!data.comments) {
-              data.comments = [];
+              data.comments = []
             }
-            return data;
+            return data
           })
           .sort((a, b) => {
-            return a.timestamp - b.timestamp;
-          });
-        setItemList(columnData);
-        setLoading(false);
-      });
-    return () => unsubscribe();
-  };
+            return a.timestamp - b.timestamp
+          })
+        setItemList(columnData)
+        setLoading(false)
+      })
+    return () => unsubscribe()
+  }
   const getUserVoteStatus = () => {
     //Get Current Users votes for all columns
     const promises = columnMaps.map(column => {
       return db
         .collection(column.value)
-        .where("retroId", "==", retroId)
-        .get();
-    });
-    let allVotes = [];
+        .where('retroId', '==', retroId)
+        .get()
+    })
+    let allVotes = []
     Promise.all(promises).then(res => {
       _.each(res, querySnapshot => {
         _.each(querySnapshot.docs, doc => {
-          const data = doc.data();
-          allVotes = allVotes.concat(data.voteMap);
-        });
-      });
-      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length;
-      vote.setRemainingVotes(votesPerPerson - userVoteCount);
-    });
-  };
-  useEffect(init, [votesPerPerson]);
+          const data = doc.data()
+          allVotes = allVotes.concat(data.voteMap)
+        })
+      })
+      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length
+      vote.setRemainingVotes(votesPerPerson - userVoteCount)
+    })
+  }
+  useEffect(init, [votesPerPerson])
 
   const handleItemSubmit = value => {
-    setLoading(true);
+    setLoading(true)
     db.collection(columnName)
       .add({
         value: value,
@@ -106,130 +106,126 @@ const RetroColumn = props => {
         votes: 0,
         voteMap: [],
         timestamp: new moment().valueOf(),
-        comments: []
+        comments: [],
       })
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
 
   const handleItemVote = (operation, item) => {
-    const itemRef = db.collection(columnName).doc(item.id);
-    if (operation === "addVote") {
+    const itemRef = db.collection(columnName).doc(item.id)
+    if (operation === 'addVote') {
       if (item.voteMap) {
-        item.voteMap.push(auth.userId);
+        item.voteMap.push(auth.userId)
       } else {
-        item.voteMap = [auth.userId];
+        item.voteMap = [auth.userId]
       }
-      itemRef.update({ votes: incrementCounter, voteMap: item.voteMap });
-      vote.setRemainingVotes(--vote.votes);
+      itemRef.update({ votes: incrementCounter, voteMap: item.voteMap })
+      vote.setRemainingVotes(--vote.votes)
     } else {
       if (item.voteMap) {
-        item.voteMap.splice(item.voteMap.indexOf(auth.userId), 1);
+        item.voteMap.splice(item.voteMap.indexOf(auth.userId), 1)
       } else {
-        item.voteMap = [];
+        item.voteMap = []
       }
-      itemRef.update({ votes: decrementCounter, voteMap: item.voteMap });
-      vote.setRemainingVotes(++vote.votes);
+      itemRef.update({ votes: decrementCounter, voteMap: item.voteMap })
+      vote.setRemainingVotes(++vote.votes)
     }
-  };
+  }
 
   const handleItemDelete = id => {
-    setLoading(true);
+    setLoading(true)
     db.collection(columnName)
       .doc(id)
       .delete()
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
 
   const handleEditItem = item => {
-    setEditMode(true);
-    setItemEdit(item);
-  };
+    setEditMode(true)
+    setItemEdit(item)
+  }
 
   const resetEditMode = () => {
-    setEditMode(false);
-    setItemEdit({});
-  };
+    setEditMode(false)
+    setItemEdit({})
+  }
 
   const handleUpdateItem = () => {
-    setLoading(true);
+    setLoading(true)
     db.collection(columnName)
       .doc(itemEdit.id)
       .update({
-        value: itemEdit.value
+        value: itemEdit.value,
       })
       .then(() => resetEditMode())
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
 
   const getUsersVoteCount = item => {
-    return _.filter(item.voteMap, id => auth.userId === id).length;
-  };
+    return _.filter(item.voteMap, id => auth.userId === id).length
+  }
 
   const disableDeleteVotes = item => {
-    return vote.votes === votesPerPerson || getUsersVoteCount(item) === 0;
-  };
+    return vote.votes === votesPerPerson || getUsersVoteCount(item) === 0
+  }
 
   const showRemoveVote = item => {
-    return getUsersVoteCount(item) > 0;
-  };
+    return getUsersVoteCount(item) > 0
+  }
 
   const handleCommentClose = () => {
-    setShowCommentDialog({});
-    setEditCommentValue({});
-  };
+    setShowCommentDialog({})
+    setEditCommentValue({})
+  }
 
   const handleAddComment = (val, item) => {
-    setLoading(true);
-    item.comments.push({ value: val, userId: auth.userId });
+    setLoading(true)
+    item.comments.push({ value: val, userId: auth.userId })
     db.collection(columnName)
       .doc(item.id)
       .update({
-        comments: item.comments
+        comments: item.comments,
       })
       .then(() => handleCommentClose())
       .catch(err => console.error(err))
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
 
   const handleCommentDelete = (comment, item) => {
-    setLoading(true);
+    setLoading(true)
     const newComments = item.comments.filter(function(obj) {
-      return obj !== comment;
-    });
+      return obj !== comment
+    })
     db.collection(columnName)
       .doc(item.id)
       .update({
-        comments: newComments
+        comments: newComments,
       })
       .catch(err => console.error(err))
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
 
   const handleEditComment = (comment, originalComment, item, i) => {
-    setLoading(true);
+    setLoading(true)
     const newComments = item.comments.map((obj, index) => {
       if (obj.value === originalComment && index === i) {
-        obj.value = comment;
+        obj.value = comment
       }
-      return obj;
-    });
+      return obj
+    })
     db.collection(columnName)
       .doc(item.id)
       .update({
-        comments: newComments
+        comments: newComments,
       })
       .then(() => handleCommentClose())
       .catch(err => console.error(err))
-      .finally(() => setLoading(false));
-  };
+      .finally(() => setLoading(false))
+  }
 
   return (
-    <Container style={{ padding: "8px" }}>
-      {isLoading ? (
-        <LinearProgress variant="query" />
-      ) : (
-        <div className={classes.placeHolder}></div>
-      )}
+    <Container style={{ padding: '8px' }}>
+      {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
       <Typography variant="h6" className={classes.header}>
         {props.title}
       </Typography>
@@ -250,9 +246,7 @@ const RetroColumn = props => {
                   maxLength="1000"
                   className={classes.editTextBox}
                   value={itemEdit.value}
-                  onChange={e =>
-                    setItemEdit({ ...itemEdit, value: e.target.value })
-                  }
+                  onChange={e => setItemEdit({ ...itemEdit, value: e.target.value })}
                 />
               ) : (
                 <Typography variant="body1">{item.value}</Typography>
@@ -266,10 +260,7 @@ const RetroColumn = props => {
                         </Typography>
                         {comment.userId === auth.userId ? (
                           <div>
-                            <IconButton
-                              disabled={!props.isActive}
-                              onClick={() => handleCommentDelete(comment, item)}
-                            >
+                            <IconButton disabled={!props.isActive} onClick={() => handleCommentDelete(comment, item)}>
                               <DeleteIcon />
                             </IconButton>
                             <IconButton
@@ -278,7 +269,7 @@ const RetroColumn = props => {
                                 setEditCommentValue({
                                   i,
                                   item: item,
-                                  originalComment: comment.value
+                                  originalComment: comment.value,
                                 })
                               }
                             >
@@ -287,18 +278,16 @@ const RetroColumn = props => {
                           </div>
                         ) : null}
                       </div>
-                    );
+                    )
                   })
                 : null}
             </CardContent>
             <CardActions className={classes.cardAction}>
               <div className={classes.voteContainer}>
-                <Avatar className={classes.votes}>
-                  {getUsersVoteCount(item)}
-                </Avatar>
+                <Avatar className={classes.votes}>{getUsersVoteCount(item)}</Avatar>
                 <IconButton
                   disabled={vote.votes === 0 || !props.isActive}
-                  onClick={handleItemVote.bind(this, "addVote", item)}
+                  onClick={handleItemVote.bind(this, 'addVote', item)}
                 >
                   <ThumbUp />
                 </IconButton>
@@ -306,48 +295,33 @@ const RetroColumn = props => {
                   <Button
                     className={classes.remove}
                     disabled={disableDeleteVotes(item) || !props.isActive}
-                    onClick={handleItemVote.bind(this, "removeVote", item)}
+                    onClick={handleItemVote.bind(this, 'removeVote', item)}
                     vairant="outlined"
                     size="small"
                   >
                     Remove Vote
                   </Button>
                 ) : null}
-                <IconButton
-                  disabled={!props.isActive}
-                  onClick={() => setShowCommentDialog({ item: item })}
-                >
+                <IconButton disabled={!props.isActive} onClick={() => setShowCommentDialog({ item: item })}>
                   <CommentIcon />
                 </IconButton>
               </div>
               {auth.userId === item.userId ? (
                 editMode && itemEdit.id === item.id ? (
                   <div className={classes.editContainer}>
-                    <IconButton
-                      disabled={!props.isActive}
-                      onClick={handleUpdateItem.bind(this)}
-                    >
+                    <IconButton disabled={!props.isActive} onClick={handleUpdateItem.bind(this)}>
                       <SaveIcon />
                     </IconButton>
-                    <IconButton
-                      disabled={!props.isActive}
-                      onClick={resetEditMode.bind(this, item)}
-                    >
+                    <IconButton disabled={!props.isActive} onClick={resetEditMode.bind(this, item)}>
                       <CancelIcon />
                     </IconButton>
                   </div>
                 ) : (
                   <div className={classes.editContainer}>
-                    <IconButton
-                      disabled={!props.isActive}
-                      onClick={handleEditItem.bind(this, item)}
-                    >
+                    <IconButton disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton
-                      disabled={!props.isActive}
-                      onClick={handleItemDelete.bind(this, item.id)}
-                    >
+                    <IconButton disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
                       <DeleteIcon />
                     </IconButton>
                   </div>
@@ -355,7 +329,7 @@ const RetroColumn = props => {
               ) : null}
             </CardActions>
           </Card>
-        );
+        )
       })}
       <CommentItemDialog
         showCommentDialog={showCommentDialog}
@@ -368,8 +342,8 @@ const RetroColumn = props => {
         editCommentHandler={handleEditComment}
       />
     </Container>
-  );
-};
+  )
+}
 
 RetroColumn.propTypes = {
   columnName: PropTypes.string,
@@ -377,7 +351,7 @@ RetroColumn.propTypes = {
   title: PropTypes.string,
   votesPerPerson: PropTypes.number,
   retroId: PropTypes.string,
-  remaingVotes: PropTypes.number
-};
+  remaingVotes: PropTypes.number,
+}
 
-export default RetroColumn;
+export default RetroColumn

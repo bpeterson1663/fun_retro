@@ -1,56 +1,52 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import SnackBar from "../../Common/SnackBar";
-import useStyles from "../AdminContainer.styles";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
+import SnackBar from '../../Common/SnackBar'
+import useStyles from '../AdminContainer.styles'
 
 const EditRetroDialog = props => {
-  const { name, startDate, endDate, numberOfVotes, id } = props.retro;
+  const { name, startDate, endDate, numberOfVotes, id } = props.retro
 
-  const [nameValue, setNameValue] = useState();
-  const [startDateValue, setStartDateValue] = useState();
-  const [endDateValue, setEndDateValue] = useState();
-  const [voteValue, setVoteValue] = useState();
-  const [messageStatus, setMessageStatus] = useState(false);
+  const [nameValue, setNameValue] = useState()
+  const [startDateValue, setStartDateValue] = useState()
+  const [endDateValue, setEndDateValue] = useState()
+  const [voteValue, setVoteValue] = useState()
+  const [messageStatus, setMessageStatus] = useState(false)
 
   useEffect(() => {
-    setNameValue(name);
-    setStartDateValue(startDate);
-    setEndDateValue(endDate);
-    setVoteValue(numberOfVotes);
-  }, [name, startDate, endDate, numberOfVotes]);
+    setNameValue(name)
+    setStartDateValue(startDate)
+    setEndDateValue(endDate)
+    setVoteValue(numberOfVotes)
+  }, [name, startDate, endDate, numberOfVotes])
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   const onSubmitHandler = event => {
-    event.preventDefault();
+    event.preventDefault()
     props.updateRetro({
       id: id,
       name: nameValue,
       startDate: startDateValue,
       endDate: endDateValue,
-      numberOfVotes: voteValue
-    });
-  };
+      numberOfVotes: voteValue,
+    })
+  }
 
   const handleEditClose = () => {
-    props.handleEditClose();
-  };
+    props.handleEditClose()
+  }
 
   return (
-    <Dialog
-      data-id="create_dialog"
-      open={props.editStatus}
-      onClose={handleEditClose}
-    >
+    <Dialog data-id="create_dialog" open={props.editStatus} onClose={handleEditClose}>
       <DialogTitle>
         <Typography>Edit Retro - {name}</Typography>
         <IconButton className={classes.closeButton} onClick={handleEditClose}>
@@ -110,18 +106,18 @@ const EditRetroDialog = props => {
       </DialogActions>
       <SnackBar
         open={messageStatus}
-        message={"Uh Oh! Looks like you forgot to fill something out!"}
-        status={"error"}
+        message={'Uh Oh! Looks like you forgot to fill something out!'}
+        status={'error'}
         close={() => setMessageStatus(false)}
       />
     </Dialog>
-  );
-};
+  )
+}
 EditRetroDialog.propTypes = {
   retro: PropTypes.object,
   isLoading: PropTypes.bool,
   updateRetro: PropTypes.func,
   handleEditClose: PropTypes.func,
-  editStatus: PropTypes.bool
-};
-export default EditRetroDialog;
+  editStatus: PropTypes.bool,
+}
+export default EditRetroDialog
