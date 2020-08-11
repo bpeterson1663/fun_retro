@@ -9,9 +9,12 @@ import { db } from '../../firebase'
 import AuthContext from '../../context/auth-context'
 import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container/Container'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import MenuIcon from '@material-ui/icons/Menu'
+import Fab from '@material-ui/core/Fab'
 import ViewActionItemDialog from './ActionItem/ViewActionItemDialog'
 import SnackBar from '../Common/SnackBar'
 import jsPDF from 'jspdf'
@@ -26,6 +29,8 @@ const RetroContainer = props => {
   const [isLoading, setLoading] = useState(false)
   const [showActionItemDialog, setShowActionItemDialog] = useState(false)
   const [showViewActionDialog, setShowViewActionDialog] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+
   const [messageState, setMessageState] = useState({
     message: '',
     messageStatus: '',
@@ -89,6 +94,7 @@ const RetroContainer = props => {
   useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes])
 
   const handleRetroStatus = () => {
+    handleMenuClose()
     db.collection('retros')
       .doc(retroId)
       .update({ isActive: !retroStatus })
@@ -98,6 +104,7 @@ const RetroContainer = props => {
   }
 
   const handleGenerateReport = () => {
+    handleMenuClose()
     const promises = reportSections.map(column => {
       return db
         .collection(column.value)
@@ -137,12 +144,24 @@ const RetroContainer = props => {
       doc.save(retroData.name + '.pdf')
     })
   }
+  const handleMenuClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
 
-  const handleActionItemDialog = () => setShowActionItemDialog(true)
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+  const handleActionItemDialog = () => {
+    handleMenuClose()
+    setShowActionItemDialog(true)
+  }
 
   const handleActionItemDialogClose = () => setShowActionItemDialog(false)
 
-  const handleViewActionDialog = () => setShowViewActionDialog(true)
+  const handleViewActionDialog = () => {
+    handleMenuClose()
+    setShowViewActionDialog(true)
+  }
 
   const handleViewActionDialogClose = () => setShowViewActionDialog(false)
 
@@ -189,6 +208,25 @@ const RetroContainer = props => {
           close={handleMessageClose}
         />
       ) : null}
+      <Fab
+        color="primary"
+        className={classes.fab}
+        aria-controls="simple-menu"
+        aria-haspopup="true"
+        onClick={handleMenuClick}
+      >
+        <MenuIcon />
+      </Fab>
+      <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleMenuClose}>
+        {retroData.userId === auth.userId ? (
+          <MenuItem onClick={handleRetroStatus}>{retroStatus ? `End Retro` : `Activate Retro`} </MenuItem>
+        ) : null}
+        <MenuItem onClick={handleGenerateReport}>Generate Report </MenuItem>
+        {retroData.userId === auth.userId ? (
+          <MenuItem onClick={handleActionItemDialog}>Create Action Item</MenuItem>
+        ) : null}
+        <MenuItem onClick={handleViewActionDialog}>View Action Items</MenuItem>
+      </Menu>
       <Typography variant="h4">{retroData.name}</Typography>
       <Typography variant="subtitle1">
         {moment(retroData.startDate).format('L')} through {moment(retroData.endDate).format('L')}
@@ -196,22 +234,6 @@ const RetroContainer = props => {
       <Typography variant="subtitle2">
         {retroStatus ? `Remaining Votes: ${remainingVotes}` : `Retro Has Ended`}
       </Typography>
-      {retroData.userId === auth.userId ? (
-        <Button size="small" color="secondary" onClick={handleRetroStatus}>
-          {retroStatus ? `End Retro` : `Activate Retro`}{' '}
-        </Button>
-      ) : null}
-      <Button size="small" color="secondary" onClick={handleGenerateReport}>
-        Generate Report{' '}
-      </Button>
-      {retroData.userId === auth.userId ? (
-        <Button size="small" color="secondary" onClick={handleActionItemDialog}>
-          Create Action Item
-        </Button>
-      ) : null}
-      <Button size="small" color="secondary" onClick={handleViewActionDialog}>
-        View Action Items
-      </Button>
       <Grid container justify="center" spacing={0}>
         <VoteContext.Provider
           value={{
@@ -221,16 +243,16 @@ const RetroContainer = props => {
         >
           {columnMaps.map(column => {
             return (
-          <Grid key={column.value} className={classes[column.value]}>
-              <RetroColumn
-                retroId={retroId}
-                votesPerPerson={retroData.numberOfVotes}
-                remainingVotes={remainingVotes}
-                title={column.title}
-                columnName={column.value}
-                isActive={retroStatus}
-              />
-            </Grid>
+              <Grid key={column.value} className={classes[column.value]}>
+                <RetroColumn
+                  retroId={retroId}
+                  votesPerPerson={retroData.numberOfVotes}
+                  remainingVotes={remainingVotes}
+                  title={column.title}
+                  columnName={column.value}
+                  isActive={retroStatus}
+                />
+              </Grid>
             )
           })}
         </VoteContext.Provider>

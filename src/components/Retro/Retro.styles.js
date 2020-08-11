@@ -70,6 +70,11 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  fab: {
+    position: 'absolute',
+    margin: 8,
+    left: 10,
+  },
   remove: {
     fontSize: 8,
     width: 15,
