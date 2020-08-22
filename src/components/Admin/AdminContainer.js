@@ -255,6 +255,7 @@ const AdminContainer = () => {
                 <TableCell>Name</TableCell>
                 <TableCell align="center">Link</TableCell>
                 <TableCell align="center">Type</TableCell>
+                <TableCell align="center">Created At</TableCell>
                 <TableCell align="center">Start Date</TableCell>
                 <TableCell align="center">End Date</TableCell>
                 <TableCell align="center">Edit</TableCell>
@@ -271,6 +272,7 @@ const AdminContainer = () => {
                     </Button>
                   </TableCell>
                   <TableCell>{getColumnsTitle(retro.columnsKey)}</TableCell>
+                  <TableCell>{moment(retro.timestamp).format('L LT')}</TableCell>
                   <TableCell>{moment(retro.startDate).format('L')}</TableCell>
                   <TableCell>{moment(retro.endDate).format('L')}</TableCell>
                   <TableCell>
