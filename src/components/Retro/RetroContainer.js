@@ -130,8 +130,8 @@ const RetroContainer = props => {
           head: [columnHeader],
           body: _.orderBy(rows, x => x[1], ['desc']),
           columnStyles: {
-            0: { columnWidth: 85 },
-            1: { columnWidth: 20, halign: 'center' },
+            0: { cellWidth: 85 },
+            1: { cellWidth: 20, halign: 'center' },
           },
           theme: 'grid',
         })
