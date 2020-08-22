@@ -29,6 +29,8 @@ import EditRetroDialog from './Dialogs/EditRetroDialog'
 import ShowLinkDialog from './Dialogs/ShowLinkDialog'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
+import { getColumnsTitle } from '../../constants/columns.constants'
+
 //TODO: Move Dialog into a common component
 const AdminContainer = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -118,6 +120,7 @@ const AdminContainer = () => {
         endDate: retro.endDate,
         userId: auth.userId,
         numberOfVotes: retro.numberOfVotes,
+        columnsKey: retro.columnsKey,
         isActive: true,
         timestamp: new moment().valueOf(),
       })
@@ -129,6 +132,7 @@ const AdminContainer = () => {
             endDate: retro.endDate,
             startDate: retro.startDate,
             numberOfVotes: retro.numberOfVotes,
+            columnsKey: retro.columnsKey,
             id: res.id,
           },
         })
@@ -250,6 +254,7 @@ const AdminContainer = () => {
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell align="center">Link</TableCell>
+                <TableCell align="center">Type</TableCell>
                 <TableCell align="center">Start Date</TableCell>
                 <TableCell align="center">End Date</TableCell>
                 <TableCell align="center">Edit</TableCell>
@@ -265,6 +270,7 @@ const AdminContainer = () => {
                       Show Link
                     </Button>
                   </TableCell>
+                  <TableCell>{getColumnsTitle(retro.columnsKey)}</TableCell>
                   <TableCell>{moment(retro.startDate).format('L')}</TableCell>
                   <TableCell>{moment(retro.endDate).format('L')}</TableCell>
                   <TableCell>

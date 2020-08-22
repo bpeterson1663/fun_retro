@@ -11,22 +11,24 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import SnackBar from '../../Common/SnackBar'
 import useStyles from '../AdminContainer.styles'
-
+import { getColumnsTitle } from '../../../constants/columns.constants'
 const EditRetroDialog = props => {
-  const { name, startDate, endDate, numberOfVotes, id } = props.retro
+  const { name, startDate, endDate, numberOfVotes, id, columnsKey } = props.retro
 
   const [nameValue, setNameValue] = useState()
   const [startDateValue, setStartDateValue] = useState()
   const [endDateValue, setEndDateValue] = useState()
   const [voteValue, setVoteValue] = useState()
   const [messageStatus, setMessageStatus] = useState(false)
+  const [columnValue, setColumnValue] = useState('')
 
   useEffect(() => {
     setNameValue(name)
     setStartDateValue(startDate)
     setEndDateValue(endDate)
     setVoteValue(numberOfVotes)
-  }, [name, startDate, endDate, numberOfVotes])
+    columnsKey ? setColumnValue(columnsKey) : setColumnValue('keepDoing')
+  }, [name, startDate, endDate, numberOfVotes, columnsKey])
 
   const classes = useStyles()
 
@@ -38,6 +40,7 @@ const EditRetroDialog = props => {
       startDate: startDateValue,
       endDate: endDateValue,
       numberOfVotes: voteValue,
+      columnsKey: columnValue,
     })
   }
 
@@ -54,6 +57,7 @@ const EditRetroDialog = props => {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
+        <Typography>{getColumnsTitle(columnValue)}</Typography>
         <TextField
           name="retro_name"
           required
@@ -62,15 +66,6 @@ const EditRetroDialog = props => {
           label="Retro Name"
           value={nameValue}
           onChange={e => setNameValue(e.target.value)}
-        />
-        <TextField
-          name="retro_vote"
-          required
-          className={classes.inputField}
-          type="number"
-          label="Votes Per Person"
-          value={voteValue}
-          onChange={e => setVoteValue(e.target.value)}
         />
         <TextField
           name="retro_start"
@@ -91,6 +86,15 @@ const EditRetroDialog = props => {
           label="End of Sprint"
           value={endDateValue}
           onChange={e => setEndDateValue(e.target.value)}
+        />
+        <TextField
+          name="retro_vote"
+          required
+          className={classes.inputField}
+          type="number"
+          label="Votes Per Person"
+          value={voteValue}
+          onChange={e => setVoteValue(e.target.value)}
         />
       </DialogContent>
       <DialogActions>
