@@ -89,7 +89,7 @@ const CreateRetroDialog = props => {
           className={classes.inputField}
           type="date"
           InputLabelProps={{ shrink: true }}
-          label="Start of Sprint"
+          label="Start Date"
           value={startDateValue}
           onChange={e => setStartDateValue(e.target.value)}
         />
@@ -100,7 +100,7 @@ const CreateRetroDialog = props => {
           className={classes.inputField}
           type="date"
           InputLabelProps={{ shrink: true }}
-          label="End of Sprint"
+          label="End Date"
           value={endDateValue}
           onChange={e => setEndDateValue(e.target.value)}
         />
