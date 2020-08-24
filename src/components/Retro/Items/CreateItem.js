@@ -17,6 +17,7 @@ const CreateItem = props => {
   return (
     <form onSubmit={handleSubmit}>
       <TextField
+        data-testid={`column-${props.columnName}-textfield`}
         placeholder="Start Typing"
         required
         className={classes.inputField}
@@ -28,6 +29,7 @@ const CreateItem = props => {
         onChange={e => setItemValue(e.target.value)}
       ></TextField>
       <Button
+        data-testid={`column-${props.columnName}-addButton`}
         className={classes.button}
         size="small"
         variant="contained"
@@ -45,6 +47,7 @@ const CreateItem = props => {
 CreateItem.propTypes = {
   itemSubmit: PropTypes.func,
   isActive: PropTypes.bool,
+  columnName: PropTypes.string
 }
 
 export default CreateItem

@@ -66,9 +66,9 @@ const CreateRetroDialog = props => {
       <DialogContent className={classes.dialogContent}>
         <FormControl className={classes.formControl}>
           <InputLabel id="retro-type">Retro Type</InputLabel>
-          <Select labelId="retro-type" id="retro-type-select" value={columnValue} onChange={handleColumnsChange}>
+          <Select required data-testid="retro_type" labelId="retro-type" id="retro-type-select" value={columnValue} onChange={handleColumnsChange}>
             {columnTitles.map( (columnsType,i) => {
-              return <MenuItem key={i} value={columnsType.value}>{columnsType.title}</MenuItem>
+              return <MenuItem key={i}  data-testid={`retro_type-${columnsType.value}`} value={columnsType.value}>{columnsType.title}</MenuItem>
             })}
           </Select>
         </FormControl>
