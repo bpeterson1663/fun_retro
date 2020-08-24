@@ -84,7 +84,7 @@ const RetroContainer = props => {
     })
   }
 
-  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes])
+  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes, columnMaps])
 
   const handleRetroStatus = () => {
     handleMenuClose()
@@ -247,6 +247,7 @@ const RetroContainer = props => {
                 <RetroColumn
                   retroId={retroId}
                   votesPerPerson={retroData.numberOfVotes}
+                  columnKey={retroData.columnsKey}
                   remainingVotes={remainingVotes}
                   title={column.title}
                   columnName={column.value}

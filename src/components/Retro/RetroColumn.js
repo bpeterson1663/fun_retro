@@ -26,9 +26,10 @@ import CreateItem from './Items/CreateItem'
 import CommentItemDialog from './Items/CommentItemDialog'
 import EditCommentDialog from './Items/EditCommentDialog'
 import useStyles from './Retro.styles'
+import { columnKeys } from '../../constants/columns.constants'
 
 const RetroColumn = props => {
-  const { columnName, retroId, votesPerPerson } = props
+  const { columnName, retroId, votesPerPerson, columnsKey } = props
   const [itemList, setItemList] = useState([])
   const [isLoading, setLoading] = useState(true)
   const [editMode, setEditMode] = useState(false)
@@ -38,11 +39,7 @@ const RetroColumn = props => {
   const auth = useContext(AuthContext)
   const vote = useContext(VoteContext)
   const classes = useStyles()
-  const columnMaps = [
-    { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
-    { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
-    { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
-  ]
+  const columnMaps = columnsKey ? columnKeys[columnsKey] : columnKeys['keepDoing']
 
   const init = () => {
     const unsubscribe = db
@@ -352,6 +349,7 @@ RetroColumn.propTypes = {
   votesPerPerson: PropTypes.number,
   retroId: PropTypes.string,
   remaingVotes: PropTypes.number,
+  columnsKey: PropTypes.string
 }
 
 export default RetroColumn
