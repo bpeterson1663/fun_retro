@@ -145,7 +145,7 @@ const ViewActionItemDialog = props => {
       <DialogTitle>
         <Typography>Action Items for {retroName} </Typography>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.dialogContent}>
         <TableContainer>
           {actionItems.length > 0 ? (
             <Table>{isAdmin ? <AdminActionsTable /> : <UserActionsTable />}</Table>

@@ -28,7 +28,7 @@ const ActionItemDialog = props => {
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.dialogContent}>
         <TextField
           variant="outlined"
           multiline

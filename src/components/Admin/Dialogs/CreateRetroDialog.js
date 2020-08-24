@@ -11,12 +11,17 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import SnackBar from '../../Common/SnackBar'
 import useStyles from '../AdminContainer.styles'
-
+import MenuItem from '@material-ui/core/MenuItem'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import {columnTitles} from '../../../constants/columns.constants'
 const CreateRetroDialog = props => {
   const [nameValue, setNameValue] = useState('')
   const [startDateValue, setStartDateValue] = useState('')
   const [endDateValue, setEndDateValue] = useState('')
   const [voteValue, setVoteValue] = useState(6)
+  const [columnValue, setColumnValue] = useState('')
   const [messageStatus, setMessageStatus] = useState(false)
   const classes = useStyles()
 
@@ -31,6 +36,7 @@ const CreateRetroDialog = props => {
       startDate: startDateValue,
       endDate: endDateValue,
       numberOfVotes: voteValue,
+      columnsKey: columnValue,
     })
     resetToDefaults()
     handleCreateClose()
@@ -39,8 +45,10 @@ const CreateRetroDialog = props => {
   const handleCreateClose = () => {
     props.handleCreateClose()
   }
+  const handleColumnsChange = event => setColumnValue(event.target.value)
 
   const resetToDefaults = () => {
+    setColumnValue('')
     setNameValue('')
     setEndDateValue('')
     setStartDateValue('')
@@ -56,6 +64,14 @@ const CreateRetroDialog = props => {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
+        <FormControl className={classes.formControl}>
+          <InputLabel id="retro-type">Retro Type</InputLabel>
+          <Select required data-testid="retro_type" labelId="retro-type" id="retro-type-select" value={columnValue} onChange={handleColumnsChange}>
+            {columnTitles.map( (columnsType,i) => {
+              return <MenuItem key={i}  data-testid={`retro_type-${columnsType.value}`} value={columnsType.value}>{columnsType.title}</MenuItem>
+            })}
+          </Select>
+        </FormControl>
         <TextField
           inputProps={{ 'data-testid': 'retro_name' }}
           name="retro_name"

@@ -1,24 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles'
 
-const columnStyle = {
-  borderRadius: 10,
-  padding: 5,
-  margin: '5px 10px',
-  width: '30%',
-}
-
 const useStyles = makeStyles(theme => ({
-  keepDoing: {
-    backgroundColor: '#009588',
-    ...columnStyle,
-  },
-  stopDoing: {
-    backgroundColor: '#E91D63',
-    ...columnStyle,
-  },
-  startDoing: {
-    backgroundColor: '#9C28B0',
-    ...columnStyle,
+  columnStyle: {
+    borderRadius: 10,
+    padding: 5,
+    margin: '5px 4px',
+    width: '50%',
+    minWidth: 400,
   },
   inputField: {
     margin: '10px auto',

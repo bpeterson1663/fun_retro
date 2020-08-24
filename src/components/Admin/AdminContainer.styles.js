@@ -48,6 +48,10 @@ const useStyles = makeStyles(theme => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 240,
+  },
 }))
 
 export default useStyles

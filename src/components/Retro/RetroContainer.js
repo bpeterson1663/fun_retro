@@ -18,6 +18,7 @@ import Fab from '@material-ui/core/Fab'
 import ViewActionItemDialog from './ActionItem/ViewActionItemDialog'
 import SnackBar from '../Common/SnackBar'
 import jsPDF from 'jspdf'
+import { columnKeys } from '../../constants/columns.constants'
 import 'jspdf-autotable'
 
 const RetroContainer = props => {
@@ -27,6 +28,7 @@ const RetroContainer = props => {
   const [retroExists, setRetroExists] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isLoading, setLoading] = useState(false)
+  const [columnMaps, setColumnMaps] = useState([])
   const [showActionItemDialog, setShowActionItemDialog] = useState(false)
   const [showViewActionDialog, setShowViewActionDialog] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
@@ -39,27 +41,18 @@ const RetroContainer = props => {
   const auth = useContext(AuthContext)
   const retroId = props.match.params.id
   const classes = useStyles()
-  const columnMaps = [
-    { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
-    { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
-    { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
-  ]
 
-  const reportSections = [
-    { title: 'Action Items', value: 'actionItems', backgroundColor: '#2196f3' },
-    { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
-    { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
-    { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
-  ]
   const init = () => {
     const unsubscribe = db
       .collection('retros')
       .doc(retroId)
       .onSnapshot(doc => {
         if (doc.exists) {
-          setIsAdmin(retroData.userId === auth.userId)
-          setRetroData(doc.data())
-          setRetroStatus(retroData.isActive)
+          const docData = doc.data()
+          setIsAdmin(docData.userId === auth.userId)
+          setRetroData(docData)
+          setRetroStatus(docData.isActive)
+          docData.columnsKey ? setColumnMaps(columnKeys[docData.columnsKey]) : setColumnMaps(columnKeys.keepDoing)
           getUserVoteStatus()
         } else {
           setRetroExists(false)
@@ -91,7 +84,7 @@ const RetroContainer = props => {
     })
   }
 
-  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes])
+  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes, columnMaps])
 
   const handleRetroStatus = () => {
     handleMenuClose()
@@ -105,6 +98,9 @@ const RetroContainer = props => {
 
   const handleGenerateReport = () => {
     handleMenuClose()
+    let reportSections = [{ title: 'Action Items', value: 'actionItems', backgroundColor: '#2196f3' }]
+    reportSections = reportSections.concat(columnMaps)
+
     const promises = reportSections.map(column => {
       return db
         .collection(column.value)
@@ -134,8 +130,8 @@ const RetroContainer = props => {
           head: [columnHeader],
           body: _.orderBy(rows, x => x[1], ['desc']),
           columnStyles: {
-            0: { columnWidth: 85 },
-            1: { columnWidth: 20, halign: 'center' },
+            0: { cellWidth: 85 },
+            1: { cellWidth: 20, halign: 'center' },
           },
           theme: 'grid',
         })
@@ -234,7 +230,7 @@ const RetroContainer = props => {
       <Typography variant="subtitle2">
         {retroStatus ? `Remaining Votes: ${remainingVotes}` : `Retro Has Ended`}
       </Typography>
-      <Grid container justify="center" spacing={0}>
+      <Grid container wrap="nowrap" spacing={0} style={{ width: '100%', overflowX: 'scroll' }}>
         <VoteContext.Provider
           value={{
             votes: remainingVotes,
@@ -243,10 +239,15 @@ const RetroContainer = props => {
         >
           {columnMaps.map(column => {
             return (
-              <Grid key={column.value} className={classes[column.value]}>
+              <Grid
+                key={column.value}
+                className={classes.columnStyle}
+                style={{ backgroundColor: column.backgroundColor }}
+              >
                 <RetroColumn
                   retroId={retroId}
                   votesPerPerson={retroData.numberOfVotes}
+                  columnKey={retroData.columnsKey}
                   remainingVotes={remainingVotes}
                   title={column.title}
                   columnName={column.value}
