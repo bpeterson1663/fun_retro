@@ -26,7 +26,7 @@ export const columnKeys = {
   ],
   keep: [
     { title: 'Keep', value: 'keep', backgroundColor: $blue },
-    { title: 'Add', value: 'keep', backgroundColor: $purple },
+    { title: 'Add', value: 'add', backgroundColor: $purple },
     { title: 'Less', value: 'less', backgroundColor: $red },
     { title: 'More', value: 'more', backgroundColor: $green },
   ],
