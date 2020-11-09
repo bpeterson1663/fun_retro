@@ -9,5 +9,4 @@ RUN npm run build
 WORKDIR /usr/share/nginx/html
 
 COPY build/ ./
-COPY .env.local ./
 COPY nginx.conf /etc/nginx/nginx.conf
