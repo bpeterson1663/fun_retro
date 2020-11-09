@@ -32,7 +32,6 @@ jobs:
     - name: create env file
       run: |
         touch .env.development
-        echo ENGINE_API_KEY =${{ secrets.ENGINE_API_KEY }} >> .env.development
         echo REACT_APP_STAGE_API_KEY=${{ secrets.REACT_APP_STAGE_API_KEY }} >> .env.development
         echo REACT_APP_STAGE_APP_ID=${{ secrets.REACT_APP_STAGE_APP_ID }} >> .env.development
         echo REACT_APP_STAGE_AUTH_DOMAIN=${{ secrets.REACT_APP_STAGE_AUTH_DOMAIN }} >> .env.development
