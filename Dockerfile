@@ -4,6 +4,7 @@ RUN apk add git
 RUN apk add --update npm
 
 COPY / /
+COPY .env.development /.env.local
 RUN npm ci --only=prod
 RUN npm run build
 WORKDIR /usr/share/nginx/html
