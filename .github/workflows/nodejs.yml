@@ -31,13 +31,13 @@ jobs:
       run: npm test
     - name: create env file
       run: |
-        touch .env.development
-        echo REACT_APP_STAGE_API_KEY=${{ secrets.REACT_APP_STAGE_API_KEY }} >> .env.development
-        echo REACT_APP_STAGE_APP_ID=${{ secrets.REACT_APP_STAGE_APP_ID }} >> .env.development
-        echo REACT_APP_STAGE_AUTH_DOMAIN=${{ secrets.REACT_APP_STAGE_AUTH_DOMAIN }} >> .env.development
-        echo REACT_APP_STAGE_DATABASE_URL=${{ secrets.REACT_APP_STAGE_DATABASE_URL }} >> .env.development
-        echo REACT_APP_STAGE_MESSAGING_SENDER_ID=${{ secrets.REACT_APP_STAGE_MESSAGING_SENDER_ID }} >> .env.development
-        echo REACT_APP_STAGE_PROJECT_ID=${{ secrets.REACT_APP_STAGE_PROJECT_ID }} >> .env.development
-        echo REACT_APP_STAGE_STORAGE_BUCKET=${{ secrets.REACT_APP_STAGE_STORAGE_BUCKET }} >> .env.development
+        touch .env.local
+        echo REACT_APP_STAGE_API_KEY=${{ secrets.REACT_APP_STAGE_API_KEY }} >> .env.local
+        echo REACT_APP_STAGE_APP_ID=${{ secrets.REACT_APP_STAGE_APP_ID }} >> .env.local
+        echo REACT_APP_STAGE_AUTH_DOMAIN=${{ secrets.REACT_APP_STAGE_AUTH_DOMAIN }} >> .env.local
+        echo REACT_APP_STAGE_DATABASE_URL=${{ secrets.REACT_APP_STAGE_DATABASE_URL }} >> .env.local
+        echo REACT_APP_STAGE_MESSAGING_SENDER_ID=${{ secrets.REACT_APP_STAGE_MESSAGING_SENDER_ID }} >> .env.local
+        echo REACT_APP_STAGE_PROJECT_ID=${{ secrets.REACT_APP_STAGE_PROJECT_ID }} >> .env.local
+        echo REACT_APP_STAGE_STORAGE_BUCKET=${{ secrets.REACT_APP_STAGE_STORAGE_BUCKET }} >> .env.local
     - name: E2E Tests
       run: docker-compose up --build --abort-on-container-exit
