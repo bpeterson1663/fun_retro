@@ -30,4 +30,12 @@ jobs:
     - name: Unit Tests
       run: npm test
     - name: E2E Tests
+      env:
+        REACT_APP_STAGE_API_KEY=${{ secrets.REACT_APP_STAGE_API_KEY }}
+        REACT_APP_STAGE_APP_ID=${{ secrets.REACT_APP_STAGE_APP_ID }}
+        REACT_APP_STAGE_AUTH_DOMAIN=${{ secrets.REACT_APP_STAGE_AUTH_DOMAIN }}
+        REACT_APP_STAGE_DATABASE_URL=${{ secrets.REACT_APP_STAGE_DATABASE_URL }}
+        REACT_APP_STAGE_MESSAGING_SENDER_ID=${{ secrets.REACT_APP_STAGE_MESSAGING_SENDER_ID }}
+        REACT_APP_STAGE_PROJECT_ID=${{ secrets.REACT_APP_STAGE_PROJECT_ID }}
+        REACT_APP_STAGE_STORAGE_BUCKET=${{ secrets.REACT_APP_STAGE_STORAGE_BUCKET }}
       run: docker-compose up --build --abort-on-container-exit
