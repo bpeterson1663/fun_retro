@@ -1,9 +1,13 @@
-FROM node
+FROM nginx:1.17.3-alpine
 
-COPY . /
+RUN apk add git
+RUN apk add --update npm
 
-RUN npm install
+COPY / /
+RUN npm ci --only=prod
+RUN npm run build
+WORKDIR /usr/share/nginx/html
 
-EXPOSE 8080
-
-ENTRYPOINT ["node", "./src/index.js"]
+COPY build/ ./
+COPY .env.local ./
+COPY nginx.conf /etc/nginx/nginx.conf
