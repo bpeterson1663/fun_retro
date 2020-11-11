@@ -16,14 +16,30 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
-
+        node-version: [12.x]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    - name: Install Dependencies
+      run: npm ci
+    - name: Build App
+      run: npm run build --if-present
+    - name: Unit Tests
+      run: npm test
+    - name: create env file
+      run: |
+        touch .env.local
+        echo REACT_APP_STAGE_API_KEY=${{ secrets.REACT_APP_STAGE_API_KEY }} >> .env.local
+        echo REACT_APP_STAGE_APP_ID=${{ secrets.REACT_APP_STAGE_APP_ID }} >> .env.local
+        echo REACT_APP_STAGE_AUTH_DOMAIN=${{ secrets.REACT_APP_STAGE_AUTH_DOMAIN }} >> .env.local
+        echo REACT_APP_STAGE_DATABASE_URL=${{ secrets.REACT_APP_STAGE_DATABASE_URL }} >> .env.local
+        echo REACT_APP_STAGE_MESSAGING_SENDER_ID=${{ secrets.REACT_APP_STAGE_MESSAGING_SENDER_ID }} >> .env.local
+        echo REACT_APP_STAGE_PROJECT_ID=${{ secrets.REACT_APP_STAGE_PROJECT_ID }} >> .env.local
+        echo REACT_APP_STAGE_STORAGE_BUCKET=${{ secrets.REACT_APP_STAGE_STORAGE_BUCKET }} >> .env.local
+    - name: E2E Tests
+      run: |
+        cat .env.local
+        docker-compose up --build --abort-on-container-exit

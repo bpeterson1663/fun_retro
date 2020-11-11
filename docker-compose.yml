@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  staging:
+    build:
+      context: ./
+    ports:
+      - "8080:80"
+    env_file: .env.local
+  cypress:
+    image: cypress/included:5.5.0
+    depends_on: 
+      - staging
+    entrypoint: cypress run --browser chrome --record --key 2ec09999-e325-42b3-8417-d68dd0cfa3fb
+    environment:
+      - CYPRESS_baseUrl=http://staging
+    volumes:
+      - ./cypress:/cypress
+      - ./cypress.json:/cypress.json
+      - ./cypress.env.json:/cyhpress.env.json
+      - ./.git:/.git
+
