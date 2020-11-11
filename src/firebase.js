@@ -15,6 +15,7 @@ if (window.location.href.includes('staging') || window.location.href.includes('l
   messagingSenderId = process.env.REACT_APP_STAGE_MESSAGING_SENDER_ID
   appId = process.env.REACT_APP_STAGE_APP_ID
 } else {
+  alert('ELSE called')
   apiKey = process.env.REACT_APP_API_KEY
   authDomain = process.env.REACT_APP_AUTH_DOMAIN
   databaseURL = process.env.REACT_APP_DATABASE_URL
