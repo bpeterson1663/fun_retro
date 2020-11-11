@@ -30,7 +30,7 @@ jobs:
     - name: Unit Tests
       run: npm test
     - name: E2E Tests
-      env:
+      env: |
         REACT_APP_STAGE_API_KEY=${{ secrets.REACT_APP_STAGE_API_KEY }}
         REACT_APP_STAGE_APP_ID=${{ secrets.REACT_APP_STAGE_APP_ID }}
         REACT_APP_STAGE_AUTH_DOMAIN=${{ secrets.REACT_APP_STAGE_AUTH_DOMAIN }}
