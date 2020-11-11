@@ -6,6 +6,7 @@ let apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId
 //Heroku always sets process.env.NODE_ENV to development unless you upgrade your Dyno to an expensive paid version.
 //This is a work around to point superfunretrostaging.herokuapp.com and localhost to a testing firebase instance
 if (window.location.href.includes('staging') || window.location.href.includes('localhost') || window.location.href.includes('0.0.0.0')) {
+  alert("CALLED")
   apiKey = process.env.REACT_APP_STAGE_API_KEY
   authDomain = process.env.REACT_APP_STAGE_AUTH_DOMAIN
   databaseURL = process.env.REACT_APP_STAGE_DATABASE_URL
