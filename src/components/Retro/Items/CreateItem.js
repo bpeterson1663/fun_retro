@@ -47,7 +47,7 @@ const CreateItem = props => {
 CreateItem.propTypes = {
   itemSubmit: PropTypes.func,
   isActive: PropTypes.bool,
-  columnName: PropTypes.string
+  columnName: PropTypes.string,
 }
 
 export default CreateItem

@@ -1,7 +1,7 @@
 const $green = '#009588',
-    $red = '#E91D63',
-    $purple = '#9C28B0',
-    $blue = '#2196F3';
+  $red = '#E91D63',
+  $purple = '#9C28B0',
+  $blue = '#2196F3'
 
 export const columnKeys = {
   keepDoing: [
@@ -31,14 +31,14 @@ export const columnKeys = {
     { title: 'More', value: 'more', backgroundColor: $green },
   ],
   toDo: [
-      {title: 'To Do', value: 'toDo', backgroundColor: $blue},
-      {title: 'Doing', value: 'doing', backgroundColor: $purple},
-      {title: 'Done', value: 'done', backgroundColor: $green}
+    { title: 'To Do', value: 'toDo', backgroundColor: $blue },
+    { title: 'Doing', value: 'doing', backgroundColor: $purple },
+    { title: 'Done', value: 'done', backgroundColor: $green },
   ],
   sailboat: [
     { title: 'Anchors (What Weighed Us Down)', value: 'anchor', backgroundColor: $red },
     { title: 'Gusts of Wind (What Pushed Us Forward)', value: 'gust', backgroundColor: $green },
-  ]
+  ],
 }
 
 export const columnTitles = [
@@ -46,9 +46,9 @@ export const columnTitles = [
   { value: 'mad', title: 'Mad, Sad, Glad' },
   { value: 'liked', title: 'Liked, Learned, Lacked, Longed For' },
   { value: 'whatWentWell', title: 'What Went Well, What Did Not Go Well' },
-  { value: 'keep', title: 'Keep, Add, Less, More'},
-  { value: 'toDo', title: 'To Do, Doing, Done'},
-  { value: 'sailboat', title: 'Sailboat'}
+  { value: 'keep', title: 'Keep, Add, Less, More' },
+  { value: 'toDo', title: 'To Do, Doing, Done' },
+  { value: 'sailboat', title: 'Sailboat' },
 ]
 
 export const getColumnsTitle = key => {
