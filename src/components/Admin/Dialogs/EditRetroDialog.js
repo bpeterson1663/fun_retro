@@ -17,8 +17,6 @@ import { getColumnsTitle } from '../../../constants/columns.constants'
 const EditRetroDialog = props => {
   const { name, startDate, endDate, numberOfVotes, id, columnsKey, previousRetro } = props.retro
   const { currentRetros } = props
-  console.log('previousRetro: ', previousRetro)
-  console.log(currentRetros)
   const [nameValue, setNameValue] = useState()
   const [startDateValue, setStartDateValue] = useState()
   const [endDateValue, setEndDateValue] = useState()
