@@ -122,6 +122,7 @@ const AdminContainer = () => {
         numberOfVotes: retro.numberOfVotes,
         columnsKey: retro.columnsKey,
         isActive: true,
+        previousRetro: retro.previousRetro,
         timestamp: new moment().valueOf(),
       })
       .then(res => {
@@ -133,6 +134,7 @@ const AdminContainer = () => {
             startDate: retro.startDate,
             numberOfVotes: retro.numberOfVotes,
             columnsKey: retro.columnsKey,
+            previousRetro: retro.previousRetro,
             id: res.id,
           },
         })
@@ -352,11 +354,13 @@ const AdminContainer = () => {
         updateRetro={handleUpdateRetro}
         editStatus={editStatus}
         handleEditClose={handleEditClose}
+        currentRetros={retroList}
       />
       <CreateRetroDialog
         submitRetro={onSubmitHandler}
         createStatus={createStatus}
         handleCreateClose={handleCreateClose}
+        currentRetros={retroList}
       />
       <ShowLinkDialog showLinkStatus={showLinkStatus} handleShowLinkClose={handleShowLinkClose} retroLink={retroLink} />
     </Container>
