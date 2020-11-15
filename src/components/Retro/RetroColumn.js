@@ -232,7 +232,11 @@ const RetroColumn = props => {
           <Card data-testid={`column-${columnName}-item${i}`} key={i} className={classes.card}>
             <CardHeader
               className={classes.cardHeader}
-              avatar={<Avatar data-testid={`column-${columnName}-voteTotal${i}`} className={classes.avatar}>{item.votes}</Avatar>}
+              avatar={
+                <Avatar data-testid={`column-${columnName}-voteTotal${i}`} className={classes.avatar}>
+                  {item.votes}
+                </Avatar>
+              }
             />
             <CardContent className={classes.cardConent}>
               {editMode && itemEdit.id === item.id ? (
@@ -253,12 +257,20 @@ const RetroColumn = props => {
                 ? item.comments.map((comment, i) => {
                     return (
                       <div className={classes.commentContainer} key={i}>
-                        <Typography data-testid={`column-${columnName}-coment${i}`} className={classes.comment} variant="body2">
+                        <Typography
+                          data-testid={`column-${columnName}-coment${i}`}
+                          className={classes.comment}
+                          variant="body2"
+                        >
                           {comment.value}
                         </Typography>
                         {comment.userId === auth.userId ? (
                           <div>
-                            <IconButton data-testid={`column-${columnName}-deleteComment${i}`} disabled={!props.isActive} onClick={() => handleCommentDelete(comment, item)}>
+                            <IconButton
+                              data-testid={`column-${columnName}-deleteComment${i}`}
+                              disabled={!props.isActive}
+                              onClick={() => handleCommentDelete(comment, item)}
+                            >
                               <DeleteIcon />
                             </IconButton>
                             <IconButton
@@ -283,7 +295,9 @@ const RetroColumn = props => {
             </CardContent>
             <CardActions className={classes.cardAction}>
               <div className={classes.voteContainer}>
-                <Avatar data-testid={`column-${columnName}-itemUserVote${i}`} className={classes.votes}>{getUsersVoteCount(item)}</Avatar>
+                <Avatar data-testid={`column-${columnName}-itemUserVote${i}`} className={classes.votes}>
+                  {getUsersVoteCount(item)}
+                </Avatar>
                 <IconButton
                   disabled={vote.votes === 0 || !props.isActive}
                   onClick={handleItemVote.bind(this, 'addVote', item)}
@@ -303,26 +317,46 @@ const RetroColumn = props => {
                     Remove Vote
                   </Button>
                 ) : null}
-                <IconButton data-testid={`column-${columnName}-comment${i}`} disabled={!props.isActive} onClick={() => setShowCommentDialog({ item: item })}>
+                <IconButton
+                  data-testid={`column-${columnName}-comment${i}`}
+                  disabled={!props.isActive}
+                  onClick={() => setShowCommentDialog({ item: item })}
+                >
                   <CommentIcon />
                 </IconButton>
               </div>
               {auth.userId === item.userId ? (
                 editMode && itemEdit.id === item.id ? (
                   <div className={classes.editContainer}>
-                    <IconButton data-testid={`column-${columnName}-saveEdit${i}`} disabled={!props.isActive} onClick={handleUpdateItem.bind(this)}>
+                    <IconButton
+                      data-testid={`column-${columnName}-saveEdit${i}`}
+                      disabled={!props.isActive}
+                      onClick={handleUpdateItem.bind(this)}
+                    >
                       <SaveIcon />
                     </IconButton>
-                    <IconButton data-testid={`column-${columnName}-cancelEdit${i}`} disabled={!props.isActive} onClick={resetEditMode.bind(this, item)}>
+                    <IconButton
+                      data-testid={`column-${columnName}-cancelEdit${i}`}
+                      disabled={!props.isActive}
+                      onClick={resetEditMode.bind(this, item)}
+                    >
                       <CancelIcon />
                     </IconButton>
                   </div>
                 ) : (
                   <div className={classes.editContainer}>
-                    <IconButton data-testid={`column-${columnName}-edit${i}`} disabled={!props.isActive} onClick={handleEditItem.bind(this, item)}>
+                    <IconButton
+                      data-testid={`column-${columnName}-edit${i}`}
+                      disabled={!props.isActive}
+                      onClick={handleEditItem.bind(this, item)}
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton data-testid={`column-${columnName}-delete${i}`} disabled={!props.isActive} onClick={handleItemDelete.bind(this, item.id)}>
+                    <IconButton
+                      data-testid={`column-${columnName}-delete${i}`}
+                      disabled={!props.isActive}
+                      onClick={handleItemDelete.bind(this, item.id)}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </div>
@@ -353,7 +387,7 @@ RetroColumn.propTypes = {
   votesPerPerson: PropTypes.number,
   retroId: PropTypes.string,
   remaingVotes: PropTypes.number,
-  columnsKey: PropTypes.string
+  columnsKey: PropTypes.string,
 }
 
 export default RetroColumn
