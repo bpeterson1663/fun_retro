@@ -35,7 +35,6 @@ const CreateRetroDialog = props => {
       setMessageStatus(true)
       return
     }
-
     props.submitRetro({
       name: nameValue,
       startDate: startDateValue,
@@ -72,7 +71,6 @@ const CreateRetroDialog = props => {
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
         <FormControl className={`${classes.inputField} ${classes.inputFieldText}`}>
-          {' '}
           <InputLabel id="retro-type">Retro Type</InputLabel>
           <Select
             required
