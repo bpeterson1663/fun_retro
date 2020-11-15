@@ -5,6 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^4.9.10",
     "@material-ui/icons": "^4.9.1",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.7",
+    "@types/react": "^16.9.56",
+    "@types/react-dom": "^16.9.9",
     "firebase": "^6.6.2",
     "jslint": "^0.12.1",
     "jspdf": "^1.5.3",
@@ -19,7 +23,8 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^4.9.3",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.1"
+    "react-scripts": "^3.4.1",
+    "typescript": "^4.0.5"
   },
   "scripts": {
     "start": "npm install -g serve && serve -s build",
@@ -27,7 +32,7 @@
     "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json|tsx)\"",
     "lint": "eslint --ignore-path .gitignore ."
   },
   "eslintConfig": {
