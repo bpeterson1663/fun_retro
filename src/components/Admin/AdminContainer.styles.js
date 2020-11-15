@@ -5,7 +5,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2),
   },
   inputFieldText: {
-    width: 350,
+    width: '38rem',
   },
   icon: {
     marginLeft: 'auto',
@@ -47,6 +47,13 @@ const useStyles = makeStyles(theme => ({
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: theme.palette.grey[500],
+  },
+  form: {
+    width: '90%',
+    'max-width': '40rem',
+    margin: '2rem auto',
+    display: 'flex',
+    flexFlow: 'row wrap',
   },
   formControl: {
     margin: theme.spacing(1),
