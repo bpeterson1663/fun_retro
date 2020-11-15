@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import { BrowserRouter, Route } from 'react-router-dom'
 import RetroContainer from './components/Retro/RetroContainer'
+import CreateRetro from './components/Admin/CreateRetro'
 import SignUp from './components/Auth/SignUp'
 import Login from './components/Auth/Login'
 import Navigation from './components/Navigation'
@@ -46,6 +47,7 @@ const App = () => {
             <Navigation />
             {isLoading ? <LinearProgress /> : null}
             <Route path="/retro/:id" exact component={authId ? RetroContainer : Login} />
+            <Route path="/createRetro" exact component={authId ? CreateRetro : Login} />
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={SignUp} />
             <Route path="/retroList" exact component={authId ? AdminContainer : Login} />
