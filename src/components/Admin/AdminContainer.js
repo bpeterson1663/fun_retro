@@ -1,5 +1,6 @@
 import React, { useReducer, useEffect, useState, useContext } from 'react'
 import { db } from '../../firebase'
+import { Link } from 'react-router-dom'
 import AuthContext from '../../context/auth-context'
 import _ from 'lodash'
 import moment from 'moment'
@@ -24,7 +25,6 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TablePagination from '@material-ui/core/TablePagination'
 import Paper from '@material-ui/core/Paper'
-import CreateRetroDialog from './Dialogs/CreateRetroDialog'
 import EditRetroDialog from './Dialogs/EditRetroDialog'
 import ShowLinkDialog from './Dialogs/ShowLinkDialog'
 import SnackBar from '../Common/SnackBar'
@@ -296,9 +296,11 @@ const AdminContainer = () => {
   return (
     <Container data-testid="admin_container">
       <div className={classes.actionButtons}>
-        <Button data-testid="admin_create-retro" onClick={handleCreateOpen} variant="contained" color="secondary">
-          Create New Retro
-        </Button>
+        <Link to="/createRetro" style={{ textDecoration: 'none' }}>
+          <Button data-testid="admin_create-retro" onClick={handleCreateOpen} variant="contained" color="secondary">
+            Create New Retro
+          </Button>
+        </Link>
       </div>
 
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
@@ -352,11 +354,6 @@ const AdminContainer = () => {
         updateRetro={handleUpdateRetro}
         editStatus={editStatus}
         handleEditClose={handleEditClose}
-      />
-      <CreateRetroDialog
-        submitRetro={onSubmitHandler}
-        createStatus={createStatus}
-        handleCreateClose={handleCreateClose}
       />
       <ShowLinkDialog showLinkStatus={showLinkStatus} handleShowLinkClose={handleShowLinkClose} retroLink={retroLink} />
     </Container>
