@@ -15,28 +15,34 @@ import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
-import {columnTitles} from '../../../constants/columns.constants'
+import { columnTitles } from '../../../constants/columns.constants'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+
 const CreateRetroDialog = props => {
+  const { currentRetros } = props
   const [nameValue, setNameValue] = useState('')
   const [startDateValue, setStartDateValue] = useState('')
   const [endDateValue, setEndDateValue] = useState('')
   const [voteValue, setVoteValue] = useState(6)
   const [columnValue, setColumnValue] = useState('')
   const [messageStatus, setMessageStatus] = useState(false)
-  const classes = useStyles()
+  const [previousRetro, setPreviousRetro] = useState({})
 
+  const classes = useStyles()
   const onSubmitHandler = event => {
     event.preventDefault()
     if (!nameValue || !startDateValue || !endDateValue || !voteValue) {
       setMessageStatus(true)
       return
     }
+
     props.submitRetro({
       name: nameValue,
       startDate: startDateValue,
       endDate: endDateValue,
       numberOfVotes: voteValue,
       columnsKey: columnValue,
+      previousRetro: previousRetro.id,
     })
     resetToDefaults()
     handleCreateClose()
@@ -53,6 +59,7 @@ const CreateRetroDialog = props => {
     setEndDateValue('')
     setStartDateValue('')
     setVoteValue(6)
+    setPreviousRetro({})
   }
 
   return (
@@ -64,11 +71,23 @@ const CreateRetroDialog = props => {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        <FormControl className={classes.formControl}>
+        <FormControl className={`${classes.inputField} ${classes.inputFieldText}`}>
+          {' '}
           <InputLabel id="retro-type">Retro Type</InputLabel>
-          <Select required data-testid="retro_type" labelId="retro-type" id="retro-type-select" value={columnValue} onChange={handleColumnsChange}>
-            {columnTitles.map( (columnsType,i) => {
-              return <MenuItem key={i}  data-testid={`retro_type-${columnsType.value}`} value={columnsType.value}>{columnsType.title}</MenuItem>
+          <Select
+            required
+            data-testid="retro_type"
+            labelId="retro-type"
+            id="retro-type-select"
+            value={columnValue}
+            onChange={handleColumnsChange}
+          >
+            {columnTitles.map((columnsType, i) => {
+              return (
+                <MenuItem key={i} data-testid={`retro_type-${columnsType.value}`} value={columnsType.value}>
+                  {columnsType.title}
+                </MenuItem>
+              )
             })}
           </Select>
         </FormControl>
@@ -82,6 +101,15 @@ const CreateRetroDialog = props => {
           value={nameValue}
           onChange={e => setNameValue(e.target.value)}
         />
+        <FormControl className={`${classes.inputField} ${classes.inputFieldText}`}>
+          <Autocomplete
+            id="previous_retro"
+            options={currentRetros}
+            getOptionLabel={option => option.name}
+            onChange={(e, newValue) => setPreviousRetro(newValue)}
+            renderInput={params => <TextField {...params} label="Previous Retro" />}
+          />
+        </FormControl>
         <TextField
           inputProps={{ 'data-testid': 'retro_start' }}
           name="retro_start"
@@ -142,6 +170,7 @@ CreateRetroDialog.propTypes = {
   handleCreateClose: PropTypes.func,
   createStatus: PropTypes.bool,
   isLoading: PropTypes.bool,
+  currentRetros: PropTypes.array,
 }
 
 export default CreateRetroDialog

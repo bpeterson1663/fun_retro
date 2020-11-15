@@ -9,26 +9,32 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import FormControl from '@material-ui/core/FormControl'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import SnackBar from '../../Common/SnackBar'
 import useStyles from '../AdminContainer.styles'
 import { getColumnsTitle } from '../../../constants/columns.constants'
 const EditRetroDialog = props => {
-  const { name, startDate, endDate, numberOfVotes, id, columnsKey } = props.retro
-
+  const { name, startDate, endDate, numberOfVotes, id, columnsKey, previousRetro } = props.retro
+  const { currentRetros } = props
+  console.log('previousRetro: ', previousRetro)
+  console.log(currentRetros)
   const [nameValue, setNameValue] = useState()
   const [startDateValue, setStartDateValue] = useState()
   const [endDateValue, setEndDateValue] = useState()
   const [voteValue, setVoteValue] = useState()
   const [messageStatus, setMessageStatus] = useState(false)
   const [columnValue, setColumnValue] = useState('')
+  const [previousRetroValue, setPreviousRetro] = useState({})
 
   useEffect(() => {
     setNameValue(name)
     setStartDateValue(startDate)
     setEndDateValue(endDate)
     setVoteValue(numberOfVotes)
+    setPreviousRetro(currentRetros.find(retro => retro.id === previousRetro))
     columnsKey ? setColumnValue(columnsKey) : setColumnValue('keepDoing')
-  }, [name, startDate, endDate, numberOfVotes, columnsKey])
+  }, [name, startDate, endDate, numberOfVotes, columnsKey, previousRetro, currentRetros])
 
   const classes = useStyles()
 
@@ -41,6 +47,7 @@ const EditRetroDialog = props => {
       endDate: endDateValue,
       numberOfVotes: voteValue,
       columnsKey: columnValue,
+      previousRetro: previousRetroValue,
     })
   }
 
@@ -49,7 +56,7 @@ const EditRetroDialog = props => {
   }
 
   return (
-    <Dialog data-id="create_dialog" open={props.editStatus} onClose={handleEditClose}>
+    <Dialog data-id="edit_dialog" open={props.editStatus} onClose={handleEditClose}>
       <DialogTitle>
         <Typography>Edit Retro - {name}</Typography>
         <IconButton className={classes.closeButton} onClick={handleEditClose}>
@@ -67,6 +74,16 @@ const EditRetroDialog = props => {
           value={nameValue}
           onChange={e => setNameValue(e.target.value)}
         />
+        <FormControl className={`${classes.inputField} ${classes.inputFieldText}`}>
+          <Autocomplete
+            id="previous_retro"
+            options={currentRetros}
+            getOptionLabel={option => option.name}
+            onChange={(e, newValue) => setPreviousRetro(newValue)}
+            value={previousRetroValue}
+            renderInput={params => <TextField {...params} label="Previous Retro" />}
+          />
+        </FormControl>
         <TextField
           name="retro_start"
           required
@@ -123,5 +140,6 @@ EditRetroDialog.propTypes = {
   updateRetro: PropTypes.func,
   handleEditClose: PropTypes.func,
   editStatus: PropTypes.bool,
+  currentRetros: PropTypes.array,
 }
 export default EditRetroDialog

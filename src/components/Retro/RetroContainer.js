@@ -16,6 +16,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuIcon from '@material-ui/icons/Menu'
 import Fab from '@material-ui/core/Fab'
 import ViewActionItemDialog from './ActionItem/ViewActionItemDialog'
+import ViewPreviousRetroActionDialog from './ActionItem/PreviousActionDialog'
 import SnackBar from '../Common/SnackBar'
 import jsPDF from 'jspdf'
 import { columnKeys } from '../../constants/columns.constants'
@@ -31,6 +32,7 @@ const RetroContainer = props => {
   const [columnMaps, setColumnMaps] = useState([])
   const [showActionItemDialog, setShowActionItemDialog] = useState(false)
   const [showViewActionDialog, setShowViewActionDialog] = useState(false)
+  const [showPreviousActionDialog, setShowPreviousActionDialog] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
 
   const [messageState, setMessageState] = useState({
@@ -161,6 +163,15 @@ const RetroContainer = props => {
 
   const handleViewActionDialogClose = () => setShowViewActionDialog(false)
 
+  const handleViewPreviousActionDialog = () => {
+    handleMenuClose()
+    setShowPreviousActionDialog(true)
+  }
+
+  const handleViewPreviousCloseDialog = () => {
+    setShowPreviousActionDialog(false)
+  }
+
   const createActionItem = item => {
     setLoading(true)
     db.collection('actionItems')
@@ -222,6 +233,7 @@ const RetroContainer = props => {
           <MenuItem onClick={handleActionItemDialog}>Create Action Item</MenuItem>
         ) : null}
         <MenuItem onClick={handleViewActionDialog}>View Action Items</MenuItem>
+        <MenuItem onClick={handleViewPreviousActionDialog}>View Previous Action Items</MenuItem>
       </Menu>
       <Typography variant="h4">{retroData.name}</Typography>
       <Typography variant="subtitle1">
@@ -258,18 +270,31 @@ const RetroContainer = props => {
           })}
         </VoteContext.Provider>
       </Grid>
-      <ActionItemDialog
-        showActionItemDialog={showActionItemDialog}
-        handleActionItemDialogClose={handleActionItemDialogClose}
-        createActionItem={createActionItem}
-      />
-      <ViewActionItemDialog
-        showViewActionDialog={showViewActionDialog}
-        handleViewActionDialogClose={handleViewActionDialogClose}
-        retroName={retroData.name}
-        retroId={retroId}
-        isAdmin={isAdmin}
-      />
+      {showActionItemDialog ? (
+        <ActionItemDialog
+          showActionItemDialog={showActionItemDialog}
+          handleActionItemDialogClose={handleActionItemDialogClose}
+          createActionItem={createActionItem}
+        />
+      ) : null}
+
+      {showViewActionDialog ? (
+        <ViewActionItemDialog
+          showViewActionDialog={showViewActionDialog}
+          handleViewActionDialogClose={handleViewActionDialogClose}
+          retroName={retroData.name}
+          retroId={retroId}
+          isAdmin={isAdmin}
+        />
+      ) : null}
+
+      {showPreviousActionDialog ? (
+        <ViewPreviousRetroActionDialog
+          showDialog={showPreviousActionDialog}
+          handleViewPreviousCloseDialog={handleViewPreviousCloseDialog}
+          previousRetro={retroData.previousRetro}
+        />
+      ) : null}
     </Container>
   )
 
