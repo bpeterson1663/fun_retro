@@ -11,8 +11,12 @@ import useStyles from '../Retro.styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
 import TableRow from '@material-ui/core/TableRow'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditIcon from '@material-ui/icons/Edit'
 import TextField from '@material-ui/core/TextField'
@@ -76,68 +80,21 @@ const ViewActionItemDialog = props => {
       })
   }
 
-  const AdminActionsTable = () => {
-    return (
-      <TableBody>
-        {actionItems.map(item => {
-          return (
-            <TableRow key={item.id}>
-              <TableCell>
-                {editItem === item.id ? (
-                  <TextField
-                    name="edit_item"
-                    required
-                    className={`${classes.inputField} ${classes.inputFieldText}`}
-                    type="text"
-                    label="Action Item"
-                    value={newEdit}
-                    onChange={e => setNewEdit(e.target.value)}
-                  />
-                ) : (
-                  item.value
-                )}
-              </TableCell>
-              <TableCell>
-                {editItem === item.id ? (
-                  <IconButton onClick={() => handleSaveItem(item.id)}>
-                    <SaveIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton className={classes.icon} onClick={() => handleEditItem(item.id, item.value)}>
-                    <EditIcon />
-                  </IconButton>
-                )}
-              </TableCell>
-              <TableCell>
-                {editItem === item.id ? (
-                  <IconButton onClick={resetEdit}>
-                    <CancelIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton className={classes.icon} onClick={() => handleDelete(item.id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                )}
-              </TableCell>
-            </TableRow>
-          )
-        })}
-      </TableBody>
-    )
-  }
   const UserActionsTable = () => {
     return (
-      <TableBody>
-        {actionItems.map(item => {
-          return (
-            <TableRow key={item.id}>
-              <TableCell>{item.value}</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          )
-        })}
-      </TableBody>
+      <Table>
+        <TableBody>
+          {actionItems.map(item => {
+            return (
+              <TableRow key={item.id}>
+                <TableCell>{item.value}</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </Table>
     )
   }
   return (
@@ -146,13 +103,58 @@ const ViewActionItemDialog = props => {
         <Typography>Action Items for {retroName} </Typography>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        <TableContainer>
-          {actionItems.length > 0 ? (
-            <Table>{isAdmin ? <AdminActionsTable /> : <UserActionsTable />}</Table>
+        {actionItems.length > 0 ? (
+          isAdmin ? (
+            <List>
+              {actionItems.map((item, i) => (
+                <ListItem key={'ListItem' + i}>
+                  <ListItemAvatar>
+                    {editItem === item.id ? (
+                      <IconButton onClick={() => handleSaveItem(item.id)}>
+                        <SaveIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton className={classes.icon} onClick={() => handleEditItem(item.id, item.value)}>
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                  </ListItemAvatar>
+                  {editItem === item.id ? (
+                    <TextField
+                      key={'TextField' + i}
+                      name="edit_item"
+                      style={{ width: 300 }}
+                      required
+                      className={`${classes.inputField} ${classes.inputFieldText}`}
+                      type="text"
+                      label="Action Item"
+                      value={newEdit}
+                      onChange={e => setNewEdit(e.target.value)}
+                    />
+                  ) : (
+                    <ListItemText primary={item.value} />
+                  )}
+
+                  <ListItemSecondaryAction>
+                    {editItem === item.id ? (
+                      <IconButton onClick={resetEdit}>
+                        <CancelIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton edge="end" onClick={() => handleDelete(item.id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
           ) : (
-            <Typography>No action items...yet!</Typography>
-          )}
-        </TableContainer>
+            <UserActionsTable />
+          )
+        ) : (
+          <Typography>No action items...yet!</Typography>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleViewActionDialogClose} color="secondary" variant="contained">
