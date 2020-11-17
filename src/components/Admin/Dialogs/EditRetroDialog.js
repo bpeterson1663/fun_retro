@@ -13,6 +13,8 @@ import FormControl from '@material-ui/core/FormControl'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import SnackBar from '../../Common/SnackBar'
 import useStyles from '../AdminContainer.styles'
+import Tooltip from '@material-ui/core/Tooltip'
+import HelpIcon from '@material-ui/icons/Help'
 import { getColumnsTitle } from '../../../constants/columns.constants'
 const EditRetroDialog = props => {
   const { name, startDate, endDate, numberOfVotes, id, columnsKey, previousRetro } = props.retro
@@ -75,12 +77,16 @@ const EditRetroDialog = props => {
         <FormControl className={`${classes.inputField} ${classes.inputFieldText}`}>
           <Autocomplete
             id="previous_retro"
+            style={{ width: 330 }}
             options={currentRetros}
             getOptionLabel={option => option.name}
             onChange={(e, newValue) => setPreviousRetro(newValue)}
             value={previousRetroValue}
             renderInput={params => <TextField {...params} label="Previous Retro" />}
           />
+          <Tooltip title="View your action items from a previous retro in this one!" aria-label="add">
+            <HelpIcon fontSize="small" className={classes.helpIcon} />
+          </Tooltip>
         </FormControl>
         <TextField
           name="retro_start"
