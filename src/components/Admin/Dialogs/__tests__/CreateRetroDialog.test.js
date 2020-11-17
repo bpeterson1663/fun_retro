@@ -5,6 +5,12 @@ import CreateRetroDialog from '../CreateRetroDialog'
 
 test('create dialog should render', () => {
   render(
-    <CreateRetroDialog isLoading={false} submitRetro={() => {}} handleCreateClose={() => {}} currentRetros={[]} createStatus={true} />,
+    <CreateRetroDialog
+      isLoading={false}
+      submitRetro={() => {}}
+      handleCreateClose={() => {}}
+      currentRetros={[]}
+      createStatus={true}
+    />,
   )
 })
