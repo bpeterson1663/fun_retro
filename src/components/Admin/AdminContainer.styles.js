@@ -49,8 +49,11 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.grey[500],
   },
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 240,
+    display: 'flex',
+    flexFlow: 'row wrap',
+  },
+  helpIcon: {
+    marginTop: '1.5rem',
   },
 }))
 
