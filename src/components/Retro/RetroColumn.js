@@ -384,7 +384,7 @@ RetroColumn.propTypes = {
   columnName: PropTypes.string,
   isActive: PropTypes.bool,
   title: PropTypes.string,
-  votesPerPerson: PropTypes.number,
+  votesPerPerson: PropTypes.string,
   retroId: PropTypes.string,
   remaingVotes: PropTypes.number,
   columnsKey: PropTypes.string,

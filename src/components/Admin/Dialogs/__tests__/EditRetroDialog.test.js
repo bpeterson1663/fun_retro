@@ -12,11 +12,13 @@ test('edit dialog should render', () => {
         endDate: '2020-01-15',
         numberOfVotes: 6,
         id: 'MroWInV20rxNENup0Caq',
+        previousRetro: '',
       }}
       isLoading={false}
       updateRetro={() => {}}
       handleEditClose={() => {}}
       editStatus={true}
+      currentRetros={[]}
     />,
   )
 })
