@@ -19,8 +19,8 @@ import ForgotPassword from './components/Auth/ForgotPassword'
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#2196f3' },
-    secondary: { main: '#dd33fa' },
+    primary: { main: '#1588E6' },
+    secondary: { main: '#DC567F' },
   },
 })
 const App = () => {

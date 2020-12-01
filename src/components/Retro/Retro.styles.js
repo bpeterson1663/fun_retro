@@ -17,6 +17,7 @@ const useStyles = makeStyles(theme => ({
   button: {
     display: 'inherit',
     margin: 'auto',
+    fontWeight: '500'
   },
   card: {
     width: '100%',
@@ -34,6 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     color: 'white',
+    fontWeight: '500'
   },
   avatar: {
     margin: 0,

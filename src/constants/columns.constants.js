@@ -1,7 +1,7 @@
-const $green = '#009588',
-  $red = '#E91D63',
-  $purple = '#9C28B0',
-  $blue = '#2196F3'
+const $green = '#008A60',
+  $red = '#A0194E',
+  $purple = '#806DC2',
+  $blue = '#1588E6'
 
 export const columnKeys = {
   keepDoing: [
