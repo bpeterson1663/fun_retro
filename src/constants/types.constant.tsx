@@ -7,4 +7,11 @@ export interface RetroType {
   columnsKey: string
   isActive: boolean
   timestamp: number
+  previousRetro: string
+}
+
+export interface PreviousRetroType {
+  id: string
+  name: string
+  timestamp: number
 }

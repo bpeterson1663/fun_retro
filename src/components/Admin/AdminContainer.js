@@ -1,6 +1,5 @@
 import React, { useReducer, useEffect, useState, useContext } from 'react'
 import { db } from '../../firebase'
-import { Link } from 'react-router-dom'
 import AuthContext from '../../context/auth-context'
 import _ from 'lodash'
 import moment from 'moment'
@@ -35,7 +34,6 @@ import { getColumnsTitle } from '../../constants/columns.constants'
 const AdminContainer = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [editStatus, setEditStatus] = useState(false)
-  const [createStatus, setCreateStatus] = useState(false)
   const [editRetro, setEditRetro] = useState({})
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
   const [retroIdToDelete, setRetroIdToDelete] = useState('')
@@ -111,36 +109,6 @@ const AdminContainer = () => {
       })
   }, [auth.userId])
 
-  const onSubmitHandler = retro => {
-    setIsLoading(true)
-    db.collection('retros')
-      .add({
-        name: retro.name,
-        startDate: retro.startDate,
-        endDate: retro.endDate,
-        userId: auth.userId,
-        numberOfVotes: retro.numberOfVotes,
-        columnsKey: retro.columnsKey,
-        isActive: true,
-        previousRetro: retro.previousRetro,
-        timestamp: new moment().valueOf(),
-      })
-      .then(res => {
-        dispatch({
-          type: 'ADD',
-          payload: {
-            name: retro.name,
-            endDate: retro.endDate,
-            startDate: retro.startDate,
-            numberOfVotes: retro.numberOfVotes,
-            columnsKey: retro.columnsKey,
-            previousRetro: retro.previousRetro,
-            id: res.id,
-          },
-        })
-      })
-  }
-
   const handleConfirmOpen = id => {
     setRetroIdToDelete(id)
     setConfirmDialogOpen(true)
@@ -149,14 +117,6 @@ const AdminContainer = () => {
   const handleConfirmClose = () => {
     setRetroIdToDelete('')
     setConfirmDialogOpen(false)
-  }
-
-  const handleCreateOpen = () => {
-    setCreateStatus(true)
-  }
-
-  const handleCreateClose = () => {
-    setCreateStatus(false)
   }
 
   const handleEditClose = () => {
@@ -297,14 +257,6 @@ const AdminContainer = () => {
   }
   return (
     <Container data-testid="admin_container">
-      <div className={classes.actionButtons}>
-        <Link to="/createRetro" style={{ textDecoration: 'none' }}>
-          <Button data-testid="admin_create-retro" onClick={handleCreateOpen} variant="contained" color="secondary">
-            Create New Retro
-          </Button>
-        </Link>
-      </div>
-
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Grid container justify="center" spacing={0}>
         {retroList.length > 0 ? <RetroData /> : null}

@@ -56,8 +56,11 @@ const useStyles = makeStyles(theme => ({
     flexFlow: 'row wrap',
   },
   formControl: {
-    display: 'flex',
-    flexFlow: 'row wrap',
+    display: 'inline-flex',
+    flexDirection: 'row',
+  },
+  inputLabel: {
+    'margin-left': '16px',
   },
   helpIcon: {
     marginTop: '1.5rem',
