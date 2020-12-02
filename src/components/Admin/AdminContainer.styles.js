@@ -5,7 +5,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2),
   },
   inputFieldText: {
-    width: 350,
+    width: '38rem',
   },
   icon: {
     marginLeft: 'auto',
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 0,
   },
   dialogContent: {
-    width: 400,
+    width: 500,
     margin: 'auto',
     display: 'flex',
     flexFlow: 'row wrap',
@@ -48,9 +48,19 @@ const useStyles = makeStyles(theme => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
-  formControl: {
+  form: {
+    width: '90%',
+    'max-width': '40rem',
+    margin: '2rem auto',
     display: 'flex',
     flexFlow: 'row wrap',
+  },
+  formControl: {
+    display: 'inline-flex',
+    flexDirection: 'row',
+  },
+  inputLabel: {
+    'margin-left': '16px',
   },
   helpIcon: {
     marginTop: '1.5rem',

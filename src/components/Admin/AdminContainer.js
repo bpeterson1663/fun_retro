@@ -24,19 +24,15 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TablePagination from '@material-ui/core/TablePagination'
 import Paper from '@material-ui/core/Paper'
-import CreateRetroDialog from './Dialogs/CreateRetroDialog'
-import EditRetroDialog from './Dialogs/EditRetroDialog'
 import ShowLinkDialog from './Dialogs/ShowLinkDialog'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
+import { Link } from 'react-router-dom'
 import { getColumnsTitle } from '../../constants/columns.constants'
 
 //TODO: Move Dialog into a common component
 const AdminContainer = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [editStatus, setEditStatus] = useState(false)
-  const [createStatus, setCreateStatus] = useState(false)
-  const [editRetro, setEditRetro] = useState({})
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
   const [retroIdToDelete, setRetroIdToDelete] = useState('')
   const [retroLink, setRetroLink] = useState({})
@@ -111,36 +107,6 @@ const AdminContainer = () => {
       })
   }, [auth.userId])
 
-  const onSubmitHandler = retro => {
-    setIsLoading(true)
-    db.collection('retros')
-      .add({
-        name: retro.name,
-        startDate: retro.startDate,
-        endDate: retro.endDate,
-        userId: auth.userId,
-        numberOfVotes: retro.numberOfVotes,
-        columnsKey: retro.columnsKey,
-        isActive: true,
-        previousRetro: retro.previousRetro,
-        timestamp: new moment().valueOf(),
-      })
-      .then(res => {
-        dispatch({
-          type: 'ADD',
-          payload: {
-            name: retro.name,
-            endDate: retro.endDate,
-            startDate: retro.startDate,
-            numberOfVotes: retro.numberOfVotes,
-            columnsKey: retro.columnsKey,
-            previousRetro: retro.previousRetro,
-            id: res.id,
-          },
-        })
-      })
-  }
-
   const handleConfirmOpen = id => {
     setRetroIdToDelete(id)
     setConfirmDialogOpen(true)
@@ -149,18 +115,6 @@ const AdminContainer = () => {
   const handleConfirmClose = () => {
     setRetroIdToDelete('')
     setConfirmDialogOpen(false)
-  }
-
-  const handleCreateOpen = () => {
-    setCreateStatus(true)
-  }
-
-  const handleCreateClose = () => {
-    setCreateStatus(false)
-  }
-
-  const handleEditClose = () => {
-    setEditStatus(false)
   }
 
   const handleShowLink = retro => {
@@ -199,27 +153,6 @@ const AdminContainer = () => {
           })
       })
     })
-  }
-
-  const handleEditItem = retro => {
-    setEditStatus(true)
-    setEditRetro(retro)
-  }
-
-  const handleUpdateRetro = retro => {
-    setIsLoading(true)
-    db.collection('retros')
-      .doc(retro.id)
-      .update(retro)
-      .then(() => {
-        setEditRetro({})
-        setEditStatus(false)
-        dispatch({
-          type: 'UPDATE',
-          payload: retro,
-        })
-      })
-      .finally(() => setIsLoading(false))
   }
 
   const handleMessageClose = () => {
@@ -268,7 +201,7 @@ const AdminContainer = () => {
                 <TableRow key={retro.id}>
                   <TableCell className={classes.nameCell}>{retro.name}</TableCell>
                   <TableCell align="center">
-                    <Button size="small" variant="outlined" color="secondary" onClick={() => handleShowLink(retro)}>
+                    <Button size="small" variant="contained" color="secondary" onClick={() => handleShowLink(retro)}>
                       Show Link
                     </Button>
                   </TableCell>
@@ -276,9 +209,9 @@ const AdminContainer = () => {
                   <TableCell>{moment(retro.startDate).format('L')}</TableCell>
                   <TableCell>{moment(retro.endDate).format('L')}</TableCell>
                   <TableCell>
-                    <IconButton className={classes.icon} onClick={handleEditItem.bind(this, retro)}>
+                    <Link to={`/editRetro/${retro.id}`}>
                       <EditIcon disabled={isLoading} />
-                    </IconButton>
+                    </Link>
                   </TableCell>
                   <TableCell>
                     <IconButton className={classes.icon} onClick={handleConfirmOpen.bind(this, retro.id)}>
@@ -297,12 +230,6 @@ const AdminContainer = () => {
   }
   return (
     <Container data-testid="admin_container">
-      <div className={classes.actionButtons}>
-        <Button data-testid="admin_create-retro" onClick={handleCreateOpen} variant="contained" color="secondary">
-          Create New Retro
-        </Button>
-      </div>
-
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Grid container justify="center" spacing={0}>
         {retroList.length > 0 ? <RetroData /> : null}
@@ -349,19 +276,6 @@ const AdminContainer = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <EditRetroDialog
-        retro={editRetro}
-        updateRetro={handleUpdateRetro}
-        editStatus={editStatus}
-        handleEditClose={handleEditClose}
-        currentRetros={retroList}
-      />
-      <CreateRetroDialog
-        submitRetro={onSubmitHandler}
-        createStatus={createStatus}
-        handleCreateClose={handleCreateClose}
-        currentRetros={retroList}
-      />
       <ShowLinkDialog showLinkStatus={showLinkStatus} handleShowLinkClose={handleShowLinkClose} retroLink={retroLink} />
     </Container>
   )

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import { BrowserRouter, Route } from 'react-router-dom'
 import RetroContainer from './components/Retro/RetroContainer'
+import CreateRetro from './components/Admin/CreateRetro'
+import EditRetro from './components/Admin/EditRetro'
 import SignUp from './components/Auth/SignUp'
 import Login from './components/Auth/Login'
 import Navigation from './components/Navigation'
@@ -18,8 +20,8 @@ import ForgotPassword from './components/Auth/ForgotPassword'
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#2196f3' },
-    secondary: { main: '#dd33fa' },
+    primary: { main: '#1588E6' },
+    secondary: { main: '#DC567F' },
   },
 })
 const App = () => {
@@ -46,6 +48,8 @@ const App = () => {
             <Navigation />
             {isLoading ? <LinearProgress /> : null}
             <Route path="/retro/:id" exact component={authId ? RetroContainer : Login} />
+            <Route path="/createRetro" exact component={authId ? CreateRetro : Login} />
+            <Route path="/editRetro/:id" component={authId ? EditRetro : Login} />
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={SignUp} />
             <Route path="/retroList" exact component={authId ? AdminContainer : Login} />

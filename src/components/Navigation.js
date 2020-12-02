@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography/Typography'
 const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1),
+    color: '#fff',
   },
   header: {
     fontWeight: 'bold',
@@ -38,15 +39,14 @@ const Navigation = () => {
   const classes = useStyles()
   const authenticatedNav = (
     <div className={classes.buttonContainer}>
+      <Link to="/createRetro" style={{ textDecoration: 'none' }}>
+        <Button className={classes.button}>Create Retro</Button>
+      </Link>
       <Link to="/retroList" style={{ textDecoration: 'none' }}>
-        <Button color="secondary" variant="contained" className={classes.button}>
-          Retro List
-        </Button>
+        <Button className={classes.button}>Retro List</Button>
       </Link>
       <Link data-testid="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}>
-        <Button color="secondary" variant="contained" className={classes.button}>
-          Log Out
-        </Button>
+        <Button className={classes.button}>Log Out</Button>
       </Link>
     </div>
   )
