@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 0,
   },
   dialogContent: {
-    width: 400,
+    width: 500,
     margin: 'auto',
     display: 'flex',
     flexFlow: 'row wrap',
