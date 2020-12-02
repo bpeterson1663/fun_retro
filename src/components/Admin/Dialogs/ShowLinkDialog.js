@@ -35,7 +35,7 @@ const ShowLinkDialog = props => {
       </DialogContent>
       <DialogActions>
         <CopyToClipboard text={'https://superfunretro.herokuapp.com/retro/' + retroLink.id} onCopy={copyToClipboard}>
-          <Button size="small" variant="outlined" color="secondary">
+          <Button size="small" variant="contained" color="secondary">
             Copy to clipboard
           </Button>
         </CopyToClipboard>
