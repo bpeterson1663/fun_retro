@@ -78,7 +78,6 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const handleEditClose = () => {
     setEditStatus(false)
     setEditTeam(null)
-
   }
 
   const handleEditOpen = (team: ManageTeamsType) => {
@@ -125,6 +124,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
         .doc(team.id)
         .update(team)
         .then(() => {
+            setIsLoading(false)
             const newState = allTeams
             const itemIndex = allTeams.findIndex(item => item.id === team.id)
             newState[itemIndex] = team
