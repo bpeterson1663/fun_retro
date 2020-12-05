@@ -15,3 +15,9 @@ export interface PreviousRetroType {
   name: string
   timestamp: number
 }
+
+export interface ManageTeamsType {
+  teamName: string
+  id: string
+  timestamp: number
+}

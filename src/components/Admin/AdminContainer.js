@@ -184,7 +184,7 @@ const AdminContainer = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
         <TableContainer className={classes.tableContainer} component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
+          <Table aria-label="retro list table">
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
@@ -199,7 +199,7 @@ const AdminContainer = () => {
             <TableBody>
               {retroList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(retro => (
                 <TableRow key={retro.id}>
-                  <TableCell className={classes.nameCell}>{retro.name}</TableCell>
+                  <TableCell>{retro.name}</TableCell>
                   <TableCell align="center">
                     <Button size="small" variant="contained" color="secondary" onClick={() => handleShowLink(retro)}>
                       Show Link
