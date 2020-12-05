@@ -39,6 +39,9 @@ const Navigation = () => {
   const classes = useStyles()
   const authenticatedNav = (
     <div className={classes.buttonContainer}>
+      <Link to="/manageTeams" style={{ textDecoration: 'none' }}>
+        <Button className={classes.button}>Manage Teams</Button>
+      </Link>
       <Link to="/createRetro" style={{ textDecoration: 'none' }}>
         <Button className={classes.button}>Create Retro</Button>
       </Link>
