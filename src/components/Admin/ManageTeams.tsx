@@ -30,12 +30,8 @@ import Typography from '@material-ui/core/Typography/Typography'
 import AuthContext from '../../context/auth-context'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
+import { ManageTeamsType } from '../../constants/types.constant'
 import EditTeamDialog from './Dialogs/EditTeamDialog'
-interface ManageTeamsType {
-  teamName: string
-  id: string
-  timestamp: number
-}
 
 const ManageTeams: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
@@ -61,6 +57,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
             id: doc.id,
             teamName: docData.teamName,
             timestamp: docData.timestamp,
+            userId: auth.userId,
           })
         })
         setAllTeams(teams)
@@ -119,31 +116,31 @@ const ManageTeams: React.FC = (): JSX.Element => {
       })
   }
   const handleEditSubmit = (team: ManageTeamsType): void => {
-      setIsLoading(true)
-      db.collection('teams')
-        .doc(team.id)
-        .update(team)
-        .then(() => {
-            setIsLoading(false)
-            const newState = allTeams
-            const itemIndex = allTeams.findIndex(item => item.id === team.id)
-            newState[itemIndex] = team
-            setAllTeams(newState)
-            setResponse({
-             open: true,
-             status: 'success',
-             message: 'That team was updated!',
-            })
+    setIsLoading(true)
+    db.collection('teams')
+      .doc(team.id)
+      .update(team)
+      .then(() => {
+        setIsLoading(false)
+        const newState = allTeams
+        const itemIndex = allTeams.findIndex(item => item.id === team.id)
+        newState[itemIndex] = team
+        setAllTeams(newState)
+        setResponse({
+          open: true,
+          status: 'success',
+          message: 'That team was updated!',
         })
-        .catch(err => {
-            setIsLoading(false)
-            setResponse({
-             open: true,
-             status: 'error',
-             message: 'Oh no something went wrong!',
-            })
-            console.error(err)
+      })
+      .catch(err => {
+        setIsLoading(false)
+        setResponse({
+          open: true,
+          status: 'error',
+          message: 'Oh no something went wrong!',
         })
+        console.error(err)
+      })
   }
   const handleTeamDelete = (id: string): void => {
     setIsLoading(true)
@@ -275,7 +272,12 @@ const ManageTeams: React.FC = (): JSX.Element => {
           </Button>
         </DialogActions>
       </Dialog>
-      <EditTeamDialog handleEditSubmit={handleEditSubmit} editTeam={editTeam} editStatus={editStatus} handleEditClose={handleEditClose} />
+      <EditTeamDialog
+        handleEditSubmit={handleEditSubmit}
+        editTeam={editTeam}
+        editStatus={editStatus}
+        handleEditClose={handleEditClose}
+      />
     </Container>
   )
 }

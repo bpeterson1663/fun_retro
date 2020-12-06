@@ -3,6 +3,7 @@ export interface RetroType {
   startDate: string
   endDate: string
   userId: string
+  team: ManageTeamsType[]
   numberOfVotes: number
   columnsKey: string
   isActive: boolean
@@ -20,4 +21,5 @@ export interface ManageTeamsType {
   teamName: string
   id: string
   timestamp: number
+  userId: string
 }

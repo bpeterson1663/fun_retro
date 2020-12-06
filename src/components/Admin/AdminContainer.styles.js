@@ -40,7 +40,12 @@ const useStyles = makeStyles(theme => ({
     flexFlow: 'row-reverse wrap',
   },
   tableContainer: {
+    minWidth: 400,
     maxWidth: 1200,
+  },
+  showLinkButton: {
+    width: 110,
+    maxHeight: 30,
   },
   closeButton: {
     position: 'absolute',
