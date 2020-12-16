@@ -15,7 +15,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import HelpIcon from '@material-ui/icons/Help'
-import { PreviousRetroType } from '../../constants/types.constant'
+import { ManageTeamsType, RetroType } from '../../constants/types.constant'
 import Button from '@material-ui/core/Button'
 import SnackBar from '../Common/SnackBar'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -28,7 +28,7 @@ interface ParamTypes {
 interface RetroForm {
   name: string
   columnsKey: string
-  previousRetro: NestedValue<PreviousRetroType[]>
+  team: NestedValue<ManageTeamsType[]>
   startDate: string
   endDate: string
   numberOfVotes: number
@@ -37,8 +37,9 @@ const EditRetro: React.FC = (): JSX.Element => {
   const history = useHistory()
   const auth = useContext(AuthContext)
   const [isLoading, setIsLoading] = useState(false)
-  const [currentRetros, setCurrentRetros] = useState<PreviousRetroType[]>([])
-  const [previousRetroValue, setPreviousRetro] = useState<PreviousRetroType | null>(null)
+  const [editRetro, setEditRetro] = useState<RetroType>()
+  const [allTeams, setTeams] = useState<ManageTeamsType[]>([])
+  const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
   const { id } = useParams<ParamTypes>()
 
   const { handleSubmit, setValue, control } = useForm<RetroForm>()
@@ -53,7 +54,7 @@ const EditRetro: React.FC = (): JSX.Element => {
           .doc(id)
           .get(),
         db
-          .collection('retros')
+          .collection('teams')
           .where('userId', '==', auth.userId)
           .get(),
       ])
@@ -63,32 +64,29 @@ const EditRetro: React.FC = (): JSX.Element => {
           if (!retroData) {
             history.push('/retroList')
           } else {
-            const retros: PreviousRetroType[] = []
+            const teams: ManageTeamsType[] = []
+            const retro = {
+              ...retroData,
+              team: retroData.team ? retroData.team : [],
+            } as RetroType
+
             allSnapshot.docs.forEach(doc => {
               const data = doc.data()
-              retros.push({
+              teams.push({
                 id: doc.id,
-                name: data.name,
+                teamName: data.teamName,
                 timestamp: data.timestamp,
+                userId: data.userId,
               })
             })
-
-            retros.sort((a, b) => {
-              return b.timestamp - a.timestamp
-            })
-            setCurrentRetros(retros)
+            setTeams(teams)
+            setEditRetro(retro)
+            setTeamValue(retroData?.team)
             setValue('name', retroData?.name)
             setValue('columnsKey', retroData?.columnsKey)
-            setValue('previousRetro', retroData?.previousRetro)
             setValue('endDate', retroData?.endDate)
             setValue('startDate', retroData?.startDate)
             setValue('numberOfVotes', retroData?.numberOfVotes)
-            const foundRetro = retros.find(retro => retro.id === retroData?.previousRetro)
-            if (foundRetro) {
-              setPreviousRetro(foundRetro)
-            } else {
-              setPreviousRetro(null)
-            }
           }
         })
         .catch(() => history.push('/retroList'))
@@ -97,8 +95,9 @@ const EditRetro: React.FC = (): JSX.Element => {
   }, [auth.userId, history, id, setValue])
   const onSubmitHandler = (data: RetroForm) => {
     const retro = {
+      ...editRetro,
       ...data,
-      previousRetro: previousRetroValue?.id,
+      team: teamValue ? teamValue : [],
     }
     db.collection('retros')
       .doc(id)
@@ -165,16 +164,22 @@ const EditRetro: React.FC = (): JSX.Element => {
 
         <FormControl className={classes.formControl}>
           <Autocomplete
-            value={previousRetroValue}
+            value={teamValue}
+            defaultValue={[]}
+            multiple
+            filterSelectedOptions
             className={`${classes.inputField} ${classes.inputFieldText}`}
-            options={currentRetros}
-            onChange={(e, option) => setPreviousRetro(option)}
-            getOptionLabel={(option: PreviousRetroType) => option.name}
-            getOptionSelected={(option, value) => option.name === value.name}
-            renderInput={params => <TextField {...params} label="Previous Retro" />}
+            options={allTeams}
+            onChange={(e, option) => setTeamValue(option)}
+            getOptionLabel={(option: ManageTeamsType) => option.teamName}
+            getOptionSelected={(option, value) => option.teamName === value.teamName}
+            renderInput={params => <TextField {...params} label="Team(s)" />}
           />
 
-          <Tooltip title="View your action items from a previous retro in your new retro!" aria-label="add">
+          <Tooltip
+            title="Select the team(s) this retro will be for. When creating action items, they will be grouped by team"
+            aria-label="add-team"
+          >
             <HelpIcon fontSize="small" className={classes.helpIcon} />
           </Tooltip>
         </FormControl>

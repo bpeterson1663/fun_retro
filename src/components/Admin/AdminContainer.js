@@ -98,6 +98,7 @@ const AdminContainer = () => {
             .map(doc => {
               const data = doc.data()
               data.id = doc.id
+              data.team = data.team ? data.team : []
               return data
             })
             .sort((a, b) => {
@@ -190,6 +191,7 @@ const AdminContainer = () => {
                 <TableCell>Name</TableCell>
                 <TableCell align="center">Link</TableCell>
                 <TableCell align="center">Type</TableCell>
+                <TableCell>Team(s)</TableCell>
                 <TableCell align="center">Start Date</TableCell>
                 <TableCell align="center">End Date</TableCell>
                 <TableCell align="center">Edit</TableCell>
@@ -201,11 +203,24 @@ const AdminContainer = () => {
                 <TableRow key={retro.id}>
                   <TableCell>{retro.name}</TableCell>
                   <TableCell align="center">
-                    <Button size="small" variant="contained" color="secondary" onClick={() => handleShowLink(retro)}>
+                    <Button
+                      className={classes.showLinkButton}
+                      size="small"
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleShowLink(retro)}
+                    >
                       Show Link
                     </Button>
                   </TableCell>
                   <TableCell>{getColumnsTitle(retro.columnsKey)}</TableCell>
+                  <TableCell>
+                    <ul>
+                      {retro.team.map(item => (
+                        <li key={item.id}>{item.teamName}</li>
+                      ))}
+                    </ul>
+                  </TableCell>
                   <TableCell>{moment(retro.startDate).format('L')}</TableCell>
                   <TableCell>{moment(retro.endDate).format('L')}</TableCell>
                   <TableCell>

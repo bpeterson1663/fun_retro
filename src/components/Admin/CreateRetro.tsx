@@ -15,7 +15,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import HelpIcon from '@material-ui/icons/Help'
-import { PreviousRetroType } from '../../constants/types.constant'
+import { ManageTeamsType } from '../../constants/types.constant'
 import Button from '@material-ui/core/Button'
 import SnackBar from '../Common/SnackBar'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -24,7 +24,7 @@ import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 interface RetroForm {
   name: string
   columnsKey: string
-  previousRetro: NestedValue<PreviousRetroType[]>
+  team: NestedValue<ManageTeamsType[]>
   startDate: string
   endDate: string
   numberOfVotes: number
@@ -34,7 +34,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
   const [response, setResponse] = useState({ open: false, status: '', message: '' })
   const [isLoading, setIsLoading] = useState(false)
-  const [currentRetros, setCurrentRetros] = useState<PreviousRetroType[]>([])
+  const [allTeams, setTeams] = useState<ManageTeamsType[]>([])
   const { handleSubmit, register, setValue, reset, control } = useForm<RetroForm>({
     defaultValues: {
       columnsKey: columnTitles[0].value,
@@ -45,26 +45,24 @@ const CreateRetro: React.FC = (): JSX.Element => {
   })
 
   useEffect(() => {
-    register('previousRetro')
+    register('team')
 
-    db.collection('retros')
+    db.collection('teams')
       .where('userId', '==', auth.userId)
       .get()
       .then(querySnapshot => {
-        const retros: PreviousRetroType[] = []
+        const teams: ManageTeamsType[] = []
         querySnapshot.docs.forEach(doc => {
           const data = doc.data()
-          retros.push({
+          teams.push({
             id: doc.id,
-            name: data.name,
+            teamName: data.teamName,
             timestamp: data.timestamp,
+            userId: data.userId,
           })
         })
 
-        retros.sort((a, b) => {
-          return b.timestamp - a.timestamp
-        })
-        setCurrentRetros(retros)
+        setTeams(teams)
       })
   }, [auth.userId, register])
   const onSubmitHandler = (data: RetroForm) => {
@@ -73,7 +71,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
     db.collection('retros')
       .add({
         ...data,
-        previousRetro: data.previousRetro ? data.previousRetro : '',
+        team: data.team ? data.team : [],
         isActive: true,
         timestamp: moment().valueOf(),
         userId: auth.userId,
@@ -85,7 +83,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
           startDate: moment().format('YYYY-MM-DD'),
           endDate: moment().format('YYYY-MM-DD'),
           columnsKey: columnTitles[0].value,
-          previousRetro: [],
+          team: [],
         })
         setIsLoading(false)
         setResponse({
@@ -151,16 +149,21 @@ const CreateRetro: React.FC = (): JSX.Element => {
 
         <FormControl className={classes.formControl}>
           <Autocomplete
-            id="previous_retro"
+            id="team"
+            multiple
+            filterSelectedOptions
             className={`${classes.inputField} ${classes.inputFieldText}`}
-            options={currentRetros}
-            onChange={(e, option) => setValue('previousRetro', option?.id)}
-            getOptionLabel={(option: PreviousRetroType) => option.name}
-            getOptionSelected={(option, value) => option.name === value.name}
-            renderInput={params => <TextField {...params} label="Previous Retro" />}
+            options={allTeams}
+            onChange={(e, option) => setValue('team', option)}
+            getOptionLabel={(option: ManageTeamsType) => option.teamName}
+            getOptionSelected={(option, value) => option.teamName === value.teamName}
+            renderInput={params => <TextField {...params} label="Team(s)" />}
           />
 
-          <Tooltip title="View your action items from a previous retro in your new retro!" aria-label="add">
+          <Tooltip
+            title="Select the team(s) this retro will be for. When creating action items, they will be grouped by team"
+            aria-label="add-team"
+          >
             <HelpIcon fontSize="small" className={classes.helpIcon} />
           </Tooltip>
         </FormControl>

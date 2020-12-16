@@ -8,10 +8,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import useStyles from '../Retro.styles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableRow from '@material-ui/core/TableRow'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -25,25 +21,49 @@ import CancelIcon from '@material-ui/icons/Cancel'
 import Button from '@material-ui/core/Button'
 
 const ViewActionItemDialog = props => {
-  const { showViewActionDialog, handleViewActionDialogClose, retroName, retroId, isAdmin } = props
+  const { showViewActionDialog, handleViewActionDialogClose, retroName, retroId, team } = props
   const classes = useStyles()
-  const [actionItems, setActionItems] = useState([])
+  const [actionItems, setActionItems] = useState({})
   const [editItem, setEditItem] = useState('')
   const [newEdit, setNewEdit] = useState('')
 
   useEffect(() => {
-    db.collection('actionItems')
-      .where('retroId', '==', retroId)
-      .get()
-      .then(querySnapshot => {
-        const docs = querySnapshot.docs.map(doc => {
-          const data = doc.data()
-          data.id = doc.id
-          return data
-        })
-        setActionItems(docs)
+    const actionItemMap = []
+    if (team.length > 0) {
+      const promises = team.map(t => {
+        actionItemMap.push({ id: t.id, name: t.teamName, actions: [] })
+        return db
+          .collection('actionItems')
+          .where('teamId', '==', t.id)
+          .get()
       })
-  }, [retroId, showViewActionDialog])
+      Promise.all(promises).then(res => {
+        res.forEach(querySnapshot => {
+          querySnapshot.docs.forEach(doc => {
+            const data = doc.data()
+            const map = actionItemMap.find(m => m.id === data.teamId)
+            map.actions.push({
+              ...data,
+              id: doc.id,
+            })
+          })
+        })
+        setActionItems(actionItemMap)
+      })
+    } else {
+      db.collection('actionItems')
+        .where('retroId', '==', retroId)
+        .get()
+        .then(querySnapshot => {
+          const docs = querySnapshot.docs.map(doc => {
+            const data = doc.data()
+            data.id = doc.id
+            return data
+          })
+          setActionItems([{ id: retroId, name: retroName, actions: docs }])
+        })
+    }
+  }, [retroId, showViewActionDialog, team, retroName])
 
   const handleEditItem = (id, value) => {
     setEditItem(id)
@@ -55,8 +75,11 @@ const ViewActionItemDialog = props => {
       .doc(id)
       .delete()
       .then(() => {
-        const newActionItems = actionItems.filter(item => item.id !== id)
-        setActionItems(newActionItems)
+         const allMap = actionItems.map(m => {
+           m.actions = m.actions.filter(action => action.id !== id) 
+           return m
+        })
+        setActionItems(allMap)
       })
   }
   const resetEdit = () => {
@@ -64,39 +87,25 @@ const ViewActionItemDialog = props => {
     setNewEdit('')
   }
 
-  const handleSaveItem = id => {
+  const handleSaveItem = item => {
     db.collection('actionItems')
-      .doc(id)
+      .doc(item.id)
       .update({
+        ...item,
         value: newEdit,
       })
       .then(() => {
-        const newActionItems = actionItems.map(item => {
-          if (item.id === id) item.value = newEdit
-          return item
+        let allMap = actionItems;
+        allMap.forEach(m => {
+          m.actions.forEach(action => {
+            if(action.id === item.id) action.value = newEdit
+          })
         })
         resetEdit()
-        setActionItems(newActionItems)
+        setActionItems(allMap)
       })
   }
 
-  const UserActionsTable = () => {
-    return (
-      <Table>
-        <TableBody>
-          {actionItems.map(item => {
-            return (
-              <TableRow key={item.id}>
-                <TableCell>{item.value}</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-    )
-  }
   return (
     <Dialog data-testid="actionitem_dialog" open={showViewActionDialog} onClose={handleViewActionDialogClose}>
       <DialogTitle>
@@ -104,54 +113,55 @@ const ViewActionItemDialog = props => {
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
         {actionItems.length > 0 ? (
-          isAdmin ? (
-            <List>
-              {actionItems.map((item, i) => (
-                <ListItem key={'ListItem' + i}>
-                  <ListItemAvatar>
+          actionItems.map(item => (
+            <div key={item.id}>
+              <Typography>{item.name}</Typography>
+              <List>
+                {item.actions.map(item => (
+                  <ListItem key={'ListItem' + item.id}>
+                    <ListItemAvatar>
+                      {editItem === item.id ? (
+                        <IconButton onClick={() => handleSaveItem(item)}>
+                          <SaveIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton className={classes.icon} onClick={() => handleEditItem(item.id, item.value)}>
+                          <EditIcon />
+                        </IconButton>
+                      )}
+                    </ListItemAvatar>
                     {editItem === item.id ? (
-                      <IconButton onClick={() => handleSaveItem(item.id)}>
-                        <SaveIcon />
-                      </IconButton>
+                      <TextField
+                        key={'TextField' + item.id}
+                        name="edit_item"
+                        style={{ width: 300 }}
+                        required
+                        className={`${classes.inputField} ${classes.inputFieldText}`}
+                        type="text"
+                        label="Action Item"
+                        value={newEdit}
+                        onChange={e => setNewEdit(e.target.value)}
+                      />
                     ) : (
-                      <IconButton className={classes.icon} onClick={() => handleEditItem(item.id, item.value)}>
-                        <EditIcon />
-                      </IconButton>
+                      <ListItemText primary={item.value} />
                     )}
-                  </ListItemAvatar>
-                  {editItem === item.id ? (
-                    <TextField
-                      key={'TextField' + i}
-                      name="edit_item"
-                      style={{ width: 300 }}
-                      required
-                      className={`${classes.inputField} ${classes.inputFieldText}`}
-                      type="text"
-                      label="Action Item"
-                      value={newEdit}
-                      onChange={e => setNewEdit(e.target.value)}
-                    />
-                  ) : (
-                    <ListItemText primary={item.value} />
-                  )}
 
-                  <ListItemSecondaryAction>
-                    {editItem === item.id ? (
-                      <IconButton onClick={resetEdit}>
-                        <CancelIcon />
-                      </IconButton>
-                    ) : (
-                      <IconButton edge="end" onClick={() => handleDelete(item.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    )}
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <UserActionsTable />
-          )
+                    <ListItemSecondaryAction>
+                      {editItem === item.id ? (
+                        <IconButton onClick={resetEdit}>
+                          <CancelIcon />
+                        </IconButton>
+                      ) : (
+                        <IconButton edge="end" onClick={() => handleDelete(item.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          ))
         ) : (
           <Typography>No action items...yet!</Typography>
         )}
@@ -170,5 +180,6 @@ ViewActionItemDialog.propTypes = {
   retroName: PropTypes.string,
   retroId: PropTypes.string,
   isAdmin: PropTypes.bool,
+  team: PropTypes.array,
 }
 export default ViewActionItemDialog

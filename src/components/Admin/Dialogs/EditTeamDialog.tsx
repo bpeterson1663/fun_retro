@@ -1,6 +1,15 @@
 import * as React from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, FormControl, TextField } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+  FormControl,
+  TextField,
+} from '@material-ui/core'
 import { ManageTeamsType } from '../../../constants/types.constant'
 import useStyles from '../AdminContainer.styles'
 
@@ -16,8 +25,8 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
   const classes = useStyles()
   const onSubmitHandler = (data: ManageTeamsType) => {
     const newTeam = {
-        ...editTeam,
-        ...data
+      ...editTeam,
+      ...data,
     }
     handleEditClose()
     handleEditSubmit(newTeam)
