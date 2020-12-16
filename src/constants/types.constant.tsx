@@ -23,3 +23,9 @@ export interface ManageTeamsType {
   timestamp: number
   userId: string
 }
+
+export interface ActionItemType {
+  value: string
+  retroId: string
+  teamId: string
+}
