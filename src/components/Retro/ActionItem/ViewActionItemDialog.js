@@ -76,9 +76,9 @@ const ViewActionItemDialog = props => {
       .doc(id)
       .delete()
       .then(() => {
-         const allMap = actionItems.map(m => {
-           m.actions = m.actions.filter(action => action.id !== id) 
-           return m
+        const allMap = actionItems.map(m => {
+          m.actions = m.actions.filter(action => action.id !== id)
+          return m
         })
         setActionItems(allMap)
       })
@@ -96,10 +96,10 @@ const ViewActionItemDialog = props => {
         value: newEdit,
       })
       .then(() => {
-        let allMap = actionItems;
+        let allMap = actionItems
         allMap.forEach(m => {
           m.actions.forEach(action => {
-            if(action.id === item.id) action.value = newEdit
+            if (action.id === item.id) action.value = newEdit
           })
         })
         resetEdit()
@@ -118,49 +118,52 @@ const ViewActionItemDialog = props => {
             <div key={item.id}>
               <Typography>{item.name}</Typography>
               <List>
-                {item.actions.length > 0 ? ( item.actions.map(item => (
-                  <ListItem key={'ListItem' + item.id}>
-                    <ListItemAvatar>
+                {item.actions.length > 0 ? (
+                  item.actions.map(item => (
+                    <ListItem key={'ListItem' + item.id}>
+                      <ListItemAvatar>
+                        {editItem === item.id ? (
+                          <IconButton onClick={() => handleSaveItem(item)}>
+                            <SaveIcon />
+                          </IconButton>
+                        ) : (
+                          <IconButton className={classes.icon} onClick={() => handleEditItem(item.id, item.value)}>
+                            <EditIcon />
+                          </IconButton>
+                        )}
+                      </ListItemAvatar>
                       {editItem === item.id ? (
-                        <IconButton onClick={() => handleSaveItem(item)}>
-                          <SaveIcon />
-                        </IconButton>
+                        <TextField
+                          key={'TextField' + item.id}
+                          name="edit_item"
+                          style={{ width: 300 }}
+                          required
+                          className={`${classes.inputField} ${classes.inputFieldText}`}
+                          type="text"
+                          label="Action Item"
+                          value={newEdit}
+                          onChange={e => setNewEdit(e.target.value)}
+                        />
                       ) : (
-                        <IconButton className={classes.icon} onClick={() => handleEditItem(item.id, item.value)}>
-                          <EditIcon />
-                        </IconButton>
+                        <ListItemText primary={item.value} />
                       )}
-                    </ListItemAvatar>
-                    {editItem === item.id ? (
-                      <TextField
-                        key={'TextField' + item.id}
-                        name="edit_item"
-                        style={{ width: 300 }}
-                        required
-                        className={`${classes.inputField} ${classes.inputFieldText}`}
-                        type="text"
-                        label="Action Item"
-                        value={newEdit}
-                        onChange={e => setNewEdit(e.target.value)}
-                      />
-                    ) : (
-                      <ListItemText primary={item.value} />
-                    )}
 
-                    <ListItemSecondaryAction>
-                      {editItem === item.id ? (
-                        <IconButton onClick={resetEdit}>
-                          <CancelIcon />
-                        </IconButton>
-                      ) : (
-                        <IconButton edge="end" onClick={() => handleDelete(item.id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      )}
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))
-                ): <Typography>No action items...yet!</Typography>}
+                      <ListItemSecondaryAction>
+                        {editItem === item.id ? (
+                          <IconButton onClick={resetEdit}>
+                            <CancelIcon />
+                          </IconButton>
+                        ) : (
+                          <IconButton edge="end" onClick={() => handleDelete(item.id)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))
+                ) : (
+                  <Typography>No action items...yet!</Typography>
+                )}
               </List>
             </div>
           ))

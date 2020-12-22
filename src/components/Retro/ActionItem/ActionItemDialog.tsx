@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
   },
   inputFieldText: {
     width: '400px',
-  }
+  },
 }))
 interface DialogPropTypes {
   showActionItemDialog: boolean
@@ -31,7 +31,9 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
   const classes = useStyles()
 
   const handleCreateActionItem = () => {
-    if(!itemValue){ return }
+    if (!itemValue) {
+      return
+    }
     createActionItem({
       value: itemValue,
       team: teamValue.length > 0 ? teamValue : [],
