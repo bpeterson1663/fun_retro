@@ -81,7 +81,7 @@ const EditRetro: React.FC = (): JSX.Element => {
             })
             setTeams(teams)
             setEditRetro(retro)
-            setTeamValue(retroData?.team)
+            setTeamValue(retroData.team ? retroData.team : [])
             setValue('name', retroData?.name)
             setValue('columnsKey', retroData?.columnsKey)
             setValue('endDate', retroData?.endDate)
