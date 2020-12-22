@@ -4,13 +4,19 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
+import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType } from '../../../constants/types.constant'
-
+const useStyles = makeStyles(theme => ({
+  inputField: {
+    margin: theme.spacing(2),
+  },
+  inputFieldText: {
+    width: '400px',
+  }
+}))
 interface DialogPropTypes {
   showActionItemDialog: boolean
   previousRetro: string
@@ -22,7 +28,10 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
   const { showActionItemDialog, handleActionItemDialogClose, createActionItem, team } = props
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
   const [itemValue, setItemValue] = useState('')
+  const classes = useStyles()
+
   const handleCreateActionItem = () => {
+    if(!itemValue){ return }
     createActionItem({
       value: itemValue,
       team: teamValue.length > 0 ? teamValue : [],
@@ -33,14 +42,13 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
     <Dialog data-testid="actionitem_dialog" open={showActionItemDialog} onClose={handleActionItemDialogClose}>
       <DialogTitle>
         <Typography>Create Action Item</Typography>
-        <IconButton onClick={handleActionItemDialogClose}>
-          <CloseIcon />
-        </IconButton>
       </DialogTitle>
       <DialogContent>
         <TextField
+          className={`${classes.inputField} ${classes.inputFieldText}`}
           variant="outlined"
           multiline
+          required
           rows="3"
           type="text"
           label="Start Typing"
