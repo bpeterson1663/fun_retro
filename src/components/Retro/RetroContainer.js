@@ -194,7 +194,7 @@ const RetroContainer = props => {
     } else {
       db.collection('actionItems')
         .add({
-          value: item,
+          value: item.value,
           retroId: retroId,
           userId: auth.userId,
           teamId: '',

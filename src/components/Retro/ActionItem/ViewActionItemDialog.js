@@ -62,6 +62,7 @@ const ViewActionItemDialog = props => {
           })
           setActionItems([{ id: retroId, name: retroName, actions: docs }])
         })
+        .catch(err => console.error(err))
     }
   }, [retroId, showViewActionDialog, team, retroName])
 
@@ -117,7 +118,7 @@ const ViewActionItemDialog = props => {
             <div key={item.id}>
               <Typography>{item.name}</Typography>
               <List>
-                {item.actions.map(item => (
+                {item.actions.length > 0 ? ( item.actions.map(item => (
                   <ListItem key={'ListItem' + item.id}>
                     <ListItemAvatar>
                       {editItem === item.id ? (
@@ -158,7 +159,8 @@ const ViewActionItemDialog = props => {
                       )}
                     </ListItemSecondaryAction>
                   </ListItem>
-                ))}
+                ))
+                ): <Typography>No action items...yet!</Typography>}
               </List>
             </div>
           ))
