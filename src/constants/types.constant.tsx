@@ -25,6 +25,7 @@ export interface ManageTeamsType {
 }
 
 export interface ActionItemType {
+  id: string
   value: string
   retroId: string
   teamId: string
