@@ -169,7 +169,7 @@ const RetroContainer = props => {
       const promises = item.team.map(team => {
         return db.collection('actionItems').add({
           value: item.value,
-          retroid: retroId,
+          retroId: retroId,
           teamId: team.id,
           userId: auth.userId,
         })
