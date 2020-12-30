@@ -2,6 +2,7 @@ import React, { useReducer, useEffect, useState, useContext } from 'react'
 import { db } from '../../firebase'
 import AuthContext from '../../context/auth-context'
 import _ from 'lodash'
+import { getAllRetros } from '../../api/index'
 import moment from 'moment'
 import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button'
@@ -88,24 +89,21 @@ const AdminContainer = () => {
   const [retroList, dispatch] = useReducer(itemListReducer, [])
 
   useEffect(() => {
-    db.collection('retros')
-      .where('userId', '==', auth.userId)
-      .get()
-      .then(querySnapshot => {
-        dispatch({
-          type: 'SET',
-          payload: querySnapshot.docs
-            .map(doc => {
-              const data = doc.data()
-              data.id = doc.id
-              data.team = data.team ? data.team : []
-              return data
-            })
-            .sort((a, b) => {
-              return b.timestamp - a.timestamp
-            }),
-        })
+    getAllRetros(auth.userId).then(querySnapshot => {
+      dispatch({
+        type: 'SET',
+        payload: querySnapshot.docs
+          .map(doc => {
+            const data = doc.data()
+            data.id = doc.id
+            data.team = data.team ? data.team : []
+            return data
+          })
+          .sort((a, b) => {
+            return b.timestamp - a.timestamp
+          }),
       })
+    })
   }, [auth.userId])
 
   const handleConfirmOpen = id => {
