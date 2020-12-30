@@ -1,4 +1,5 @@
 export interface RetroType {
+  id: string
   name: string
   startDate: string
   endDate: string
@@ -29,4 +30,11 @@ export interface ActionItemType {
   value: string
   retroId: string
   teamId: string
+  retroName: string | undefined
+}
+
+export interface ActionItemTable {
+  name: string
+  id: string
+  data: ActionItemType[]
 }

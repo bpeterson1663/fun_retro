@@ -1,6 +1,12 @@
 import { db } from '../firebase'
 import { QuerySnapshot } from '@firebase/firestore-types'
 
+export const getAllRetros = async (id: string): Promise<QuerySnapshot> =>
+  db
+    .collection('retros')
+    .where('userId', '==', id)
+    .get()
+
 export const getActionItemsByUser = async (id: string): Promise<QuerySnapshot> =>
   await db
     .collection('actionItems')
@@ -19,3 +25,9 @@ export const getActionItemsByTeam = async (id: string): Promise<QuerySnapshot> =
     .collection('actionItems')
     .where('teamId', '==', id)
     .get()
+
+export const deleteActionItem = async (id: string) =>
+  await db
+    .collection('actionItems')
+    .doc(id)
+    .delete()

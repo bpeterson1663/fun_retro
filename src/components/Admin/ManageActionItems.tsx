@@ -1,29 +1,16 @@
 import * as React from 'react'
 import { useState, useEffect, useContext } from 'react'
-import {
-  Container,
-  Grid,
-  Typography,
-  LinearProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@material-ui/core'
+import { Container, Grid, Typography, LinearProgress } from '@material-ui/core'
 import useStyles from './AdminContainer.styles'
-import { getTeams, getActionItemsByTeam, getActionItemsByUser } from '../../api/index'
+import ActionItemList from './ActionItemList'
+import { getTeams, getActionItemsByTeam, getActionItemsByUser, getAllRetros, deleteActionItem } from '../../api/index'
 import AuthContext from '../../context/auth-context'
-import { ActionItemType } from '../../constants/types.constant'
-interface ActionItemTable {
-  name: string
-  id: string
-  data: ActionItemType[]
-}
+import { ActionItemTable, RetroType } from '../../constants/types.constant'
+
 const ManageActionItems: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
   const [isLoading, setIsLoading] = useState(true)
+  const [allRetros, setAllRetros] = useState<RetroType[]>([])
   const [actionItemsMap, setActionItemsMap] = useState<ActionItemTable[]>([])
   const classes = useStyles()
 
@@ -35,7 +22,6 @@ const ManageActionItems: React.FC = (): JSX.Element => {
         const docs = data.docs
         if (docs.length) {
           itemMap.push({ id: auth.userId, name: 'Action Items with No Team', data: [] })
-          debugger
           docs.forEach(doc => {
             const itemData = doc.data()
             const map = itemMap.find(m => m.id === auth.userId)
@@ -44,13 +30,13 @@ const ManageActionItems: React.FC = (): JSX.Element => {
               retroId: itemData.retroId,
               teamId: itemData.teamId,
               id: doc.id,
+              retroName: allRetros.find(retro => retro.id === itemData.retroId)?.name,
             })
             const newState = actionItemsMap.concat(itemMap)
             setActionItemsMap(newState)
           })
         }
       })
-
       getTeams(auth.userId).then(res => {
         res.docs.forEach(team => {
           const teamData = team.data()
@@ -65,6 +51,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                 retroId: itemData.retroId,
                 teamId: itemData.teamId,
                 id: doc.id,
+                retroName: allRetros.find(retro => retro.id === itemData.retroId)?.name,
               })
               const newState = actionItemsMap.concat(itemMap)
               setActionItemsMap(newState)
@@ -73,35 +60,23 @@ const ManageActionItems: React.FC = (): JSX.Element => {
         })
         setIsLoading(false)
       })
+      getAllRetros(auth.userId).then(data => {
+        const retros: RetroType[] = []
+        data.docs.forEach(doc => {
+          const retroData = doc.data()
+          const retro = {
+            ...retroData,
+            id: doc.id,
+            team: retroData.team ? retroData.team : [],
+          } as RetroType
+          retros.push(retro)
+        })
+        setAllRetros(retros)
+      })
     }
     fetchData()
   }, [])
 
-  const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id }): JSX.Element => {
-    return (
-      <TableContainer>
-        <Typography>{name}</Typography>
-        <Table aria-label="manage action items">
-          <TableHead>
-            <TableRow>
-              <TableCell>Action</TableCell>
-              <TableCell>Edit</TableCell>
-              <TableCell>Delete</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map(item => (
-              <TableRow key={item.id}>
-                <TableCell>{item.value}</TableCell>
-                <TableCell>Edit Button</TableCell>
-                <TableCell>Delete Button</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    )
-  }
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
