@@ -1,6 +1,6 @@
 import { db } from '../firebase'
 import { QuerySnapshot } from '@firebase/firestore-types'
-
+import { ActionItemType } from '../constants/types.constant'
 export const getAllRetros = async (id: string): Promise<QuerySnapshot> =>
   db
     .collection('retros')
@@ -31,3 +31,9 @@ export const deleteActionItem = async (id: string) =>
     .collection('actionItems')
     .doc(id)
     .delete()
+
+export const editActionItemById = async (id: string, item: ActionItemType) =>
+  await db
+    .collection('actionItems')
+    .doc(id)
+    .update(item)

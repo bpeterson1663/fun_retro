@@ -29,12 +29,13 @@ export interface ActionItemType {
   id: string
   value: string
   retroId: string
-  teamId: string
-  retroName: string | undefined
+  teamId: string | null
 }
 
 export interface ActionItemTable {
   name: string
   id: string
   data: ActionItemType[]
+  retros: RetroType[]
+  teams: ManageTeamsType[]
 }
