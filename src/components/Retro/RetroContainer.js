@@ -99,7 +99,7 @@ const RetroContainer = props => {
 
   const handleGenerateReport = () => {
     handleMenuClose()
-    let reportSections = [{ title: 'Action Items', value: 'actionItems', backgroundColor: '#2196f3' }]
+    let reportSections = [{ title: 'Action Items from Retro', value: 'actionItems', backgroundColor: '#2196f3' }]
     reportSections = reportSections.concat(columnMaps)
 
     const promises = reportSections.map(column => {

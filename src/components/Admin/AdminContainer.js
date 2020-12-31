@@ -123,7 +123,7 @@ const AdminContainer = () => {
 
   const handleShowLinkClose = () => {
     setShowLinkStatus(false)
-    setRetroLink('')
+    setRetroLink({})
   }
 
   const handleRetroDelete = id => {
