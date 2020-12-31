@@ -11,15 +11,17 @@ const ManageActionItems: React.FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true)
   const [allTeams, setAllTeams] = useState<ManageTeamsType[]>([])
   const [allRetros, setAllRetros] = useState<RetroType[]>([])
+  const [counter, setCounter] = useState(0)
   const [actionItemsMap, setActionItemsMap] = useState<ActionItemTable[]>([])
   const classes = useStyles()
 
   useEffect(() => {
     const fetchData = () => {
       const itemMap: ActionItemTable[] = []
-      getAllRetros(auth.userId).then(data => {
+      Promise.all([getAllRetros(auth.userId), getActionItemsByUser(auth.userId), getTeams(auth.userId)]).then(res => {
+        const [retroResponse, itemsByUserResponse, teamsResponse] = res
         const retros: RetroType[] = []
-        data.docs.forEach(doc => {
+        retroResponse.docs.forEach(doc => {
           const retroData = doc.data()
           const retro = {
             ...retroData,
@@ -29,11 +31,17 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           retros.push(retro)
         })
         setAllRetros(retros)
-      })
-      getActionItemsByUser(auth.userId).then(data => {
-        const docs = data.docs
+
+        const docs = itemsByUserResponse.docs
         if (docs.length) {
-          itemMap.push({ id: auth.userId, name: 'Action Items with No Team', data: [], retros: [], teams: [] })
+          itemMap.push({
+            id: auth.userId,
+            name: 'Action Items with No Team',
+            data: [],
+            retros: [],
+            teams: [],
+            tableUpdated: () => {},
+          })
           docs.forEach(doc => {
             const itemData = doc.data()
             const map = itemMap.find(m => m.id === auth.userId)
@@ -43,21 +51,29 @@ const ManageActionItems: React.FC = (): JSX.Element => {
               teamId: itemData.teamId,
               id: doc.id,
             })
-            const newState = [...actionItemsMap].concat(itemMap)
-            setActionItemsMap(newState)
           })
         }
-      })
-      getTeams(auth.userId).then(res => {
+
         const resTeams: ManageTeamsType[] = []
-        res.docs.forEach(team => {
+        const promises = teamsResponse.docs.map(team => {
           const teamData = team.data()
           teamData.id = team.id
           resTeams.push(teamData as ManageTeamsType)
-          itemMap.push({ id: team.id, name: teamData.teamName, data: [], retros: [], teams: [] })
-          getActionItemsByTeam(team.id).then(data => {
-            const docs = data.docs
-            docs.forEach(doc => {
+          itemMap.push({
+            id: team.id,
+            name: teamData.teamName,
+            data: [],
+            retros: [],
+            teams: [],
+            tableUpdated: () => {},
+          })
+          return getActionItemsByTeam(team.id)
+        })
+        setAllTeams(resTeams)
+
+        Promise.all(promises).then(res => {
+          res.forEach(querySnapshot => {
+            querySnapshot.docs.forEach(doc => {
               const itemData = doc.data()
               const map = itemMap.find(m => m.id === itemData.teamId)
               map?.data.push({
@@ -66,17 +82,17 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                 teamId: itemData.teamId,
                 id: doc.id,
               })
-              const newState = [...actionItemsMap].concat(itemMap)
-              setActionItemsMap(newState)
             })
           })
+          setActionItemsMap(itemMap)
+          setIsLoading(false)
         })
-        setAllTeams(resTeams)
-        setIsLoading(false)
       })
     }
     fetchData()
-  }, [auth.userId])
+  }, [auth.userId, counter])
+
+  const handleTableUpdate = () => setCounter(c => c + 1)
 
   return (
     <Container>
@@ -91,6 +107,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             id={actionItems.id}
             name={actionItems.name}
             data={actionItems.data}
+            tableUpdated={handleTableUpdate}
           />
         ))}
       </Grid>

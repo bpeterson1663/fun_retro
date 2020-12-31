@@ -17,7 +17,7 @@ import { deleteActionItem, editActionItemById } from '../../api/index'
 import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'
 
-const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, teams }): JSX.Element => {
+const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, teams, tableUpdated }): JSX.Element => {
   const classes = useStyles()
   const [actionData, setActionData] = useState<ActionItemType[]>([])
   const [isEmptyTable, setIsEmptyTable] = useState(false)
@@ -25,13 +25,9 @@ const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, tea
   const [editStatus, setEditStatus] = useState(false)
   useEffect(() => {
     data.length > 0 ? setActionData(data) : setIsEmptyTable(true)
-  }, [])
-  const handleDelete = (id: string, retroId: string) => {
-    deleteActionItem(id).then(() => {
-      const newData = actionData.filter(action => action.id !== id)
-      newData.length > 0 ? setActionData(newData) : setIsEmptyTable(true)
-    })
-  }
+  }, [data])
+  const handleDelete = (id: string) => deleteActionItem(id).then(tableUpdated)
+
   const editActionItem = (item: { value: string; teamId: string }) => {
     const newItem = {
       ...editItem,
@@ -39,12 +35,7 @@ const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, tea
     }
     editActionItemById(newItem.id, newItem).then(() => {
       handleEditActionClose()
-      //TODO: Update State
-      const newState = [...actionData]
-      const index = actionData.findIndex(action => action.id === newItem.id)
-      newState[index] = newItem
-      debugger
-      setActionData(newState)
+      tableUpdated()
     })
   }
 
@@ -81,7 +72,7 @@ const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, tea
                 </IconButton>
               </TableCell>
               <TableCell>
-                <IconButton edge="end" onClick={() => handleDelete(item.id, id)}>
+                <IconButton edge="end" onClick={() => handleDelete(item.id)}>
                   <DeleteIcon />
                 </IconButton>
               </TableCell>

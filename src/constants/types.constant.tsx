@@ -38,4 +38,5 @@ export interface ActionItemTable {
   data: ActionItemType[]
   retros: RetroType[]
   teams: ManageTeamsType[]
+  tableUpdated: () => void
 }

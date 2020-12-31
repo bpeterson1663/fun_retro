@@ -1,15 +1,7 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import useStyles from '../AdminContainer.styles'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-  TextField,
-} from '@material-ui/core'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, TextField } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
 
@@ -36,7 +28,7 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
     setItemValue(item.value)
     const teamState = teams.find(team => team.id === item.teamId)
     setTeamValue(teamState ? teamState : null)
-  }, [])
+  }, [item.value, item.teamId, teams])
   return (
     <Dialog open={editStatus} onClose={handleEditActionClose}>
       <DialogTitle>
