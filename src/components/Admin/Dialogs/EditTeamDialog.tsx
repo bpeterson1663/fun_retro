@@ -35,32 +35,32 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
     <Dialog open={editStatus} onClose={handleEditClose}>
       <DialogTitle>
         <Typography>Edit Team - {editTeam?.teamName}</Typography>
-        <DialogContent>
-          <form onSubmit={handleSubmit(onSubmitHandler)} className={classes.form}>
-            <FormControl>
-              <Controller
-                name="teamName"
-                control={control}
-                defaultValue={editTeam?.teamName}
-                as={
-                  <TextField
-                    className={`${classes.inputField} ${classes.inputFieldText}`}
-                    name="teamName"
-                    required
-                    type="text"
-                    label="Team Name"
-                  />
-                }
-              />
-            </FormControl>
-
-            <Button type="submit" color="secondary" variant="contained">
-              Submit Edit
-            </Button>
-          </form>
-        </DialogContent>
-        <DialogActions></DialogActions>
       </DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit(onSubmitHandler)} className={classes.form}>
+          <FormControl>
+            <Controller
+              name="teamName"
+              control={control}
+              defaultValue={editTeam?.teamName}
+              as={
+                <TextField
+                  className={`${classes.inputField} ${classes.inputFieldText}`}
+                  name="teamName"
+                  required
+                  type="text"
+                  label="Team Name"
+                />
+              }
+            />
+          </FormControl>
+
+          <Button type="submit" color="secondary" variant="contained">
+            Submit Edit
+          </Button>
+        </form>
+      </DialogContent>
+      <DialogActions></DialogActions>
     </Dialog>
   )
 }

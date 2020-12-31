@@ -66,7 +66,6 @@ const CreateRetro: React.FC = (): JSX.Element => {
       })
   }, [auth.userId, register])
   const onSubmitHandler = (data: RetroForm) => {
-    debugger
     setIsLoading(true)
     db.collection('retros')
       .add({

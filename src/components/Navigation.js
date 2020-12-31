@@ -39,14 +39,17 @@ const Navigation = () => {
   const classes = useStyles()
   const authenticatedNav = (
     <div className={classes.buttonContainer}>
+      <Link to="/manageActionItems" style={{ textDecoration: 'none' }}>
+        <Button className={classes.button}>Manage Action Items</Button>
+      </Link>
       <Link to="/manageTeams" style={{ textDecoration: 'none' }}>
         <Button className={classes.button}>Manage Teams</Button>
       </Link>
+      <Link to="/retroList" style={{ textDecoration: 'none' }}>
+        <Button className={classes.button}>Manage Retros</Button>
+      </Link>
       <Link to="/createRetro" style={{ textDecoration: 'none' }}>
         <Button className={classes.button}>Create Retro</Button>
-      </Link>
-      <Link to="/retroList" style={{ textDecoration: 'none' }}>
-        <Button className={classes.button}>Retro List</Button>
       </Link>
       <Link data-testid="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}>
         <Button className={classes.button}>Log Out</Button>

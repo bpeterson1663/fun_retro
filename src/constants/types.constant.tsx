@@ -1,4 +1,5 @@
 export interface RetroType {
+  id: string
   name: string
   startDate: string
   endDate: string
@@ -25,7 +26,17 @@ export interface ManageTeamsType {
 }
 
 export interface ActionItemType {
+  id: string
   value: string
   retroId: string
-  teamId: string
+  teamId: string | null
+}
+
+export interface ActionItemTable {
+  name: string
+  id: string
+  data: ActionItemType[]
+  retros: RetroType[]
+  teams: ManageTeamsType[]
+  tableUpdated: () => void
 }
