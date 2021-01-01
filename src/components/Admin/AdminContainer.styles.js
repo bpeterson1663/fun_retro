@@ -44,6 +44,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   actionButtons: {
+    width: '100%',
     display: 'flex',
     flexFlow: 'row-reverse wrap',
   },
