@@ -4,6 +4,11 @@ const useStyles = makeStyles(theme => ({
   actionTable: {
     margin: 10,
   },
+  actionRow: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
   inputField: {
     margin: theme.spacing(2),
   },

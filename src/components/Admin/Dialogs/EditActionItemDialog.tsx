@@ -34,7 +34,7 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
       <DialogTitle>
         <Typography>Edit Action Item</Typography>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.dialogContent}>
         <TextField
           className={`${classes.inputField} ${classes.inputFieldText}`}
           variant="outlined"
@@ -47,6 +47,7 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
           onChange={e => setItemValue(e.target.value)}
         />
         <Autocomplete
+          className={`${classes.inputField} ${classes.inputFieldText}`}
           filterSelectedOptions
           value={teamValue}
           options={teams}
