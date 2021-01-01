@@ -50,17 +50,24 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             data: [],
             retros: [],
             teams: [],
-            tableUpdated: () => {},
+            tableUpdated: () => {
+              return
+            },
           })
           docs.forEach(doc => {
             const itemData = doc.data()
             const map = itemMap.find(m => m.id === auth.userId)
-            map?.data.push({
-              value: itemData.value,
-              retroId: itemData.retroId,
-              teamId: itemData.teamId,
-              id: doc.id,
-            })
+            const itemIndex = itemMap.findIndex(m => m.id === auth.userId)
+            if (itemIndex && map) {
+              map.data.push({
+                value: itemData.value,
+                retroId: itemData.retroId,
+                teamId: itemData.teamId,
+                id: doc.id,
+                retroName: '',
+              })
+              itemMap[itemIndex] = map
+            }
           })
         }
 
@@ -75,7 +82,9 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             data: [],
             retros: [],
             teams: [],
-            tableUpdated: () => {},
+            tableUpdated: () => {
+              return
+            },
           })
           return getActionItemsByTeam(team.id)
         })
@@ -86,12 +95,18 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             querySnapshot.docs.forEach(doc => {
               const itemData = doc.data()
               const map = itemMap.find(m => m.id === itemData.teamId)
-              map?.data.push({
-                value: itemData.value,
-                retroId: itemData.retroId,
-                teamId: itemData.teamId,
-                id: doc.id,
-              })
+              const itemIndex = itemMap.findIndex(m => m.id === itemData.teamId)
+              if (itemIndex && map) {
+                map.data.push({
+                  value: itemData.value,
+                  retroId: itemData.retroId,
+                  teamId: itemData.teamId,
+                  id: doc.id,
+                  retroName: '',
+                })
+
+                itemMap[itemIndex] = map
+              }
             })
           })
           setActionItemsMap(itemMap)

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -103,4 +104,11 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
   )
 }
 
+ActionItemDialog.propTypes = {
+  showActionItemDialog: PropTypes.bool.isRequired,
+  handleActionItemDialogClose: PropTypes.func.isRequired,
+  createActionItem: PropTypes.func.isRequired,
+  team: PropTypes.array.isRequired,
+  retros: PropTypes.array.isRequired,
+}
 export default ActionItemDialog
