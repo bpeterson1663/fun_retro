@@ -29,7 +29,8 @@ export interface ActionItemType {
   id: string
   value: string
   retroId: string
-  teamId: string | null
+  teamId: string
+  retroName: string
 }
 
 export interface ActionItemTable {
