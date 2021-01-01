@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import {
   IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -50,9 +51,9 @@ const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, tea
   return isEmptyTable ? (
     <></>
   ) : (
-    <TableContainer className={classes.actionTable}>
-      <Typography>{name}</Typography>
-      <Table aria-label="manage action items">
+    <TableContainer component={Paper} className={classes.actionTable}>
+      <Typography variant="h6">{name}</Typography>
+      <Table aria-label="manage action items" size="small">
         <TableHead>
           <TableRow>
             <TableCell>Action</TableCell>
@@ -63,7 +64,7 @@ const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, tea
         </TableHead>
         <TableBody>
           {actionData.map(item => (
-            <TableRow key={item.id}>
+            <TableRow key={item.id} className={classes.actionRow}>
               <TableCell>{item.value}</TableCell>
               <TableCell>{retros.find(retro => retro.id === item.retroId)?.name}</TableCell>
               <TableCell>

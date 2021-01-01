@@ -8,25 +8,33 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { ManageTeamsType } from '../../../constants/types.constant'
+import { ManageTeamsType, RetroType } from '../../../constants/types.constant'
 const useStyles = makeStyles(theme => ({
   inputField: {
     margin: theme.spacing(2),
   },
   inputFieldText: {
-    width: '400px',
+    width: '38rem',
+  },
+  dialogContent: {
+    width: 500,
+    margin: 'auto',
+    display: 'flex',
+    flexFlow: 'row wrap',
+    justifyContent: 'center',
   },
 }))
 interface DialogPropTypes {
   showActionItemDialog: boolean
-  previousRetro: string
-  handleActionItemDialogClose: () => {}
-  createActionItem: (item: any) => {}
+  handleActionItemDialogClose: () => void
+  createActionItem: (item: any) => void
   team: ManageTeamsType[]
+  retros: RetroType[] | null
 }
 const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
-  const { showActionItemDialog, handleActionItemDialogClose, createActionItem, team } = props
+  const { showActionItemDialog, handleActionItemDialogClose, createActionItem, team, retros } = props
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
+  const [retroValue, setRetroValue] = useState<RetroType | null>({} as RetroType)
   const [itemValue, setItemValue] = useState('')
   const classes = useStyles()
 
@@ -37,6 +45,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
     createActionItem({
       value: itemValue,
       team: teamValue.length > 0 ? teamValue : [],
+      retroId: retroValue ? retroValue.id : '',
     })
     setItemValue('')
   }
@@ -45,7 +54,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
       <DialogTitle>
         <Typography>Create Action Item</Typography>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.dialogContent}>
         <TextField
           className={`${classes.inputField} ${classes.inputFieldText}`}
           variant="outlined"
@@ -57,7 +66,20 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
           value={itemValue}
           onChange={e => setItemValue(e.target.value)}
         />
+        {retros ? (
+          <Autocomplete
+            className={`${classes.inputField} ${classes.inputFieldText}`}
+            filterSelectedOptions
+            value={retroValue}
+            options={retros}
+            onChange={(e, option) => setRetroValue(option)}
+            getOptionLabel={(option: RetroType) => (option?.name ? option.name : '')}
+            getOptionSelected={(option, value) => option.name === value.name}
+            renderInput={params => <TextField {...params} label="Retro" />}
+          />
+        ) : null}
         <Autocomplete
+          className={`${classes.inputField} ${classes.inputFieldText}`}
           multiple
           filterSelectedOptions
           value={teamValue}
@@ -71,7 +93,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
       </DialogContent>
       <DialogActions>
         <Button color="secondary" variant="contained" onClick={handleCreateActionItem}>
-          Create Action Item
+          Create
         </Button>
         <Button color="secondary" variant="outlined" onClick={handleActionItemDialogClose}>
           Cancel
