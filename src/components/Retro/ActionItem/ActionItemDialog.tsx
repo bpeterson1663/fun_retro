@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 interface DialogPropTypes {
   showActionItemDialog: boolean
   handleActionItemDialogClose: () => void
-  createActionItem: (item: any) => void
+  createActionItem: (item: { value: string; team: ManageTeamsType[]; retroId: string }) => void
   team: ManageTeamsType[]
   retros: RetroType[] | null
 }
@@ -46,7 +46,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
     createActionItem({
       value: itemValue,
       team: teamValue.length > 0 ? teamValue : [],
-      retroId: retroValue ? retroValue.id : '',
+      retroId: retroValue?.id ? retroValue.id : '',
     })
     setItemValue('')
   }
