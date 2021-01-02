@@ -16,12 +16,11 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import useStyles from './AdminContainer.styles'
-import { ActionItemTableProps, ActionItemType } from '../../constants/types.constant'
+import { ActionItemTableProps, ActionItemType, Order } from '../../constants/types.constant'
 import { deleteActionItem, editActionItemById } from '../../api/index'
 import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'
 import { getComparator, stableSort } from '../Common/Table/helpers'
-type Order = 'asc' | 'desc'
 
 const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, teams, tableUpdated }): JSX.Element => {
   const classes = useStyles()
