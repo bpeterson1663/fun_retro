@@ -75,7 +75,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
         timestamp: moment().valueOf(),
         userId: auth.userId,
       })
-      .then(res => {
+      .then(() => {
         reset({
           name: '',
           numberOfVotes: 6,

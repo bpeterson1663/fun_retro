@@ -201,7 +201,6 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             teams={allTeams}
             retros={allRetros}
             key={actionItems.id}
-            id={actionItems.id}
             name={actionItems.name}
             data={actionItems.data}
             tableUpdated={handleTableUpdate}

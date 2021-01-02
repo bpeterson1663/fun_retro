@@ -9,6 +9,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   }
   return 0
 }
+/* eslint-disable */
 
 export function getComparator<Key extends keyof any>(
   order: Order,
@@ -19,7 +20,7 @@ export function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
 
-export function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
+export function stableSort<T>(array: T[], comparator: (a: T, b: T) => number): T[] {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number])
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0])

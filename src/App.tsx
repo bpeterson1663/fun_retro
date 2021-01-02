@@ -26,10 +26,10 @@ const theme = createMuiTheme({
     secondary: { main: '#DC567F' },
   },
 })
-const App = () => {
-  const [authId, setAuthId] = useState(false)
+const App = (): JSX.Element => {
+  const [authId, setAuthId] = useState('')
   const [isLoading, setLoading] = useState(true)
-  const login = status => {
+  const login = (status: string) => {
     setAuthId(status)
   }
   useEffect(() => {
@@ -37,7 +37,7 @@ const App = () => {
       if (user) {
         setAuthId(user.uid)
       } else {
-        setAuthId(false)
+        setAuthId('')
       }
       setLoading(false)
     })

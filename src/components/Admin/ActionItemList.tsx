@@ -16,14 +16,14 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import useStyles from './AdminContainer.styles'
-import { ActionItemTable, ActionItemType, RetroType } from '../../constants/types.constant'
+import { ActionItemTableProps, ActionItemType } from '../../constants/types.constant'
 import { deleteActionItem, editActionItemById } from '../../api/index'
 import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'
 import { getComparator, stableSort } from '../Common/Table/helpers'
 type Order = 'asc' | 'desc'
 
-const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, teams, tableUpdated }): JSX.Element => {
+const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, teams, tableUpdated }): JSX.Element => {
   const classes = useStyles()
   const [actionData, setActionData] = useState<ActionItemType[]>([])
   const [isEmptyTable, setIsEmptyTable] = useState(false)
@@ -40,7 +40,7 @@ const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, tea
       return d
     })
     newData.length > 0 ? setActionData(newData) : setIsEmptyTable(true)
-  }, [data])
+  }, [data, retros])
   const handleDelete = (id: string) => deleteActionItem(id).then(tableUpdated)
 
   const editActionItem = (item: { value: string; teamId: string }) => {
@@ -164,7 +164,6 @@ const ActionItemList: React.FC<ActionItemTable> = ({ name, data, id, retros, tea
 ActionItemList.propTypes = {
   name: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
-  id: PropTypes.string.isRequired,
   retros: PropTypes.array.isRequired,
   teams: PropTypes.array.isRequired,
   tableUpdated: PropTypes.func.isRequired,
