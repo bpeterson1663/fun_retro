@@ -4,6 +4,11 @@ const useStyles = makeStyles(theme => ({
   actionTable: {
     margin: 10,
   },
+  actionRow: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
   inputField: {
     margin: theme.spacing(2),
   },
@@ -39,6 +44,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   actionButtons: {
+    width: '100%',
     display: 'flex',
     flexFlow: 'row-reverse wrap',
   },
@@ -72,6 +78,17 @@ const useStyles = makeStyles(theme => ({
   },
   helpIcon: {
     marginTop: '1.5rem',
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
   },
 }))
 

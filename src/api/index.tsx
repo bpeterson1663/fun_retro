@@ -26,13 +26,13 @@ export const getActionItemsByTeam = async (id: string): Promise<QuerySnapshot> =
     .where('teamId', '==', id)
     .get()
 
-export const deleteActionItem = async (id: string) =>
+export const deleteActionItem = async (id: string): Promise<void> =>
   await db
     .collection('actionItems')
     .doc(id)
     .delete()
 
-export const editActionItemById = async (id: string, item: ActionItemType) =>
+export const editActionItemById = async (id: string, item: ActionItemType): Promise<void> =>
   await db
     .collection('actionItems')
     .doc(id)

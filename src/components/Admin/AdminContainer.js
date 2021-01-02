@@ -123,7 +123,7 @@ const AdminContainer = () => {
 
   const handleShowLinkClose = () => {
     setShowLinkStatus(false)
-    setRetroLink('')
+    setRetroLink({})
   }
 
   const handleRetroDelete = id => {
@@ -173,6 +173,13 @@ const AdminContainer = () => {
     return (
       <div>
         <Typography variant="h5">Retro List</Typography>
+        <div className={classes.actionButtons}>
+          <Link to="/createRetro" style={{ textDecoration: 'none' }}>
+            <Button color="secondary" variant="contained" className={classes.button}>
+              Create Retro
+            </Button>
+          </Link>
+        </div>
         <TablePagination
           rowsPerPageOptions={[10, 20, 30]}
           component="div"

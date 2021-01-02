@@ -225,10 +225,11 @@ const ManageTeams: React.FC = (): JSX.Element => {
             }
           />
         </FormControl>
-
-        <Button type="submit" color="secondary" variant="contained">
-          Create Team
-        </Button>
+        <div className={classes.actionButtons}>
+          <Button type="submit" color="secondary" variant="contained">
+            Create Team
+          </Button>
+        </div>
       </form>
       <SnackBar
         open={response.open}

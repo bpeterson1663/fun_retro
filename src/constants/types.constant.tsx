@@ -29,14 +29,17 @@ export interface ActionItemType {
   id: string
   value: string
   retroId: string
-  teamId: string | null
+  teamId: string
+  retroName: string
 }
-
-export interface ActionItemTable {
+export interface ActionItemTableProps {
   name: string
-  id: string
   data: ActionItemType[]
   retros: RetroType[]
   teams: ManageTeamsType[]
   tableUpdated: () => void
+}
+
+export interface ActionItemTable extends ActionItemTableProps {
+  id: string
 }

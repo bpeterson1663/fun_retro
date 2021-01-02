@@ -1,17 +1,27 @@
 import * as React from 'react'
 import { useState, useEffect, useContext } from 'react'
-import { Container, Grid, Typography, LinearProgress } from '@material-ui/core'
+import { Container, Grid, Typography, LinearProgress, Button } from '@material-ui/core'
 import useStyles from './AdminContainer.styles'
 import ActionItemList from './ActionItemList'
+import ActionItemDialog from '../Retro/ActionItem/ActionItemDialog'
+import { db } from '../../firebase'
 import { getTeams, getActionItemsByTeam, getActionItemsByUser, getAllRetros } from '../../api/index'
 import AuthContext from '../../context/auth-context'
 import { ActionItemTable, RetroType, ManageTeamsType } from '../../constants/types.constant'
+import SnackBar from '../Common/SnackBar'
+
 const ManageActionItems: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
   const [isLoading, setIsLoading] = useState(true)
   const [allTeams, setAllTeams] = useState<ManageTeamsType[]>([])
   const [allRetros, setAllRetros] = useState<RetroType[]>([])
   const [counter, setCounter] = useState(0)
+  const [showActionItemDialog, setShowActionItemDialog] = useState(false)
+  const [messageState, setMessageState] = useState({
+    message: '',
+    messageStatus: '',
+    displayMessage: false,
+  })
   const [actionItemsMap, setActionItemsMap] = useState<ActionItemTable[]>([])
   const classes = useStyles()
 
@@ -40,17 +50,24 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             data: [],
             retros: [],
             teams: [],
-            tableUpdated: () => {},
+            tableUpdated: () => {
+              return
+            },
           })
           docs.forEach(doc => {
             const itemData = doc.data()
             const map = itemMap.find(m => m.id === auth.userId)
-            map?.data.push({
-              value: itemData.value,
-              retroId: itemData.retroId,
-              teamId: itemData.teamId,
-              id: doc.id,
-            })
+            const itemIndex = itemMap.findIndex(m => m.id === auth.userId)
+            if (itemIndex && map) {
+              map.data.push({
+                value: itemData.value,
+                retroId: itemData.retroId,
+                teamId: itemData.teamId,
+                id: doc.id,
+                retroName: '',
+              })
+              itemMap[itemIndex] = map
+            }
           })
         }
 
@@ -65,7 +82,9 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             data: [],
             retros: [],
             teams: [],
-            tableUpdated: () => {},
+            tableUpdated: () => {
+              return
+            },
           })
           return getActionItemsByTeam(team.id)
         })
@@ -76,12 +95,18 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             querySnapshot.docs.forEach(doc => {
               const itemData = doc.data()
               const map = itemMap.find(m => m.id === itemData.teamId)
-              map?.data.push({
-                value: itemData.value,
-                retroId: itemData.retroId,
-                teamId: itemData.teamId,
-                id: doc.id,
-              })
+              const itemIndex = itemMap.findIndex(m => m.id === itemData.teamId)
+              if (itemIndex && map) {
+                map.data.push({
+                  value: itemData.value,
+                  retroId: itemData.retroId,
+                  teamId: itemData.teamId,
+                  id: doc.id,
+                  retroName: '',
+                })
+
+                itemMap[itemIndex] = map
+              }
             })
           })
           setActionItemsMap(itemMap)
@@ -94,22 +119,110 @@ const ManageActionItems: React.FC = (): JSX.Element => {
 
   const handleTableUpdate = () => setCounter(c => c + 1)
 
+  const handleActionItemDialogClose = () => setShowActionItemDialog(false)
+
+  const handleMessageClose = () => {
+    setMessageState({
+      displayMessage: false,
+      message: '',
+      messageStatus: '',
+    })
+  }
+
+  const createActionItem = (item: { value: string; team: ManageTeamsType[]; retroId: string }) => {
+    //create Action Item for each team if multiple teams are selected
+    setIsLoading(true)
+    if (item.team.length > 0) {
+      const promises = item.team.map(team => {
+        return db.collection('actionItems').add({
+          value: item.value,
+          retroId: item.retroId,
+          teamId: team.id,
+          userId: auth.userId,
+        })
+      })
+      Promise.all(promises)
+        .then(() => {
+          setIsLoading(false)
+          setShowActionItemDialog(false)
+          setCounter(c => c + 1)
+          setMessageState({
+            displayMessage: true,
+            message: `Way to take action!`,
+            messageStatus: 'success',
+          })
+        })
+        .catch(err => {
+          setMessageState({
+            displayMessage: true,
+            message: `${err}`,
+            messageStatus: 'error',
+          })
+        })
+    } else {
+      db.collection('actionItems')
+        .add({
+          value: item.value,
+          retroId: item.retroId,
+          userId: auth.userId,
+          teamId: '',
+        })
+        .then(() => {
+          setIsLoading(false)
+          setShowActionItemDialog(false)
+          setCounter(c => c + 1)
+          setMessageState({
+            displayMessage: true,
+            message: `Way to take action!`,
+            messageStatus: 'success',
+          })
+        })
+        .catch(err => {
+          setMessageState({
+            displayMessage: true,
+            message: `${err}`,
+            messageStatus: 'error',
+          })
+        })
+    }
+  }
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Typography variant="h5">Manage Action Items</Typography>
+      <div className={classes.actionButtons}>
+        <Button color="secondary" variant="contained" onClick={() => setShowActionItemDialog(true)}>
+          Create Action Item
+        </Button>
+      </div>
       <Grid container justify="center" spacing={0}>
         {actionItemsMap.map(actionItems => (
           <ActionItemList
             teams={allTeams}
             retros={allRetros}
             key={actionItems.id}
-            id={actionItems.id}
             name={actionItems.name}
             data={actionItems.data}
             tableUpdated={handleTableUpdate}
           />
         ))}
+        {messageState.displayMessage ? (
+          <SnackBar
+            open={messageState.displayMessage}
+            message={messageState.message}
+            status={messageState.messageStatus}
+            close={handleMessageClose}
+          />
+        ) : null}
+        {showActionItemDialog ? (
+          <ActionItemDialog
+            showActionItemDialog={showActionItemDialog}
+            handleActionItemDialogClose={handleActionItemDialogClose}
+            createActionItem={createActionItem}
+            team={allTeams}
+            retros={allRetros}
+          />
+        ) : null}
       </Grid>
     </Container>
   )

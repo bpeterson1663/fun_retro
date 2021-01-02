@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Button,
@@ -64,5 +65,15 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
     </Dialog>
   )
 }
-
+EditTeamDialog.propTypes = {
+  editTeam: PropTypes.shape({
+    teamName: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    timestamp: PropTypes.number.isRequired,
+    userId: PropTypes.string.isRequired,
+  }).isRequired,
+  handleEditClose: PropTypes.func.isRequired,
+  editStatus: PropTypes.bool.isRequired,
+  handleEditSubmit: PropTypes.func.isRequired,
+}
 export default EditTeamDialog

@@ -48,9 +48,6 @@ const Navigation = () => {
       <Link to="/retroList" style={{ textDecoration: 'none' }}>
         <Button className={classes.button}>Manage Retros</Button>
       </Link>
-      <Link to="/createRetro" style={{ textDecoration: 'none' }}>
-        <Button className={classes.button}>Create Retro</Button>
-      </Link>
       <Link data-testid="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}>
         <Button className={classes.button}>Log Out</Button>
       </Link>

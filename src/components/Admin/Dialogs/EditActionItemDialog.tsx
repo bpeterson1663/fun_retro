@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import useStyles from '../AdminContainer.styles'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, TextField } from '@material-ui/core'
@@ -34,7 +35,7 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
       <DialogTitle>
         <Typography>Edit Action Item</Typography>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.dialogContent}>
         <TextField
           className={`${classes.inputField} ${classes.inputFieldText}`}
           variant="outlined"
@@ -47,6 +48,7 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
           onChange={e => setItemValue(e.target.value)}
         />
         <Autocomplete
+          className={`${classes.inputField} ${classes.inputFieldText}`}
           filterSelectedOptions
           value={teamValue}
           options={teams}
@@ -68,4 +70,17 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
   )
 }
 
+EditActionItemDialog.propTypes = {
+  editStatus: PropTypes.bool.isRequired,
+  handleEditActionClose: PropTypes.func.isRequired,
+  teams: PropTypes.array.isRequired,
+  editActionItem: PropTypes.func.isRequired,
+  item: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    retroId: PropTypes.string.isRequired,
+    teamId: PropTypes.string.isRequired,
+    retroName: PropTypes.string.isRequired,
+  }).isRequired,
+}
 export default EditActionItemDialog
