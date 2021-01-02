@@ -9,7 +9,6 @@ export interface RetroType {
   columnsKey: string
   isActive: boolean
   timestamp: number
-  previousRetro: string
 }
 
 export interface PreviousRetroType {
@@ -43,3 +42,5 @@ export interface ActionItemTableProps {
 export interface ActionItemTable extends ActionItemTableProps {
   id: string
 }
+
+export type Order = 'asc' | 'desc'
