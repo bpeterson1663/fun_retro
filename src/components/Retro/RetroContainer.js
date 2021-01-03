@@ -174,7 +174,7 @@ const RetroContainer = props => {
           teamId: team.id,
           userId: auth.userId,
           owner: item.owner ? item.owner : '',
-          timestamp: moment().value(),
+          timestamp: moment().valueOf(),
           completed: false,
           completedDate: '',
         })
@@ -204,7 +204,7 @@ const RetroContainer = props => {
           userId: auth.userId,
           teamId: '',
           owner: item.owner ? item.owner : '',
-          timestamp: moment().value(),
+          timestamp: moment().valueOf(),
           completed: false,
           completedDate: '',
         })
