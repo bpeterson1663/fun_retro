@@ -26,6 +26,12 @@ export const getActionItemsByTeam = async (id: string): Promise<QuerySnapshot> =
     .where('teamId', '==', id)
     .get()
 
+export const getActionItemsByRetro = async (id: string): Promise<QuerySnapshot> =>
+  await db
+    .collection('actionItems')
+    .where('retroId', '==', id)
+    .get()
+
 export const deleteActionItem = async (id: string): Promise<void> =>
   await db
     .collection('actionItems')

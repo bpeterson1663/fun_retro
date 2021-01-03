@@ -118,7 +118,9 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
     <></>
   ) : (
     <TableContainer component={Paper} className={classes.actionTable}>
-      <Typography variant="h6">{name}</Typography>
+      <Typography variant="h6" align="center">
+        {name}
+      </Typography>
       <Table aria-label="manage action items" size="small">
         <TableHead>
           <SortableHeadRow />

@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { db } from '../../../firebase'
 import PropTypes from 'prop-types'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Typography from '@material-ui/core/Typography'
-import useStyles from '../Retro.styles'
+import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@material-ui/core'
 import { RetroType, ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
 import Button from '@material-ui/core/Button'
 import ActionItemList from '../../Admin/ActionItemList'
-import { getRetroById } from '../../../api'
+import { getRetroById, getActionItemsByTeam, getActionItemsByRetro } from '../../../api'
 interface ViewActionItemDialogProps {
   showViewActionDialog: boolean
   handleViewActionDialogClose: () => void
@@ -25,25 +19,40 @@ interface itemMapType {
 }
 const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.Element => {
   const { showViewActionDialog, handleViewActionDialogClose, retroId, retroData, team } = props
-  const classes = useStyles()
   const [actionItems, setActionItems] = useState<itemMapType[]>([])
   const [counter, setCounter] = useState(0)
   const [allRetros, setAllRetros] = useState<RetroType[]>([])
   useEffect(() => {
-    const actionItemMap: itemMapType[] = []
-    if (team.length > 0) {
+    getActionItemsByRetro(retroId)
+      .then(querySnapshot => {
+        const actions: ActionItemType[] = []
+        querySnapshot.docs.forEach(doc => {
+          const data = doc.data()
+          if (!data.teamId) {
+            const item = {
+              ...data,
+              id: doc.id,
+            } as ActionItemType
+            actions.push(item)
+          }
+        })
+        setActionItems([{ id: retroId, name: retroData.name, actions: actions }])
+        createTeamMap()
+      })
+      .catch(err => console.error(err))
+
+    const createTeamMap = () => {
+      const teamMap: itemMapType[] = []
+      if (team.length <= 0) return
       const promises = team.map(t => {
-        actionItemMap.push({ id: t.id, name: t.teamName, actions: [] })
-        return db
-          .collection('actionItems')
-          .where('teamId', '==', t.id)
-          .get()
+        teamMap.push({ id: t.id, name: t.teamName, actions: [] })
+        return getActionItemsByTeam(t.id)
       })
       Promise.all(promises).then(res => {
         res.forEach(querySnapshot => {
           querySnapshot.docs.forEach(doc => {
             const data = doc.data()
-            const map = actionItemMap.find(m => m.id === data.teamId)
+            const map = teamMap.find(m => m.id === data.teamId)
             const item = {
               ...data,
               id: doc.id,
@@ -69,30 +78,11 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
               } as RetroType
               retros.push(data)
             })
-            setAllRetros(retros)
+            setAllRetros([...retros, retroData])
+            setActionItems(prevState => [...prevState, ...teamMap])
           })
         })
-        setActionItems(actionItemMap)
       })
-    } else {
-      db.collection('actionItems')
-        .where('retroId', '==', retroId)
-        .get()
-        .then(querySnapshot => {
-          const actions: ActionItemType[] = []
-          querySnapshot.docs.forEach(doc => {
-            const data = doc.data()
-            const item = {
-              ...data,
-              id: doc.id,
-            } as ActionItemType
-
-            actions.push(item)
-          })
-          setActionItems([{ id: retroId, name: retroData.name, actions: actions }])
-          setAllRetros([retroData])
-        })
-        .catch(err => console.error(err))
     }
   }, [retroId, showViewActionDialog, team, counter, retroData])
 
@@ -109,19 +99,21 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
       <DialogTitle>
         <Typography>Action Items</Typography>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
-        {actionItems.map(item => {
-          return (
-            <ActionItemList
-              teams={team}
-              retros={allRetros}
-              key={item.id}
-              name={item.name}
-              data={item.actions}
-              tableUpdated={handleTableUpdate}
-            />
-          )
-        })}
+      <DialogContent>
+        <Grid container justify="center" spacing={0}>
+          {actionItems.map(item => {
+            return (
+              <ActionItemList
+                teams={team}
+                retros={allRetros}
+                key={item.id}
+                name={item.name}
+                data={item.actions}
+                tableUpdated={handleTableUpdate}
+              />
+            )
+          })}
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleViewActionDialogClose} color="secondary" variant="contained">
