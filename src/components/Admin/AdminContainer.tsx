@@ -338,7 +338,13 @@ const AdminContainer = (): JSX.Element => {
           </Button>
         </DialogActions>
       </Dialog>
-      <ShowLinkDialog showLinkStatus={showLinkStatus} handleShowLinkClose={handleShowLinkClose} retroLink={retroLink} />
+      {showLinkStatus ? (
+        <ShowLinkDialog
+          showLinkStatus={showLinkStatus}
+          handleShowLinkClose={handleShowLinkClose}
+          retroLink={retroLink}
+        />
+      ) : null}
     </Container>
   )
 }
