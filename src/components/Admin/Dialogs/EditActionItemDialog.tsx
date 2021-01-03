@@ -10,12 +10,13 @@ interface EditActionT {
   item: ActionItemType
   editStatus: boolean
   teams: ManageTeamsType[]
-  editActionItem: (item: { value: string; teamId: string }) => void
+  editActionItem: (item: { value: string; teamId: string; owner: string }) => void
   handleEditActionClose: () => void
 }
 const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
   const { editStatus, handleEditActionClose, teams, editActionItem, item } = props
   const [itemValue, setItemValue] = useState('')
+  const [ownerValue, setOwnerValue] = useState('')
   const [teamValue, setTeamValue] = useState<ManageTeamsType | null>({} as ManageTeamsType)
   const classes = useStyles()
   const handleEditActionItem = () => {
@@ -23,13 +24,15 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
     editActionItem({
       value: itemValue,
       teamId: teamValue ? teamValue.id : '',
+      owner: ownerValue ? ownerValue : '',
     })
   }
   useEffect(() => {
     setItemValue(item.value)
     const teamState = teams.find(team => team.id === item.teamId)
     setTeamValue(teamState ? teamState : null)
-  }, [item.value, item.teamId, teams])
+    setOwnerValue(item.owner)
+  }, [item.value, item.teamId, teams, item.owner])
   return (
     <Dialog open={editStatus} onClose={handleEditActionClose}>
       <DialogTitle>
@@ -46,6 +49,14 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
           label="Start Typing"
           value={itemValue}
           onChange={e => setItemValue(e.target.value)}
+        />
+        <TextField
+          className={`${classes.inputField} ${classes.inputFieldText}`}
+          value={ownerValue}
+          type="text"
+          variant="outlined"
+          label="Owner"
+          onChange={e => setOwnerValue(e.target.value)}
         />
         <Autocomplete
           className={`${classes.inputField} ${classes.inputFieldText}`}
@@ -81,6 +92,7 @@ EditActionItemDialog.propTypes = {
     retroId: PropTypes.string.isRequired,
     teamId: PropTypes.string.isRequired,
     retroName: PropTypes.string.isRequired,
+    owner: PropTypes.string.isRequired,
   }).isRequired,
 }
 export default EditActionItemDialog

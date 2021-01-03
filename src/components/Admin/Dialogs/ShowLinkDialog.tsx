@@ -13,13 +13,13 @@ import SnackBar from '../../Common/SnackBar'
 import useStyles from '../AdminContainer.styles'
 import { RetroType } from '../../../constants/types.constant'
 
-interface ShowLinkProps{
+interface ShowLinkProps {
   retroLink: RetroType
   showLinkStatus: boolean
   handleShowLinkClose: () => void
 }
 
-const ShowLinkDialog: React.FC<ShowLinkProps> = (props): JSX.Element =>  {
+const ShowLinkDialog: React.FC<ShowLinkProps> = (props): JSX.Element => {
   const { retroLink, showLinkStatus, handleShowLinkClose } = props
   const [messageStatus, setMessageStatus] = useState(false)
   const copyToClipboard = () => {

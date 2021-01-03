@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 interface DialogPropTypes {
   showActionItemDialog: boolean
   handleActionItemDialogClose: () => void
-  createActionItem: (item: { value: string; team: ManageTeamsType[]; retroId: string }) => void
+  createActionItem: (item: { value: string; team: ManageTeamsType[]; retroId: string; owner: string }) => void
   team: ManageTeamsType[]
   retros: RetroType[] | null
 }
@@ -37,6 +37,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
   const [retroValue, setRetroValue] = useState<RetroType | null>({} as RetroType)
   const [itemValue, setItemValue] = useState('')
+  const [ownerValue, setOwnerValue] = useState('')
   const classes = useStyles()
 
   const handleCreateActionItem = () => {
@@ -47,6 +48,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
       value: itemValue,
       team: teamValue.length > 0 ? teamValue : [],
       retroId: retroValue?.id ? retroValue.id : '',
+      owner: ownerValue ? ownerValue : '',
     })
     setItemValue('')
   }
@@ -66,6 +68,14 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
           label="Start Typing"
           value={itemValue}
           onChange={e => setItemValue(e.target.value)}
+        />
+        <TextField
+          className={`${classes.inputField} ${classes.inputFieldText}`}
+          value={ownerValue}
+          type="text"
+          variant="outlined"
+          label="Owner"
+          onChange={e => setOwnerValue(e.target.value)}
         />
         {retros ? (
           <Autocomplete

@@ -58,13 +58,14 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             const itemData = doc.data()
             const map = itemMap.find(m => m.id === auth.userId)
             const itemIndex = itemMap.findIndex(m => m.id === auth.userId)
-            if (itemIndex && map) {
+            if (itemIndex >= 0 && map) {
               map.data.push({
                 value: itemData.value,
                 retroId: itemData.retroId,
                 teamId: itemData.teamId,
                 id: doc.id,
                 retroName: '',
+                owner: itemData.owner ? itemData.owner : '',
               })
               itemMap[itemIndex] = map
             }
@@ -103,12 +104,14 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                   teamId: itemData.teamId,
                   id: doc.id,
                   retroName: '',
+                  owner: itemData.owner ? itemData.owner : '',
                 })
 
                 itemMap[itemIndex] = map
               }
             })
           })
+          console.log('itemMap', itemMap)
           setActionItemsMap(itemMap)
           setIsLoading(false)
         })
@@ -129,7 +132,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
     })
   }
 
-  const createActionItem = (item: { value: string; team: ManageTeamsType[]; retroId: string }) => {
+  const createActionItem = (item: { value: string; team: ManageTeamsType[]; retroId: string; owner: string }) => {
     //create Action Item for each team if multiple teams are selected
     setIsLoading(true)
     if (item.team.length > 0) {
@@ -139,6 +142,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           retroId: item.retroId,
           teamId: team.id,
           userId: auth.userId,
+          owner: item.owner ? item.owner : '',
         })
       })
       Promise.all(promises)
@@ -166,6 +170,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           retroId: item.retroId,
           userId: auth.userId,
           teamId: '',
+          owner: item.owner ? item.owner : '',
         })
         .then(() => {
           setIsLoading(false)
