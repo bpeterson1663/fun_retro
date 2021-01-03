@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from 'react'
 import { Container, Grid, Typography, LinearProgress, Button } from '@material-ui/core'
 import useStyles from './AdminContainer.styles'
 import ActionItemList from './ActionItemList'
-import ActionItemDialog from '../Retro/ActionItem/ActionItemDialog'
+import CreateActionItemDialog from '../Retro/ActionItem/CreateActionItemDialog'
 import { db } from '../../firebase'
 import { getTeams, getActionItemsByTeam, getActionItemsByUser, getAllRetros } from '../../api/index'
 import AuthContext from '../../context/auth-context'
@@ -68,6 +68,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                 retroName: '',
                 owner: itemData.owner ? itemData.owner : '',
                 timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
+                completed: typeof itemData.completed === 'boolean' ? itemData.completed : false,
+                completedDate: itemData.completedDate ? itemData.completedDate : '',
               })
               itemMap[itemIndex] = map
             }
@@ -108,6 +110,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                   retroName: '',
                   owner: itemData.owner ? itemData.owner : '',
                   timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
+                  completed: typeof itemData.completed === 'boolean' ? itemData.completed : false,
+                  completedDate: itemData.completedDate ? itemData.completedDate : '',
                 })
 
                 itemMap[itemIndex] = map
@@ -152,6 +156,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           userId: auth.userId,
           owner: item.owner ? item.owner : '',
           timestamp: item.timestamp,
+          completed: false,
+          completedDate: '',
         })
       })
       Promise.all(promises)
@@ -181,6 +187,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           teamId: '',
           owner: item.owner ? item.owner : '',
           timestamp: item.timestamp,
+          completed: false,
+          completedDate: '',
         })
         .then(() => {
           setIsLoading(false)
@@ -230,7 +238,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           />
         ) : null}
         {showActionItemDialog ? (
-          <ActionItemDialog
+          <CreateActionItemDialog
             showActionItemDialog={showActionItemDialog}
             handleActionItemDialogClose={handleActionItemDialogClose}
             createActionItem={createActionItem}

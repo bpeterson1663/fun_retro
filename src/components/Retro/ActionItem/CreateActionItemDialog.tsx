@@ -39,7 +39,7 @@ interface DialogPropTypes {
   team: ManageTeamsType[]
   retros: RetroType[] | null
 }
-const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
+const CreateActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
   const { showActionItemDialog, handleActionItemDialogClose, createActionItem, team, retros } = props
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
   const [retroValue, setRetroValue] = useState<RetroType | null>({} as RetroType)
@@ -122,11 +122,11 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
   )
 }
 
-ActionItemDialog.propTypes = {
+CreateActionItemDialog.propTypes = {
   showActionItemDialog: PropTypes.bool.isRequired,
   handleActionItemDialogClose: PropTypes.func.isRequired,
   createActionItem: PropTypes.func.isRequired,
   team: PropTypes.array.isRequired,
   retros: PropTypes.array.isRequired,
 }
-export default ActionItemDialog
+export default CreateActionItemDialog

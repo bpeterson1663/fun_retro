@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import RetroColumn from './RetroColumn'
-import ActionItemDialog from './ActionItem/ActionItemDialog'
+import CreateActionItemDialog from './ActionItem/CreateActionItemDialog'
 import VoteContext from '../../context/vote-context'
 import moment from 'moment'
 import _ from 'lodash'
@@ -175,6 +175,8 @@ const RetroContainer = props => {
           userId: auth.userId,
           owner: item.owner ? item.owner : '',
           timestamp: moment().value(),
+          completed: false,
+          completedDate: '',
         })
       })
       Promise.all(promises)
@@ -203,6 +205,8 @@ const RetroContainer = props => {
           teamId: '',
           owner: item.owner ? item.owner : '',
           timestamp: moment().value(),
+          completed: false,
+          completedDate: '',
         })
         .then(() => {
           setLoading(false)
@@ -293,7 +297,7 @@ const RetroContainer = props => {
         </VoteContext.Provider>
       </Grid>
       {showActionItemDialog ? (
-        <ActionItemDialog
+        <CreateActionItemDialog
           showActionItemDialog={showActionItemDialog}
           handleActionItemDialogClose={handleActionItemDialogClose}
           createActionItem={createActionItem}
