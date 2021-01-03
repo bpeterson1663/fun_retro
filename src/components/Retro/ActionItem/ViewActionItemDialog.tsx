@@ -7,11 +7,11 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import useStyles from '../Retro.styles'
-import {RetroType, ManageTeamsType, ActionItemType} from '../../../constants/types.constant'
+import { RetroType, ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
 import Button from '@material-ui/core/Button'
 import ActionItemList from '../../Admin/ActionItemList'
 import { getRetroById } from '../../../api'
-interface ViewActionItemDialogProps{
+interface ViewActionItemDialogProps {
   showViewActionDialog: boolean
   handleViewActionDialogClose: () => void
   retroId: string
@@ -23,14 +23,14 @@ interface itemMapType {
   name: string
   actions: ActionItemType[]
 }
-const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.Element =>  {
+const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.Element => {
   const { showViewActionDialog, handleViewActionDialogClose, retroId, retroData, team } = props
   const classes = useStyles()
   const [actionItems, setActionItems] = useState<itemMapType[]>([])
   const [counter, setCounter] = useState(0)
   const [allRetros, setAllRetros] = useState<RetroType[]>([])
   useEffect(() => {
-    const actionItemMap:itemMapType[] = []
+    const actionItemMap: itemMapType[] = []
     if (team.length > 0) {
       const promises = team.map(t => {
         actionItemMap.push({ id: t.id, name: t.teamName, actions: [] })
@@ -46,27 +46,26 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
             const map = actionItemMap.find(m => m.id === data.teamId)
             const item = {
               ...data,
-              id: doc.id
+              id: doc.id,
             } as ActionItemType
             map?.actions.push(item)
-                      
           })
           const docsWithRetroIds = querySnapshot.docs.filter(doc => {
-           const data = {
-             ...doc.data()
-           } as ActionItemType
-           return data.retroId
+            const data = {
+              ...doc.data(),
+            } as ActionItemType
+            return data.retroId
           })
           const promises = docsWithRetroIds.map(doc => {
             const data = doc.data()
-              return getRetroById(data.retroId)
+            return getRetroById(data.retroId)
           })
           Promise.all(promises).then(res => {
             const retros: RetroType[] = []
             res.forEach(doc => {
               const data = {
                 ...doc.data(),
-                id: doc.id
+                id: doc.id,
               } as RetroType
               retros.push(data)
             })
@@ -85,11 +84,10 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
             const data = doc.data()
             const item = {
               ...data,
-              id: doc.id
+              id: doc.id,
             } as ActionItemType
-           
-            actions.push(item)
 
+            actions.push(item)
           })
           setActionItems([{ id: retroId, name: retroData.name, actions: actions }])
           setAllRetros([retroData])
@@ -100,7 +98,14 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
 
   const handleTableUpdate = () => setCounter(c => c + 1)
   return (
-    <Dialog data-testid="actionitem_dialog" open={showViewActionDialog} onClose={handleViewActionDialogClose}>
+    <Dialog
+      fullWidth={true}
+      maxWidth="lg"
+      scroll="body"
+      data-testid="actionitem_dialog"
+      open={showViewActionDialog}
+      onClose={handleViewActionDialogClose}
+    >
       <DialogTitle>
         <Typography>Action Items</Typography>
       </DialogTitle>

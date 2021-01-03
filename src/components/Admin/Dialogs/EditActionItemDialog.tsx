@@ -93,6 +93,7 @@ EditActionItemDialog.propTypes = {
     teamId: PropTypes.string.isRequired,
     retroName: PropTypes.string.isRequired,
     owner: PropTypes.string.isRequired,
+    timestamp: PropTypes.number.isRequired,
   }).isRequired,
 }
 export default EditActionItemDialog

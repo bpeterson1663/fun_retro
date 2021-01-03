@@ -31,6 +31,7 @@ export interface ActionItemType {
   teamId: string
   retroName: string
   owner: string
+  timestamp: number
 }
 
 export interface ActionItemTableProps {

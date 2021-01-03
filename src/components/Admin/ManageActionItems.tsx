@@ -9,6 +9,7 @@ import { getTeams, getActionItemsByTeam, getActionItemsByUser, getAllRetros } fr
 import AuthContext from '../../context/auth-context'
 import { ActionItemTable, RetroType, ManageTeamsType } from '../../constants/types.constant'
 import SnackBar from '../Common/SnackBar'
+import moment from 'moment'
 
 const ManageActionItems: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
@@ -66,6 +67,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                 id: doc.id,
                 retroName: '',
                 owner: itemData.owner ? itemData.owner : '',
+                timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
               })
               itemMap[itemIndex] = map
             }
@@ -105,6 +107,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                   id: doc.id,
                   retroName: '',
                   owner: itemData.owner ? itemData.owner : '',
+                  timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
                 })
 
                 itemMap[itemIndex] = map
@@ -131,7 +134,13 @@ const ManageActionItems: React.FC = (): JSX.Element => {
     })
   }
 
-  const createActionItem = (item: { value: string; team: ManageTeamsType[]; retroId: string; owner: string }) => {
+  const createActionItem = (item: {
+    value: string
+    team: ManageTeamsType[]
+    retroId: string
+    owner: string
+    timestamp: number
+  }) => {
     //create Action Item for each team if multiple teams are selected
     setIsLoading(true)
     if (item.team.length > 0) {
@@ -142,6 +151,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           teamId: team.id,
           userId: auth.userId,
           owner: item.owner ? item.owner : '',
+          timestamp: item.timestamp,
         })
       })
       Promise.all(promises)
@@ -170,6 +180,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           userId: auth.userId,
           teamId: '',
           owner: item.owner ? item.owner : '',
+          timestamp: item.timestamp,
         })
         .then(() => {
           setIsLoading(false)

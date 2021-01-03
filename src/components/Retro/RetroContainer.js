@@ -174,6 +174,7 @@ const RetroContainer = props => {
           teamId: team.id,
           userId: auth.userId,
           owner: item.owner ? item.owner : '',
+          timestamp: moment().value(),
         })
       })
       Promise.all(promises)
@@ -201,6 +202,7 @@ const RetroContainer = props => {
           userId: auth.userId,
           teamId: '',
           owner: item.owner ? item.owner : '',
+          timestamp: moment().value(),
         })
         .then(() => {
           setLoading(false)

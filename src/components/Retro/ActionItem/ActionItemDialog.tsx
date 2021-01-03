@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType, RetroType } from '../../../constants/types.constant'
+import moment from 'moment'
 const useStyles = makeStyles(theme => ({
   inputField: {
     margin: theme.spacing(2),
@@ -28,7 +29,13 @@ const useStyles = makeStyles(theme => ({
 interface DialogPropTypes {
   showActionItemDialog: boolean
   handleActionItemDialogClose: () => void
-  createActionItem: (item: { value: string; team: ManageTeamsType[]; retroId: string; owner: string }) => void
+  createActionItem: (item: {
+    value: string
+    team: ManageTeamsType[]
+    retroId: string
+    owner: string
+    timestamp: number
+  }) => void
   team: ManageTeamsType[]
   retros: RetroType[] | null
 }
@@ -49,6 +56,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
       team: teamValue.length > 0 ? teamValue : [],
       retroId: retroValue?.id ? retroValue.id : '',
       owner: ownerValue ? ownerValue : '',
+      timestamp: moment().valueOf(),
     })
     setItemValue('')
   }

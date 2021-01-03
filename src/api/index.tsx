@@ -38,8 +38,8 @@ export const editActionItemById = async (id: string, item: ActionItemType): Prom
     .doc(id)
     .update(item)
 
-export const getRetroById = async (id: string): Promise<DocumentSnapshot> => 
+export const getRetroById = async (id: string): Promise<DocumentSnapshot> =>
   await db
-  .collection('retros')
-  .doc(id)
-  .get()
+    .collection('retros')
+    .doc(id)
+    .get()
