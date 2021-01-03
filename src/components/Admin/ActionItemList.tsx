@@ -22,6 +22,7 @@ import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'
 import { getComparator, stableSort } from '../Common/Table/helpers'
 import moment from 'moment'
+import Checkbox from '@material-ui/core/Checkbox'
 
 const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, teams, tableUpdated }): JSX.Element => {
   const classes = useStyles()
@@ -80,6 +81,39 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
     setPage(0)
   }
 
+  const sortableHeaders: { name: string; id: keyof ActionItemType }[] = [
+    { name: 'Action', id: 'value' },
+    { name: 'Completed', id: 'completed' },
+    { name: 'Completed Date', id: 'completedDate' },
+    { name: 'Retro', id: 'retroName' },
+    { name: 'Owner', id: 'owner' },
+    { name: 'Created', id: 'timestamp' },
+  ]
+
+  const SortableHeadRow = (): JSX.Element => {
+    return (
+      <TableRow>
+        {sortableHeaders.map(head => (
+          <TableCell key={head.id}>
+            <TableSortLabel
+              active={orderBy === head.id}
+              direction={orderBy === head.id ? order : 'asc'}
+              onClick={createSortHandler(head.id)}
+            >
+              {head.name}
+              {orderBy === head.id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </span>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+        <TableCell>Edit</TableCell>
+        <TableCell>Delete</TableCell>
+      </TableRow>
+    )
+  }
   return isEmptyTable ? (
     <></>
   ) : (
@@ -87,66 +121,7 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
       <Typography variant="h6">{name}</Typography>
       <Table aria-label="manage action items" size="small">
         <TableHead>
-          <TableRow>
-            <TableCell>
-              <TableSortLabel
-                active={orderBy === 'value'}
-                direction={orderBy === 'value' ? order : 'asc'}
-                onClick={createSortHandler('value')}
-              >
-                Action
-                {orderBy === 'value' ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={orderBy === 'retroId'}
-                direction={orderBy === 'retroId' ? order : 'asc'}
-                onClick={createSortHandler('retroId')}
-              >
-                Retro
-                {orderBy === 'retroId' ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={orderBy === 'owner'}
-                direction={orderBy === 'owner' ? order : 'asc'}
-                onClick={createSortHandler('owner')}
-              >
-                Owner
-                {orderBy === 'owner' ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={orderBy === 'timestamp'}
-                direction={orderBy === 'timestamp' ? order : 'asc'}
-                onClick={createSortHandler('timestamp')}
-              >
-                Created
-                {orderBy === 'timestamp' ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>Edit</TableCell>
-            <TableCell>Delete</TableCell>
-          </TableRow>
+          <SortableHeadRow />
         </TableHead>
         <TableBody>
           {stableSort(actionData, getComparator(order, orderBy))
@@ -154,6 +129,14 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
             .map(item => (
               <TableRow key={item.id} className={classes.actionRow}>
                 <TableCell>{item.value}</TableCell>
+                <TableCell>
+                  <Checkbox
+                    disabled
+                    checked={item.completed ? true : false}
+                    inputProps={{ 'aria-label': 'completed' }}
+                  />
+                </TableCell>
+                <TableCell>{item.completedDate}</TableCell>
                 <TableCell>{retros.find(retro => retro.id === item.retroId)?.name}</TableCell>
                 <TableCell>{item.owner}</TableCell>
                 <TableCell>{moment(item.timestamp).format('L')}</TableCell>

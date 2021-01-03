@@ -68,6 +68,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                 retroName: '',
                 owner: itemData.owner ? itemData.owner : '',
                 timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
+                completed: typeof itemData.completed === 'boolean' ? itemData.completed : false,
+                completedDate: itemData.completedDate ? itemData.completedDate : '',
               })
               itemMap[itemIndex] = map
             }
@@ -108,6 +110,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                   retroName: '',
                   owner: itemData.owner ? itemData.owner : '',
                   timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
+                  completed: typeof itemData.completed === 'boolean' ? itemData.completed : false,
+                  completedDate: itemData.completedDate ? itemData.completedDate : '',
                 })
 
                 itemMap[itemIndex] = map
@@ -152,6 +156,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           userId: auth.userId,
           owner: item.owner ? item.owner : '',
           timestamp: item.timestamp,
+          completed: false,
+          completedDate: '',
         })
       })
       Promise.all(promises)
@@ -181,6 +187,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           teamId: '',
           owner: item.owner ? item.owner : '',
           timestamp: item.timestamp,
+          completed: false,
+          completedDate: '',
         })
         .then(() => {
           setIsLoading(false)

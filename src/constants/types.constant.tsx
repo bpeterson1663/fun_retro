@@ -32,6 +32,8 @@ export interface ActionItemType {
   retroName: string
   owner: string
   timestamp: number
+  completed: boolean
+  completedDate: string
 }
 
 export interface ActionItemTableProps {
