@@ -21,7 +21,9 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
+  TableSortLabel,
   Paper,
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
@@ -30,7 +32,9 @@ import Typography from '@material-ui/core/Typography/Typography'
 import AuthContext from '../../context/auth-context'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
-import { ManageTeamsType } from '../../constants/types.constant'
+import { ManageTeamsType, Order } from '../../constants/types.constant'
+import { getComparator, stableSort } from '../Common/Table/helpers'
+
 import EditTeamDialog from './Dialogs/EditTeamDialog'
 
 const ManageTeams: React.FC = (): JSX.Element => {
@@ -44,6 +48,10 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const [allTeams, setAllTeams] = useState<ManageTeamsType[]>([])
   const [editStatus, setEditStatus] = useState(false)
   const [editTeam, setEditTeam] = useState<ManageTeamsType | null>(null)
+  const [orderBy, setOrderBy] = useState<keyof ManageTeamsType>('teamName')
+  const [order, setOrder] = useState<Order>('asc')
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
   useEffect(() => {
     db.collection('teams')
       .where('userId', '==', auth.userId)
@@ -169,22 +177,49 @@ const ManageTeams: React.FC = (): JSX.Element => {
         console.error('ERROR: ', err)
       })
   }
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ManageTeamsType) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
+  const createSortHandler = (property: keyof ManageTeamsType) => (event: React.MouseEvent<unknown>) => {
+    handleRequestSort(event, property)
+  }
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage)
+  }
 
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
   const TeamListData: React.FC = (): JSX.Element => {
     return (
-      <div>
-        <TableContainer className={classes.tableContainer} component={Paper}>
-          <Table aria-label="manage teams table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Edit</TableCell>
-                <TableCell>Delete</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {allTeams.map(team => (
-                <TableRow key={team.timestamp}>
+      <TableContainer className={classes.tableContainer} component={Paper}>
+        <Table aria-label="manage teams table">
+          <TableHead>
+            <TableRow>
+              <TableSortLabel
+                active={orderBy === 'teamName'}
+                direction={orderBy === 'teamName' ? order : 'asc'}
+                onClick={createSortHandler('teamName')}
+              >
+                Name
+                {orderBy === 'teamName' ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+              <TableCell>Edit</TableCell>
+              <TableCell>Delete</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {stableSort(allTeams, getComparator(order, orderBy))
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map(team => (
+                <TableRow key={team.id} className={classes.actionRow}>
                   <TableCell>{team.teamName}</TableCell>
                   <TableCell>
                     <IconButton className={classes.icon} onClick={() => handleEditOpen(team)}>
@@ -198,10 +233,18 @@ const ManageTeams: React.FC = (): JSX.Element => {
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={allTeams.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </TableContainer>
     )
   }
   return (
