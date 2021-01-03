@@ -111,7 +111,6 @@ const ManageActionItems: React.FC = (): JSX.Element => {
               }
             })
           })
-          console.log('itemMap', itemMap)
           setActionItemsMap(itemMap)
           setIsLoading(false)
         })
