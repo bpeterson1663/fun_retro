@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from 'react'
 import { Container, Grid, Typography, LinearProgress, Button } from '@material-ui/core'
 import useStyles from './AdminContainer.styles'
 import ActionItemList from './ActionItemList'
-import ActionItemDialog from '../Retro/ActionItem/ActionItemDialog'
+import CreateActionItemDialog from '../Retro/ActionItem/CreateActionItemDialog'
 import { db } from '../../firebase'
 import { getTeams, getActionItemsByTeam, getActionItemsByUser, getAllRetros } from '../../api/index'
 import AuthContext from '../../context/auth-context'
@@ -230,7 +230,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
           />
         ) : null}
         {showActionItemDialog ? (
-          <ActionItemDialog
+          <CreateActionItemDialog
             showActionItemDialog={showActionItemDialog}
             handleActionItemDialogClose={handleActionItemDialogClose}
             createActionItem={createActionItem}

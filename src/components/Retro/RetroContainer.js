@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import RetroColumn from './RetroColumn'
-import ActionItemDialog from './ActionItem/ActionItemDialog'
+import CreateActionItemDialog from './ActionItem/CreateActionItemDialog'
 import VoteContext from '../../context/vote-context'
 import moment from 'moment'
 import _ from 'lodash'
@@ -293,7 +293,7 @@ const RetroContainer = props => {
         </VoteContext.Provider>
       </Grid>
       {showActionItemDialog ? (
-        <ActionItemDialog
+        <CreateActionItemDialog
           showActionItemDialog={showActionItemDialog}
           handleActionItemDialogClose={handleActionItemDialogClose}
           createActionItem={createActionItem}
