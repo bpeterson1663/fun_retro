@@ -21,6 +21,7 @@ import { deleteActionItem, editActionItemById } from '../../api/index'
 import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'
 import { getComparator, stableSort } from '../Common/Table/helpers'
+import moment from 'moment'
 
 const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, teams, tableUpdated }): JSX.Element => {
   const classes = useStyles()
@@ -42,10 +43,11 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
   }, [data, retros])
   const handleDelete = (id: string) => deleteActionItem(id).then(tableUpdated)
 
-  const editActionItem = (item: { value: string; teamId: string }) => {
+  const editActionItem = (item: { value: string; teamId: string; owner: string }) => {
     const newItem = {
       ...editItem,
       ...item,
+      timestamp: editItem.timestamp ? editItem.timestamp : moment().valueOf(),
     }
     editActionItemById(newItem.id, newItem).then(() => {
       handleEditActionClose()
@@ -114,6 +116,34 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
                 ) : null}
               </TableSortLabel>
             </TableCell>
+            <TableCell>
+              <TableSortLabel
+                active={orderBy === 'owner'}
+                direction={orderBy === 'owner' ? order : 'asc'}
+                onClick={createSortHandler('owner')}
+              >
+                Owner
+                {orderBy === 'owner' ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+            <TableCell>
+              <TableSortLabel
+                active={orderBy === 'timestamp'}
+                direction={orderBy === 'timestamp' ? order : 'asc'}
+                onClick={createSortHandler('timestamp')}
+              >
+                Created
+                {orderBy === 'timestamp' ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
             <TableCell>Edit</TableCell>
             <TableCell>Delete</TableCell>
           </TableRow>
@@ -125,6 +155,8 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
               <TableRow key={item.id} className={classes.actionRow}>
                 <TableCell>{item.value}</TableCell>
                 <TableCell>{retros.find(retro => retro.id === item.retroId)?.name}</TableCell>
+                <TableCell>{item.owner}</TableCell>
+                <TableCell>{moment(item.timestamp).format('L')}</TableCell>
                 <TableCell>
                   <IconButton className={classes.icon} onClick={() => handleEditItem(item)}>
                     <EditIcon />

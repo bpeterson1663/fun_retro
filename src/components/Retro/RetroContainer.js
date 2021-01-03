@@ -49,6 +49,7 @@ const RetroContainer = props => {
       .onSnapshot(doc => {
         if (doc.exists) {
           const docData = doc.data()
+          docData.id = doc.id
           docData.team = docData.team ? docData.team : []
           setIsAdmin(docData.userId === auth.userId)
           setRetroData(docData)
@@ -172,6 +173,8 @@ const RetroContainer = props => {
           retroId: retroId,
           teamId: team.id,
           userId: auth.userId,
+          owner: item.owner ? item.owner : '',
+          timestamp: moment().value(),
         })
       })
       Promise.all(promises)
@@ -198,6 +201,8 @@ const RetroContainer = props => {
           retroId: retroId,
           userId: auth.userId,
           teamId: '',
+          owner: item.owner ? item.owner : '',
+          timestamp: moment().value(),
         })
         .then(() => {
           setLoading(false)
@@ -300,7 +305,7 @@ const RetroContainer = props => {
         <ViewActionItemDialog
           showViewActionDialog={showViewActionDialog}
           handleViewActionDialogClose={handleViewActionDialogClose}
-          retroName={retroData.name}
+          retroData={retroData}
           retroId={retroId}
           team={retroData.team}
           isAdmin={isAdmin}

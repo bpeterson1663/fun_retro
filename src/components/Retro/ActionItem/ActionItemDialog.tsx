@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType, RetroType } from '../../../constants/types.constant'
+import moment from 'moment'
 const useStyles = makeStyles(theme => ({
   inputField: {
     margin: theme.spacing(2),
@@ -28,7 +29,13 @@ const useStyles = makeStyles(theme => ({
 interface DialogPropTypes {
   showActionItemDialog: boolean
   handleActionItemDialogClose: () => void
-  createActionItem: (item: { value: string; team: ManageTeamsType[]; retroId: string }) => void
+  createActionItem: (item: {
+    value: string
+    team: ManageTeamsType[]
+    retroId: string
+    owner: string
+    timestamp: number
+  }) => void
   team: ManageTeamsType[]
   retros: RetroType[] | null
 }
@@ -37,6 +44,7 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
   const [retroValue, setRetroValue] = useState<RetroType | null>({} as RetroType)
   const [itemValue, setItemValue] = useState('')
+  const [ownerValue, setOwnerValue] = useState('')
   const classes = useStyles()
 
   const handleCreateActionItem = () => {
@@ -47,6 +55,8 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
       value: itemValue,
       team: teamValue.length > 0 ? teamValue : [],
       retroId: retroValue?.id ? retroValue.id : '',
+      owner: ownerValue ? ownerValue : '',
+      timestamp: moment().valueOf(),
     })
     setItemValue('')
   }
@@ -66,6 +76,14 @@ const ActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element => {
           label="Start Typing"
           value={itemValue}
           onChange={e => setItemValue(e.target.value)}
+        />
+        <TextField
+          className={`${classes.inputField} ${classes.inputFieldText}`}
+          value={ownerValue}
+          type="text"
+          variant="outlined"
+          label="Owner"
+          onChange={e => setOwnerValue(e.target.value)}
         />
         {retros ? (
           <Autocomplete

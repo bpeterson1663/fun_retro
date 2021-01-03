@@ -30,7 +30,10 @@ export interface ActionItemType {
   retroId: string
   teamId: string
   retroName: string
+  owner: string
+  timestamp: number
 }
+
 export interface ActionItemTableProps {
   name: string
   data: ActionItemType[]
