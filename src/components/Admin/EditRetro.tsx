@@ -24,7 +24,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
 interface ParamTypes {
-  id: 'string'
+  id: string
 }
 
 interface RetroForm {
@@ -117,7 +117,6 @@ const EditRetro: React.FC = (): JSX.Element => {
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
-      <Typography variant="h5">Edit Retro</Typography>
       <div className={classes.actionButtons}>
         <Link to="/retroList" style={{ textDecoration: 'none' }}>
           <Button size="small" color="secondary" variant="contained">
@@ -125,6 +124,7 @@ const EditRetro: React.FC = (): JSX.Element => {
           </Button>
         </Link>
       </div>
+      <Typography variant="h5">Edit Retro</Typography>
       <a rel="noopener noreferrer" target="_blank" href={'https://superfunretro.herokuapp.com/retro/' + id}>
         https://superfunretro.herokuapp.com/retro/{id}
       </a>
@@ -158,6 +158,7 @@ const EditRetro: React.FC = (): JSX.Element => {
               <Select
                 data-testid="retro_type"
                 required
+                disabled
                 labelId="retro-type"
                 id="retro-type-select"
                 className={`${classes.inputField} ${classes.inputFieldText}`}
