@@ -11,8 +11,15 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import SnackBar from '../../Common/SnackBar'
 import useStyles from '../AdminContainer.styles'
+import { RetroType } from '../../../constants/types.constant'
 
-const ShowLinkDialog = props => {
+interface ShowLinkProps {
+  retroLink: RetroType
+  showLinkStatus: boolean
+  handleShowLinkClose: () => void
+}
+
+const ShowLinkDialog: React.FC<ShowLinkProps> = (props): JSX.Element => {
   const { retroLink, showLinkStatus, handleShowLinkClose } = props
   const [messageStatus, setMessageStatus] = useState(false)
   const copyToClipboard = () => {
@@ -35,7 +42,7 @@ const ShowLinkDialog = props => {
       </DialogContent>
       <DialogActions>
         <CopyToClipboard text={'https://superfunretro.herokuapp.com/retro/' + retroLink.id} onCopy={copyToClipboard}>
-          <Button size="small" variant="outlined" color="secondary">
+          <Button size="small" variant="contained" color="secondary">
             Copy to clipboard
           </Button>
         </CopyToClipboard>
@@ -46,9 +53,20 @@ const ShowLinkDialog = props => {
 }
 
 ShowLinkDialog.propTypes = {
-  retroLink: PropTypes.object,
-  showLinkStatus: PropTypes.bool,
-  handleShowLinkClose: PropTypes.func,
+  retroLink: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    startDate: PropTypes.string.isRequired,
+    endDate: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    team: PropTypes.array.isRequired,
+    numberOfVotes: PropTypes.number.isRequired,
+    columnsKey: PropTypes.string.isRequired,
+    isActive: PropTypes.bool.isRequired,
+    timestamp: PropTypes.number.isRequired,
+  }).isRequired,
+  showLinkStatus: PropTypes.bool.isRequired,
+  handleShowLinkClose: PropTypes.func.isRequired,
 }
 
 export default ShowLinkDialog

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import RetroColumn from './RetroColumn'
-import ActionItemDialog from './ActionItem/ActionItemDialog'
+import CreateActionItemDialog from './ActionItem/CreateActionItemDialog'
 import VoteContext from '../../context/vote-context'
 import moment from 'moment'
 import _ from 'lodash'
@@ -16,7 +16,6 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuIcon from '@material-ui/icons/Menu'
 import Fab from '@material-ui/core/Fab'
 import ViewActionItemDialog from './ActionItem/ViewActionItemDialog'
-import ViewPreviousRetroActionDialog from './ActionItem/PreviousActionDialog'
 import SnackBar from '../Common/SnackBar'
 import jsPDF from 'jspdf'
 import { columnKeys } from '../../constants/columns.constants'
@@ -32,7 +31,6 @@ const RetroContainer = props => {
   const [columnMaps, setColumnMaps] = useState([])
   const [showActionItemDialog, setShowActionItemDialog] = useState(false)
   const [showViewActionDialog, setShowViewActionDialog] = useState(false)
-  const [showPreviousActionDialog, setShowPreviousActionDialog] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
 
   const [messageState, setMessageState] = useState({
@@ -51,6 +49,8 @@ const RetroContainer = props => {
       .onSnapshot(doc => {
         if (doc.exists) {
           const docData = doc.data()
+          docData.id = doc.id
+          docData.team = docData.team ? docData.team : []
           setIsAdmin(docData.userId === auth.userId)
           setRetroData(docData)
           setRetroStatus(docData.isActive)
@@ -100,7 +100,7 @@ const RetroContainer = props => {
 
   const handleGenerateReport = () => {
     handleMenuClose()
-    let reportSections = [{ title: 'Action Items', value: 'actionItems', backgroundColor: '#2196f3' }]
+    let reportSections = [{ title: 'Action Items from Retro', value: 'actionItems', backgroundColor: '#2196f3' }]
     reportSections = reportSections.concat(columnMaps)
 
     const promises = reportSections.map(column => {
@@ -163,40 +163,69 @@ const RetroContainer = props => {
 
   const handleViewActionDialogClose = () => setShowViewActionDialog(false)
 
-  const handleViewPreviousActionDialog = () => {
-    handleMenuClose()
-    setShowPreviousActionDialog(true)
-  }
-
-  const handleViewPreviousCloseDialog = () => {
-    setShowPreviousActionDialog(false)
-  }
-
   const createActionItem = item => {
+    //create Action Item for each team if multiple teams are selected
     setLoading(true)
-    db.collection('actionItems')
-      .add({
-        value: item,
-        retroId: retroId,
-      })
-      .then(() => {
-        setLoading(false)
-        setShowActionItemDialog(false)
-        setMessageState({
-          displayMessage: true,
-          message: `Way to take action!`,
-          messageStatus: 'success',
+    if (item.team.length > 0) {
+      const promises = item.team.map(team => {
+        return db.collection('actionItems').add({
+          value: item.value,
+          retroId: retroId,
+          teamId: team.id,
+          userId: auth.userId,
+          owner: item.owner ? item.owner : '',
+          timestamp: moment().valueOf(),
+          completed: false,
+          completedDate: '',
         })
       })
-      .catch(err => {
-        setMessageState({
-          displayMessage: true,
-          message: `${err}`,
-          messageStatus: 'error',
+      Promise.all(promises)
+        .then(() => {
+          setLoading(false)
+          setShowActionItemDialog(false)
+          setMessageState({
+            displayMessage: true,
+            message: `Way to take action!`,
+            messageStatus: 'success',
+          })
         })
-      })
+        .catch(err => {
+          setMessageState({
+            displayMessage: true,
+            message: `${err}`,
+            messageStatus: 'error',
+          })
+        })
+    } else {
+      db.collection('actionItems')
+        .add({
+          value: item.value,
+          retroId: retroId,
+          userId: auth.userId,
+          teamId: '',
+          owner: item.owner ? item.owner : '',
+          timestamp: moment().valueOf(),
+          completed: false,
+          completedDate: '',
+        })
+        .then(() => {
+          setLoading(false)
+          setShowActionItemDialog(false)
+          setMessageState({
+            displayMessage: true,
+            message: `Way to take action!`,
+            messageStatus: 'success',
+          })
+        })
+        .catch(err => {
+          setMessageState({
+            displayMessage: true,
+            message: `${err}`,
+            messageStatus: 'error',
+          })
+        })
+    }
   }
-
   const handleMessageClose = () => {
     setMessageState({
       displayMessage: false,
@@ -229,11 +258,8 @@ const RetroContainer = props => {
           <MenuItem onClick={handleRetroStatus}>{retroStatus ? `End Retro` : `Activate Retro`} </MenuItem>
         ) : null}
         <MenuItem onClick={handleGenerateReport}>Generate Report </MenuItem>
-        {retroData.userId === auth.userId ? (
-          <MenuItem onClick={handleActionItemDialog}>Create Action Item</MenuItem>
-        ) : null}
+        <MenuItem onClick={handleActionItemDialog}>Create Action Item</MenuItem>
         <MenuItem onClick={handleViewActionDialog}>View Action Items</MenuItem>
-        <MenuItem onClick={handleViewPreviousActionDialog}>View Previous Action Items</MenuItem>
       </Menu>
       <Typography variant="h4">{retroData.name}</Typography>
       <Typography variant="subtitle1">
@@ -271,10 +297,11 @@ const RetroContainer = props => {
         </VoteContext.Provider>
       </Grid>
       {showActionItemDialog ? (
-        <ActionItemDialog
+        <CreateActionItemDialog
           showActionItemDialog={showActionItemDialog}
           handleActionItemDialogClose={handleActionItemDialogClose}
           createActionItem={createActionItem}
+          team={retroData.team}
         />
       ) : null}
 
@@ -282,17 +309,10 @@ const RetroContainer = props => {
         <ViewActionItemDialog
           showViewActionDialog={showViewActionDialog}
           handleViewActionDialogClose={handleViewActionDialogClose}
-          retroName={retroData.name}
+          retroData={retroData}
           retroId={retroId}
+          team={retroData.team}
           isAdmin={isAdmin}
-        />
-      ) : null}
-
-      {showPreviousActionDialog ? (
-        <ViewPreviousRetroActionDialog
-          showDialog={showPreviousActionDialog}
-          handleViewPreviousCloseDialog={handleViewPreviousCloseDialog}
-          previousRetro={retroData.previousRetro}
         />
       ) : null}
     </Container>

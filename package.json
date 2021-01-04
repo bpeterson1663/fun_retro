@@ -1,16 +1,15 @@
 {
   "name": "fun_retro",
   "version": "0.1.0",
+  "engines": {
+    "node": "14.x"
+  },
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.10",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.7",
-    "@types/react": "^16.9.56",
-    "@types/react-dom": "^16.9.9",
-    "firebase": "^6.6.2",
+    "firebase": "^8.2.1",
     "jslint": "^0.12.1",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.1.3",
@@ -22,10 +21,9 @@
     "react-app-polyfill": "^1.0.1",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
-    "react-hook-form": "^4.9.3",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.1",
-    "typescript": "^4.0.5"
+    "react-hook-form": "^6.11.3",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.1"
   },
   "scripts": {
     "start": "npm install -g serve && serve -s build",
@@ -55,10 +53,19 @@
   },
   "devDependencies": {
     "@testing-library/react": "^10.0.2",
+    "@types/jest": "^26.0.19",
+    "@types/node": "^14.14.19",
+    "@types/react": "^16.14.2",
+    "@types/react-copy-to-clipboard": "^5.0.0",
+    "@types/react-dom": "^16.9.10",
+    "@types/react-router-dom": "^5.1.6",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
     "cz-conventional-changelog": "^3.1.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.16.0",
     "eslint-plugin-react-hooks": "^3.0.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "typescript": "^4.1.3"
   },
   "config": {
     "commitizen": {
