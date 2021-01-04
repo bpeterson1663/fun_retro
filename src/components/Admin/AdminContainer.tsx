@@ -2,54 +2,38 @@ import React, { useEffect, useState, useContext } from 'react'
 import { db } from '../../firebase'
 import AuthContext from '../../context/auth-context'
 import { getAllRetros } from '../../api/index'
-import moment from 'moment'
 import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button'
-import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
-import EditIcon from '@material-ui/icons/Edit'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import Grid from '@material-ui/core/Grid'
-import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography/Typography'
+import RetroTable from './RetroTable'
+import SnackBar from '../Common/SnackBar'
+import useStyles from './AdminContainer.styles'
+import { Link } from 'react-router-dom'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import TableSortLabel from '@material-ui/core/TableSortLabel'
-import TablePagination from '@material-ui/core/TablePagination'
-import Paper from '@material-ui/core/Paper'
-import ShowLinkDialog from './Dialogs/ShowLinkDialog'
-import SnackBar from '../Common/SnackBar'
-import useStyles from './AdminContainer.styles'
-import { Link } from 'react-router-dom'
-import { getComparator, stableSort } from '../Common/Table/helpers'
-import { getColumnsTitle } from '../../constants/columns.constants'
-import { Order, RetroType } from '../../constants/types.constant'
-
+import { ManageTeamsType, RetroType } from '../../constants/types.constant'
+interface RetroMap {
+  name: string
+  id: string
+  data: RetroType[]
+}
 //TODO: Move Dialog into a common component
 const AdminContainer = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true)
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
-  const [retroList, setRetroList] = useState<RetroType[]>([])
-  const [retroToDelete, setRetroToDelete] = useState<RetroType>({} as RetroType)
-  const [retroLink, setRetroLink] = useState<RetroType>({} as RetroType)
-  const [showLinkStatus, setShowLinkStatus] = useState(false)
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [orderBy, setOrderBy] = useState<keyof RetroType>('name')
-  const [order, setOrder] = useState<Order>('asc')
+  const [retroList, setRetroList] = useState<RetroMap[]>([])
+  const [counter, setCounter] = useState(0)
   const [messageState, setMessageState] = useState({
     message: '',
     messageStatus: '',
     displayMessage: false,
   })
+  const [retroToDelete, setRetroToDelete] = useState<RetroType>({} as RetroType)
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
   const columnMaps = [
     { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
     { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
@@ -59,22 +43,47 @@ const AdminContainer = (): JSX.Element => {
   const classes = useStyles()
 
   useEffect(() => {
+    const retroMap: RetroMap[] = []
     getAllRetros(auth.userId).then(querySnapshot => {
-      const payload: RetroType[] = []
       querySnapshot.docs.forEach(doc => {
         const data = doc.data()
         data.id = doc.id
         data.team = data.team ? data.team : []
-        payload.push(data as RetroType)
+        if (data.team.length > 0) {
+          data.team.forEach((t: ManageTeamsType) => {
+            const map = retroMap.find(r => r.id === t.id)
+            if (map) {
+              map.data = [...map.data, { ...(data as RetroType) }]
+            } else {
+              retroMap.push({ name: t.teamName, id: t.id, data: [{ ...(data as RetroType) }] })
+            }
+          })
+        } else {
+          const map = retroMap.find(r => r.id === auth.userId)
+          if (map) {
+            map.data = [...map.data, { ...(data as RetroType) }]
+          } else {
+            retroMap.push({ name: 'Retros Without a Team', id: auth.userId, data: [{ ...(data as RetroType) }] })
+          }
+        }
       })
-      payload.sort((a, b) => {
-        return b.timestamp - a.timestamp
+      retroMap.forEach(map => {
+        map.data.sort((a, b) => {
+          return b.timestamp - a.timestamp
+        })
       })
-      setRetroList(payload)
+      setRetroList(retroMap)
       setIsLoading(false)
     })
-  }, [auth.userId])
+  }, [auth.userId, counter])
 
+  const handleMessageClose = () => {
+    setMessageState({
+      displayMessage: false,
+      message: '',
+      messageStatus: '',
+    })
+  }
   const handleConfirmOpen = (retro: RetroType) => {
     setRetroToDelete(retro)
     setConfirmDialogOpen(true)
@@ -83,16 +92,6 @@ const AdminContainer = (): JSX.Element => {
   const handleConfirmClose = () => {
     setRetroToDelete({} as RetroType)
     setConfirmDialogOpen(false)
-  }
-
-  const handleShowLink = (retro: RetroType) => {
-    setShowLinkStatus(true)
-    setRetroLink(retro)
-  }
-
-  const handleShowLinkClose = () => {
-    setShowLinkStatus(false)
-    setRetroLink({} as RetroType)
   }
 
   const handleRetroDelete = (retro: RetroType) => {
@@ -122,40 +121,16 @@ const AdminContainer = (): JSX.Element => {
               message: 'Goodbye Retro! You have been deleted!',
               messageStatus: 'success',
             })
+            setCounter(c => c + 1)
             setIsLoading(false)
           })
       })
     })
   }
-
-  const handleMessageClose = () => {
-    setMessageState({
-      displayMessage: false,
-      message: '',
-      messageStatus: '',
-    })
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleChangePage = (event: any, newPage: React.SetStateAction<number>) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof RetroType) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
-  const createSortHandler = (property: keyof RetroType) => (event: React.MouseEvent<unknown>) => {
-    handleRequestSort(event, property)
-  }
-  const RetroData = () => {
-    return (
-      <div>
+  return (
+    <Container data-testid="admin_container">
+      {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
+      <Grid container justify="center" spacing={0}>
         <Typography variant="h5">Retro List</Typography>
         <div className={classes.actionButtons}>
           <Link to="/createRetro" style={{ textDecoration: 'none' }}>
@@ -164,137 +139,11 @@ const AdminContainer = (): JSX.Element => {
             </Button>
           </Link>
         </div>
-        <TablePagination
-          rowsPerPageOptions={[10, 20, 30]}
-          component="div"
-          count={retroList.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-        <TableContainer className={classes.tableContainer} component={Paper}>
-          <Table aria-label="retro list table" size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <TableSortLabel
-                    active={orderBy === 'name'}
-                    direction={orderBy === 'name' ? order : 'asc'}
-                    onClick={createSortHandler('name')}
-                  >
-                    Name
-                    {orderBy === 'name' ? (
-                      <span className={classes.visuallyHidden}>
-                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                      </span>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell align="center">Link</TableCell>
-                <TableCell align="center">
-                  <TableSortLabel
-                    active={orderBy === 'columnsKey'}
-                    direction={orderBy === 'columnsKey' ? order : 'asc'}
-                    onClick={createSortHandler('columnsKey')}
-                  >
-                    Type
-                    {orderBy === 'columnsKey' ? (
-                      <span className={classes.visuallyHidden}>
-                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                      </span>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>Team(s)</TableCell>
-                <TableCell align="center">
-                  <TableSortLabel
-                    active={orderBy === 'startDate'}
-                    direction={orderBy === 'startDate' ? order : 'asc'}
-                    onClick={createSortHandler('startDate')}
-                  >
-                    Start Date
-                    {orderBy === 'startDate' ? (
-                      <span className={classes.visuallyHidden}>
-                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                      </span>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell align="center">
-                  <TableSortLabel
-                    active={orderBy === 'endDate'}
-                    direction={orderBy === 'endDate' ? order : 'asc'}
-                    onClick={createSortHandler('endDate')}
-                  >
-                    End Date
-                    {orderBy === 'endDate' ? (
-                      <span className={classes.visuallyHidden}>
-                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                      </span>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell align="center">Edit</TableCell>
-                <TableCell align="center">Delete</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {stableSort(retroList, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(retro => (
-                  <TableRow key={retro.id}>
-                    <TableCell>{retro.name}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        className={classes.showLinkButton}
-                        size="small"
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleShowLink(retro)}
-                      >
-                        Show Link
-                      </Button>
-                    </TableCell>
-                    <TableCell>{getColumnsTitle(retro.columnsKey)}</TableCell>
-                    <TableCell>
-                      <ul>
-                        {retro.team.map(item => (
-                          <li key={item.id}>{item.teamName}</li>
-                        ))}
-                      </ul>
-                    </TableCell>
-                    <TableCell>{moment(retro.startDate).format('L')}</TableCell>
-                    <TableCell>{moment(retro.endDate).format('L')}</TableCell>
-                    <TableCell>
-                      <Link to={`/editRetro/${retro.id}`}>
-                        <IconButton>
-                          <EditIcon />
-                        </IconButton>
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        disabled={isLoading}
-                        className={classes.icon}
-                        onClick={handleConfirmOpen.bind(this, retro)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-    )
-  }
-  return (
-    <Container data-testid="admin_container">
-      {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
-      <Grid container justify="center" spacing={0}>
-        {retroList.length > 0 ? <RetroData /> : null}
+        {retroList.length > 0
+          ? retroList.map(map => (
+              <RetroTable key={map.id} data={map.data} name={map.name} handleDelete={handleConfirmOpen} />
+            ))
+          : null}
       </Grid>
 
       {messageState.displayMessage ? (
@@ -305,45 +154,41 @@ const AdminContainer = (): JSX.Element => {
           close={handleMessageClose}
         />
       ) : null}
-      <Dialog
-        data-testid="delete-warning_dialog"
-        open={confirmDialogOpen}
-        onClose={handleConfirmClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{'Delete Retro?'}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to say goodbye to this retro and delete it?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            data-testid="confirm-delete_button"
-            onClick={handleRetroDelete.bind(this, retroToDelete)}
-            color="secondary"
-            variant="contained"
-          >
-            Delete It!
-          </Button>
-          <Button
-            data-testid="cancel-delete_button"
-            onClick={handleConfirmClose.bind(this)}
-            color="primary"
-            variant="contained"
-            autoFocus
-          >
-            No, Keep it.
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {showLinkStatus ? (
-        <ShowLinkDialog
-          showLinkStatus={showLinkStatus}
-          handleShowLinkClose={handleShowLinkClose}
-          retroLink={retroLink}
-        />
+
+      {confirmDialogOpen ? (
+        <Dialog
+          data-testid="delete-warning_dialog"
+          open={confirmDialogOpen}
+          onClose={handleConfirmClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{'Delete Retro?'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to say goodbye to this retro and delete it?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              data-testid="confirm-delete_button"
+              onClick={handleRetroDelete.bind(this, retroToDelete)}
+              color="secondary"
+              variant="contained"
+            >
+              Delete It!
+            </Button>
+            <Button
+              data-testid="cancel-delete_button"
+              onClick={handleConfirmClose.bind(this)}
+              color="primary"
+              variant="contained"
+              autoFocus
+            >
+              No, Keep it.
+            </Button>
+          </DialogActions>
+        </Dialog>
       ) : null}
     </Container>
   )
