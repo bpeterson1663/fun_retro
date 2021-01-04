@@ -21,6 +21,8 @@ import SnackBar from '../Common/SnackBar'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import { useParams, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+
 interface ParamTypes {
   id: 'string'
 }
@@ -116,6 +118,16 @@ const EditRetro: React.FC = (): JSX.Element => {
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Typography variant="h5">Edit Retro</Typography>
+      <div className={classes.actionButtons}>
+        <Link to="/retroList" style={{ textDecoration: 'none' }}>
+          <Button size="small" color="secondary" variant="contained">
+            Back to Retro List
+          </Button>
+        </Link>
+      </div>
+      <a rel="noopener noreferrer" target="_blank" href={'https://superfunretro.herokuapp.com/retro/' + id}>
+        https://superfunretro.herokuapp.com/retro/{id}
+      </a>
       <form onSubmit={handleSubmit(onSubmitHandler)} className={classes.form}>
         <FormControl>
           <Controller
@@ -236,10 +248,11 @@ const EditRetro: React.FC = (): JSX.Element => {
             }
           />
         </FormControl>
-
-        <Button type="submit" color="secondary" variant="contained">
-          Save Retro
-        </Button>
+        <div className={classes.actionButtons}>
+          <Button type="submit" color="secondary" variant="contained">
+            Save Retro
+          </Button>
+        </div>
       </form>
       <SnackBar
         open={response.open}
