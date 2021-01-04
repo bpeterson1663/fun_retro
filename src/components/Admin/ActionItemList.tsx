@@ -166,7 +166,7 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
         />
       ) : null}
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 20]}
         component="div"
         count={actionData.length}
         rowsPerPage={rowsPerPage}

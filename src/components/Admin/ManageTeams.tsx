@@ -236,7 +236,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10, 20]}
           component="div"
           count={allTeams.length}
           rowsPerPage={rowsPerPage}

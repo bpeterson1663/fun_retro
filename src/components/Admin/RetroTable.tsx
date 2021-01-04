@@ -32,7 +32,7 @@ interface RetroTableProps {
 
 const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JSX.Element => {
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
   const [orderBy, setOrderBy] = useState<keyof RetroType>('name')
   const [order, setOrder] = useState<Order>('asc')
   const classes = useStyles()
@@ -141,7 +141,7 @@ const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JS
           {stableSort(data, getComparator(order, orderBy))
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map(retro => (
-              <TableRow key={retro.id}>
+              <TableRow key={retro.id} className={classes.actionRow}>
                 <TableCell>{retro.name}</TableCell>
                 <TableCell align="center">
                   <Button
@@ -181,7 +181,7 @@ const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JS
         </TableBody>
       </Table>
       <TablePagination
-        rowsPerPageOptions={[10, 20, 30]}
+        rowsPerPageOptions={[5, 10, 20]}
         component="div"
         count={data.length}
         rowsPerPage={rowsPerPage}
