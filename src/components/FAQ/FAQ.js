@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography/Typography'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Button from '@material-ui/core/Button/Button'
 const useStyles = makeStyles(theme => ({
@@ -60,11 +60,11 @@ const FAQ = props => {
       </Button>
       <Typography variant="h3">FAQ</Typography>
       <Typography variant="subtitle1">Here to answer all your questions</Typography>
-      <ExpansionPanel className={classes.panel} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+      <Accordion className={classes.panel} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.green}`}>What is Super Fun Retro?</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <Typography>
             Super Fun Retro is an application to gather information and feedback from your team about how your sprint
             went! Sprint Retrospectives are an awesome opportunity to get your team together and talk about what went
@@ -72,13 +72,13 @@ const FAQ = props => {
             information to help create action items for future sprints. Super Fun Retro is easy, simple and of course
             fun to use!
           </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel className={classes.panel} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion className={classes.panel} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.pink}`}>How does Fun Retro work?</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <Typography>
             Using Super Fun Retro is easy! Simply create your retro and send the link that is generated out to your
             team. Your team members then login and can start entering in feedback in three different categories; Keep
@@ -87,33 +87,33 @@ const FAQ = props => {
             creates the Super Fun Retro will be able to acivate/disable the retro as well as edit, delete or generate a
             report.
           </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel className={classes.panel} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion className={classes.panel} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.purple}`}>How much does it cost?</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <Typography>
             Absolutely nothing! It is free to use! No limits on how many people can sign up, no limits on how many
             retrospectives you can create, and no limits on how long you can use it! Other retro softwares out there
             charge you after a certain time period, which isn&apos;t really fun in my opinion.
           </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel className={classes.panel} expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion className={classes.panel} expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.green}`}>
             Does everyone have to have an account that uses Super Fun Retro?
           </Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <Typography>
             Yes anyone who uses Super Fun Retro will need to create an account. Signing up is easy and all you need is
             an email.
           </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
     </Container>
   )
 }

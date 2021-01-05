@@ -120,7 +120,7 @@ const EditRetro: React.FC = (): JSX.Element => {
       <div className={classes.actionButtons}>
         <Link to="/retroList" style={{ textDecoration: 'none' }}>
           <Button size="small" color="secondary" variant="contained">
-            Back to Retro List
+            Back to Manage Retros
           </Button>
         </Link>
       </div>
