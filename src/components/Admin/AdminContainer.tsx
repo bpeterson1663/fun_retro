@@ -131,7 +131,7 @@ const AdminContainer = (): JSX.Element => {
     <Container data-testid="admin_container">
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Grid container justify="center" spacing={0}>
-        <Typography variant="h5">Retro List</Typography>
+        <Typography variant="h5">Manage Retros</Typography>
         <div className={classes.actionButtons}>
           <Link to="/createRetro" style={{ textDecoration: 'none' }}>
             <Button color="secondary" variant="contained">
