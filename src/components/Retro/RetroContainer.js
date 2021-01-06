@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import RetroColumn from './RetroColumn'
 import CreateActionItemDialog from './ActionItem/CreateActionItemDialog'
 import VoteContext from '../../context/vote-context'
-import _ from 'lodash'
 import useStyles from './Retro.styles'
 import { db } from '../../firebase'
 import AuthContext from '../../context/auth-context'
@@ -75,13 +74,13 @@ const RetroContainer = props => {
     })
     let allVotes = []
     Promise.all(promises).then(res => {
-      _.each(res, querySnapshot => {
-        _.each(querySnapshot.docs, doc => {
+      res.forEach(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
           const data = doc.data()
           allVotes = allVotes.concat(data.voteMap)
         })
       })
-      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length
+      const userVoteCount = allVotes.filter(id => id === auth.userId).length
       isNaN(retroData.numberOfVotes - userVoteCount) === true
         ? setRemainingVotes(0)
         : setRemainingVotes(retroData.numberOfVotes - userVoteCount)
@@ -113,7 +112,7 @@ const RetroContainer = props => {
     })
     Promise.all(promises).then(res => {
       const allData = []
-      _.each(res, querySnapshot => {
+      res.forEach(querySnapshot => {
         allData.push(
           querySnapshot.docs.map(doc => {
             const data = doc.data()
@@ -123,16 +122,16 @@ const RetroContainer = props => {
         )
       })
       let doc = new jsPDF()
-      _.each(reportSections, (column, i) => {
+      reportSections.forEach( (column, i) => {
         let columnHeader = column.value === 'actionItems' ? [column.title] : [column.title, 'Votes']
         let rows = []
-        _.each(allData[i], item => {
+        allData[i].forEach(item => {
           column.value === 'actionItems' ? rows.push([item.value]) : rows.push([item.value, item.votes])
         })
         doc.autoTable({
           headStyles: { fillColor: column.backgroundColor, halign: 'center' },
           head: [columnHeader],
-          body: _.orderBy(rows, x => x[1], ['desc']),
+          body: rows.concat().sort((a, b) => b[1] - a[1]),
           columnStyles: {
             0: { cellWidth: 85 },
             1: { cellWidth: 20, halign: 'center' },
