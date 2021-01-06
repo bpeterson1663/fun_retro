@@ -21,7 +21,9 @@ import { deleteActionItem, editActionItemById } from '../../api/index'
 import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'
 import { getComparator, stableSort } from '../Common/Table/helpers'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(LocalizedFormat)
 import Checkbox from '@material-ui/core/Checkbox'
 
 const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, teams, tableUpdated }): JSX.Element => {
@@ -48,7 +50,7 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
     const newItem = {
       ...editItem,
       ...item,
-      timestamp: editItem.timestamp ? editItem.timestamp : moment().valueOf(),
+      timestamp: editItem.timestamp ? editItem.timestamp : dayjs().valueOf(),
     }
     editActionItemById(newItem.id, newItem).then(() => {
       handleEditActionClose()
@@ -141,7 +143,7 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
                 <TableCell>{item.completedDate}</TableCell>
                 <TableCell>{retros.find(retro => retro.id === item.retroId)?.name}</TableCell>
                 <TableCell>{item.owner}</TableCell>
-                <TableCell>{moment(item.timestamp).format('L')}</TableCell>
+                <TableCell>{dayjs(item.timestamp).format('L')}</TableCell>
                 <TableCell>
                   <IconButton className={classes.icon} onClick={() => handleEditItem(item)}>
                     <EditIcon />

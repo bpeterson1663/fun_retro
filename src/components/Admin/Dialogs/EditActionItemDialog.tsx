@@ -15,7 +15,9 @@ import {
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(LocalizedFormat)
 
 interface EditActionT {
   item: ActionItemType
@@ -60,7 +62,7 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
   const handleCompletedChange = () => {
     const newState = !completedValue
     setCompletedValue(newState)
-    setCompletedDateValue(newState ? moment().format('L') : '')
+    setCompletedDateValue(newState ? dayjs().format('L') : '')
   }
 
   return (

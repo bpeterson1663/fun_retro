@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType, RetroType } from '../../../constants/types.constant'
-import moment from 'moment'
+import dayjs from 'dayjs'
 const useStyles = makeStyles(theme => ({
   inputField: {
     margin: theme.spacing(2),
@@ -56,7 +56,7 @@ const CreateActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element =
       team: teamValue.length > 0 ? teamValue : [],
       retroId: retroValue?.id ? retroValue.id : '',
       owner: ownerValue ? ownerValue : '',
-      timestamp: moment().valueOf(),
+      timestamp: dayjs().valueOf(),
     })
     setItemValue('')
   }

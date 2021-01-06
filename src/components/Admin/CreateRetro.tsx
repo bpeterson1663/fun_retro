@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useContext, useState, useEffect } from 'react'
 import Container from '@material-ui/core/Container'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import useStyles from './AdminContainer.styles'
 import { useForm, NestedValue, Controller } from 'react-hook-form'
 import TextField from '@material-ui/core/TextField'
@@ -40,8 +40,8 @@ const CreateRetro: React.FC = (): JSX.Element => {
   const { handleSubmit, register, reset, control } = useForm<RetroForm>({
     defaultValues: {
       columnsKey: columnTitles[0].value,
-      startDate: moment().format('YYYY-MM-DD'),
-      endDate: moment().format('YYYY-MM-DD'),
+      startDate: dayjs().format('YYYY-MM-DD'),
+      endDate: dayjs().format('YYYY-MM-DD'),
       numberOfVotes: 6,
     },
   })
@@ -74,15 +74,15 @@ const CreateRetro: React.FC = (): JSX.Element => {
         ...data,
         team: teamValue ? teamValue : [],
         isActive: true,
-        timestamp: moment().valueOf(),
+        timestamp: dayjs().valueOf(),
         userId: auth.userId,
       })
       .then(() => {
         reset({
           name: '',
           numberOfVotes: 6,
-          startDate: moment().format('YYYY-MM-DD'),
-          endDate: moment().format('YYYY-MM-DD'),
+          startDate: dayjs().format('YYYY-MM-DD'),
+          endDate: dayjs().format('YYYY-MM-DD'),
           columnsKey: columnTitles[0].value,
         })
         setTeamValue([])
@@ -180,7 +180,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
           <Controller
             name="startDate"
             control={control}
-            defaultValue={moment().format('YYYY-MM-DD')}
+            defaultValue={dayjs().format('YYYY-MM-DD')}
             as={
               <TextField
                 inputProps={{ 'data-testid': 'retro_start' }}
@@ -198,7 +198,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
           <Controller
             name="endDate"
             control={control}
-            defaultValue={moment().format('YYYY-MM-DD')}
+            defaultValue={dayjs().format('YYYY-MM-DD')}
             as={
               <TextField
                 inputProps={{ 'data-testid': 'retro_end' }}

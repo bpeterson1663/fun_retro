@@ -9,7 +9,7 @@ import { getTeams, getActionItemsByTeam, getActionItemsByUser, getAllRetros } fr
 import AuthContext from '../../context/auth-context'
 import { ActionItemTable, RetroType, ManageTeamsType } from '../../constants/types.constant'
 import SnackBar from '../Common/SnackBar'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 const ManageActionItems: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
@@ -67,7 +67,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                 id: doc.id,
                 retroName: '',
                 owner: itemData.owner ? itemData.owner : '',
-                timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
+                timestamp: itemData.timestamp ? itemData.timestamp : dayjs().valueOf(),
                 completed: typeof itemData.completed === 'boolean' ? itemData.completed : false,
                 completedDate: itemData.completedDate ? itemData.completedDate : '',
               })
@@ -109,7 +109,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
                   id: doc.id,
                   retroName: '',
                   owner: itemData.owner ? itemData.owner : '',
-                  timestamp: itemData.timestamp ? itemData.timestamp : moment().valueOf(),
+                  timestamp: itemData.timestamp ? itemData.timestamp : dayjs().valueOf(),
                   completed: typeof itemData.completed === 'boolean' ? itemData.completed : false,
                   completedDate: itemData.completedDate ? itemData.completedDate : '',
                 })

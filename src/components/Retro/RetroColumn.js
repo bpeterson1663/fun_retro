@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { db, incrementCounter, decrementCounter } from '../../firebase'
 import AuthContext from '../../context/auth-context'
 import VoteContext from '../../context/vote-context'
-import _ from 'lodash'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -46,7 +45,7 @@ const RetroColumn = props => {
       .collection(columnName)
       .where('retroId', '==', retroId)
       .onSnapshot(querySnapshot => {
-        _.each(querySnapshot.docChanges(), change => {
+        querySnapshot.docChanges().forEach(change => {
           if (change.type === 'removed') {
             getUserVoteStatus()
           }
@@ -81,13 +80,13 @@ const RetroColumn = props => {
     })
     let allVotes = []
     Promise.all(promises).then(res => {
-      _.each(res, querySnapshot => {
-        _.each(querySnapshot.docs, doc => {
+      res.forEach(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
           const data = doc.data()
           allVotes = allVotes.concat(data.voteMap)
         })
       })
-      const userVoteCount = _.filter(allVotes, id => id === auth.userId).length
+      const userVoteCount = allVotes.filter(id => id === auth.userId).length
       vote.setRemainingVotes(votesPerPerson - userVoteCount)
     })
   }
@@ -102,7 +101,7 @@ const RetroColumn = props => {
         userId: auth.userId,
         votes: 0,
         voteMap: [],
-        timestamp: new moment().valueOf(),
+        timestamp: dayjs().valueOf(),
         comments: [],
       })
       .finally(() => setLoading(false))
@@ -159,7 +158,7 @@ const RetroColumn = props => {
   }
 
   const getUsersVoteCount = item => {
-    return _.filter(item.voteMap, id => auth.userId === id).length
+    return item.voteMap.filter(id => auth.userId === id).length
   }
 
   const disableDeleteVotes = item => {
