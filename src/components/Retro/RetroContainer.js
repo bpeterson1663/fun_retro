@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import RetroColumn from './RetroColumn'
 import CreateActionItemDialog from './ActionItem/CreateActionItemDialog'
 import VoteContext from '../../context/vote-context'
-import moment from 'moment'
 import _ from 'lodash'
 import useStyles from './Retro.styles'
 import { db } from '../../firebase'
@@ -20,6 +19,9 @@ import SnackBar from '../Common/SnackBar'
 import jsPDF from 'jspdf'
 import { columnKeys } from '../../constants/columns.constants'
 import 'jspdf-autotable'
+import dayjs from 'dayjs'
+import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(LocalizedFormat)
 
 const RetroContainer = props => {
   const [remainingVotes, setRemainingVotes] = useState(0)
@@ -174,7 +176,7 @@ const RetroContainer = props => {
           teamId: team.id,
           userId: auth.userId,
           owner: item.owner ? item.owner : '',
-          timestamp: moment().valueOf(),
+          timestamp: dayjs().valueOf(),
           completed: false,
           completedDate: '',
         })
@@ -204,7 +206,7 @@ const RetroContainer = props => {
           userId: auth.userId,
           teamId: '',
           owner: item.owner ? item.owner : '',
-          timestamp: moment().valueOf(),
+          timestamp: dayjs().valueOf(),
           completed: false,
           completedDate: '',
         })
@@ -263,7 +265,7 @@ const RetroContainer = props => {
       </Menu>
       <Typography variant="h4">{retroData.name}</Typography>
       <Typography variant="subtitle1">
-        {moment(retroData.startDate).format('L')} through {moment(retroData.endDate).format('L')}
+        {dayjs(retroData.startDate).format('L')} through {dayjs(retroData.endDate).format('L')}
       </Typography>
       <Typography variant="subtitle2">
         {retroStatus ? `Remaining Votes: ${remainingVotes}` : `Retro Has Ended`}

@@ -4,7 +4,7 @@ import { db, incrementCounter, decrementCounter } from '../../firebase'
 import AuthContext from '../../context/auth-context'
 import VoteContext from '../../context/vote-context'
 import _ from 'lodash'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -102,7 +102,7 @@ const RetroColumn = props => {
         userId: auth.userId,
         votes: 0,
         voteMap: [],
-        timestamp: new moment().valueOf(),
+        timestamp: dayjs().valueOf(),
         comments: [],
       })
       .finally(() => setLoading(false))
