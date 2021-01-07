@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import HelpIcon from '@material-ui/icons/Help'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 const Footer = () => {
-  const currentYear = new moment()
+  const currentYear = new dayjs()
   const classes = useStyles()
 
   return (

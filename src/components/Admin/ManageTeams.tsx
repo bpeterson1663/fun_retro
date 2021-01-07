@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useState, useContext, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { db } from '../../firebase'
 import {
   FormControl,
@@ -93,7 +93,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
     setIsLoading(true)
     const newTeam = {
       ...data,
-      timestamp: moment().valueOf(),
+      timestamp: dayjs().valueOf(),
       userId: auth.userId,
     }
     db.collection('teams')

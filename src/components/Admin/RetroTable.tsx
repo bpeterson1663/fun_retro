@@ -3,7 +3,6 @@ import { useState } from 'react'
 
 import useStyles from './AdminContainer.styles'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditIcon from '@material-ui/icons/Edit'
 import IconButton from '@material-ui/core/IconButton'
@@ -23,6 +22,9 @@ import Typography from '@material-ui/core/Typography/Typography'
 import ShowLinkDialog from './Dialogs/ShowLinkDialog'
 import { Link } from 'react-router-dom'
 import Button from '@material-ui/core/Button'
+import dayjs from 'dayjs'
+import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(LocalizedFormat)
 
 interface RetroTableProps {
   data: RetroType[]
@@ -162,8 +164,8 @@ const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JS
                     ))}
                   </ul>
                 </TableCell>
-                <TableCell>{moment(retro.startDate).format('L')}</TableCell>
-                <TableCell>{moment(retro.endDate).format('L')}</TableCell>
+                <TableCell>{dayjs(retro.startDate).format('L')}</TableCell>
+                <TableCell>{dayjs(retro.endDate).format('L')}</TableCell>
                 <TableCell>
                   <Link to={`/editRetro/${retro.id}`}>
                     <IconButton>

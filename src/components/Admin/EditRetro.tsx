@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useEffect, useState, useContext } from 'react'
 import { db } from '../../firebase'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import useStyles from './AdminContainer.styles'
 import Container from '@material-ui/core/Container'
 import { useForm, NestedValue, Controller } from 'react-hook-form'
@@ -200,7 +200,7 @@ const EditRetro: React.FC = (): JSX.Element => {
           <Controller
             name="startDate"
             control={control}
-            defaultValue={moment().format('YYYY-MM-DD')}
+            defaultValue={dayjs().format('YYYY-MM-DD')}
             as={
               <TextField
                 inputProps={{ 'data-testid': 'retro_start' }}
@@ -218,7 +218,7 @@ const EditRetro: React.FC = (): JSX.Element => {
           <Controller
             name="endDate"
             control={control}
-            defaultValue={moment().format('YYYY-MM-DD')}
+            defaultValue={dayjs().format('YYYY-MM-DD')}
             as={
               <TextField
                 inputProps={{ 'data-testid': 'retro_end' }}
