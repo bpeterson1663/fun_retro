@@ -40,13 +40,12 @@ const useStyles = makeStyles(theme => ({
     fontSize: 12,
   },
 }))
-const FAQ = props => {
-  const [expanded, setExpanded] = React.useState(false)
+interface FAQProps {
+  history: {goBack: () => void}
+}
+const FAQ: React.FC<FAQProps> = (props): JSX.Element => {
   const classes = useStyles()
 
-  const handleChange = panel => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false)
-  }
   return (
     <Container>
       <Button
@@ -60,7 +59,7 @@ const FAQ = props => {
       </Button>
       <Typography variant="h3">FAQ</Typography>
       <Typography variant="subtitle1">Here to answer all your questions</Typography>
-      <Accordion className={classes.panel} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+      <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.green}`}>What is Super Fun Retro?</Typography>
         </AccordionSummary>
@@ -74,7 +73,7 @@ const FAQ = props => {
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion className={classes.panel} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+      <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.pink}`}>How does Fun Retro work?</Typography>
         </AccordionSummary>
@@ -89,7 +88,7 @@ const FAQ = props => {
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion className={classes.panel} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+      <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.purple}`}>How much does it cost?</Typography>
         </AccordionSummary>
@@ -101,7 +100,7 @@ const FAQ = props => {
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion className={classes.panel} expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+      <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography className={`${classes.heading} ${classes.green}`}>
             Does everyone have to have an account that uses Super Fun Retro?
@@ -117,9 +116,10 @@ const FAQ = props => {
     </Container>
   )
 }
-
 FAQ.propTypes = {
-  history: PropTypes.object,
+  history: PropTypes.shape({
+    goBack: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default FAQ

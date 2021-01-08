@@ -41,8 +41,8 @@ const useStyles = makeStyles(theme => ({
     padding: 0,
   },
 }))
-const Footer = () => {
-  const currentYear = new dayjs()
+const Footer: React.FC = (): JSX.Element => {
+  const currentYear = dayjs()
   const classes = useStyles()
 
   return (
