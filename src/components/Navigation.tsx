@@ -24,13 +24,13 @@ const useStyles = makeStyles(theme => ({
     textDecoration: 'none',
   },
 }))
-const Navigation = () => {
+const Navigation: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
   const handleLogOut = () => {
     authFirebase
       .signOut()
       .then(function() {
-        auth.login(false)
+        auth.login('')
       })
       .catch(function(error) {
         console.log('error: ', error)
