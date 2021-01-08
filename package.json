@@ -30,7 +30,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json|tsx)\"",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .eslintignore ."
   },
   "eslintConfig": {
     "extends": "react-app"
