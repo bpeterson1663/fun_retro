@@ -122,7 +122,7 @@ const RetroContainer = props => {
         )
       })
       let doc = new jsPDF()
-      reportSections.forEach( (column, i) => {
+      reportSections.forEach((column, i) => {
         let columnHeader = column.value === 'actionItems' ? [column.title] : [column.title, 'Votes']
         let rows = []
         allData[i].forEach(item => {
@@ -242,7 +242,7 @@ const RetroContainer = props => {
           open={messageState.displayMessage}
           message={messageState.message}
           status={messageState.messageStatus}
-          close={handleMessageClose}
+          onClose={handleMessageClose}
         />
       ) : null}
       <Fab

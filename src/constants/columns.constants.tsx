@@ -54,9 +54,9 @@ export const columnTitles = [
 export const getColumnsTitle = (key: string): string => {
   if (!key) return 'Keep Doing, Stop Doing, Start Doing'
   const result = columnTitles.find(columns => columns.value === key)
-  if(result){
+  if (result) {
     return result.title
-  }else{
+  } else {
     return ''
   }
 }

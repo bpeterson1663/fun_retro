@@ -234,7 +234,7 @@ const ManageActionItems: React.FC = (): JSX.Element => {
             open={messageState.displayMessage}
             message={messageState.message}
             status={messageState.messageStatus}
-            close={handleMessageClose}
+            onClose={handleMessageClose}
           />
         ) : null}
         {showActionItemDialog ? (

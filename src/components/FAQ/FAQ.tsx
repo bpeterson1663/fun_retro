@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography/Typography'
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Accordion from '@material-ui/core/Accordion'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Button from '@material-ui/core/Button/Button'
 const useStyles = makeStyles(theme => ({
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 interface FAQProps {
-  history: {goBack: () => void}
+  history: { goBack: () => void }
 }
 const FAQ: React.FC<FAQProps> = (props): JSX.Element => {
   const classes = useStyles()
@@ -118,8 +118,8 @@ const FAQ: React.FC<FAQProps> = (props): JSX.Element => {
 }
 FAQ.propTypes = {
   history: PropTypes.shape({
-    goBack: PropTypes.func.isRequired
-  }).isRequired
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
 }
 
 export default FAQ

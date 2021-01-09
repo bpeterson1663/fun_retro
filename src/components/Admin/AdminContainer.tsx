@@ -151,7 +151,7 @@ const AdminContainer = (): JSX.Element => {
           open={messageState.displayMessage}
           message={messageState.message}
           status={messageState.messageStatus}
-          close={handleMessageClose}
+          onClose={handleMessageClose}
         />
       ) : null}
 

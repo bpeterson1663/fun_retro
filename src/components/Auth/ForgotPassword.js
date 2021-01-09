@@ -81,7 +81,7 @@ const ForgotPassword = () => {
           open={messageState.displayMessage}
           message={messageState.message}
           status={messageState.messageStatus}
-          close={handleMessageClose}
+          onClose={handleMessageClose}
         />
       ) : null}
     </Container>

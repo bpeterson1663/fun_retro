@@ -47,7 +47,12 @@ const ShowLinkDialog: React.FC<ShowLinkProps> = (props): JSX.Element => {
           </Button>
         </CopyToClipboard>
       </DialogActions>
-      <SnackBar open={messageStatus} message={'Copy That!'} status={'success'} close={() => setMessageStatus(false)} />
+      <SnackBar
+        open={messageStatus}
+        message={'Copy That!'}
+        status={'success'}
+        onClose={() => setMessageStatus(false)}
+      />
     </Dialog>
   )
 }
