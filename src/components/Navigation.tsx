@@ -40,16 +40,24 @@ const Navigation: React.FC = (): JSX.Element => {
   const authenticatedNav = (
     <div className={classes.buttonContainer}>
       <Link to="/manageActionItems" style={{ textDecoration: 'none' }}>
-        <Button style={{color: 'white'}} className={classes.button}>Manage Action Items</Button>
+        <Button style={{ color: 'white' }} className={classes.button}>
+          Manage Action Items
+        </Button>
       </Link>
       <Link to="/manageTeams" style={{ textDecoration: 'none' }}>
-        <Button style={{color: 'white'}} className={classes.button}>Manage Teams</Button>
+        <Button style={{ color: 'white' }} className={classes.button}>
+          Manage Teams
+        </Button>
       </Link>
       <Link to="/retroList" style={{ textDecoration: 'none' }}>
-        <Button style={{color: 'white'}} className={classes.button}>Manage Retros</Button>
+        <Button style={{ color: 'white' }} className={classes.button}>
+          Manage Retros
+        </Button>
       </Link>
       <Link data-testid="sign_out" to="/login" style={{ textDecoration: 'none' }} onClick={handleLogOut.bind(this)}>
-        <Button style={{color: 'white'}} className={classes.button}>Log Out</Button>
+        <Button style={{ color: 'white' }} className={classes.button}>
+          Log Out
+        </Button>
       </Link>
     </div>
   )

@@ -239,7 +239,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
         open={response.open}
         message={response.message}
         status={response.status}
-        close={() => setResponse({ open: false, message: '', status: '' })}
+        onClose={() => setResponse({ open: false, message: '', status: '' })}
       />
     </Container>
   )

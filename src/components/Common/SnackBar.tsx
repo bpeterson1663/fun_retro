@@ -32,7 +32,14 @@ const useStyles = makeStyles(theme => ({
     margin: 10,
   },
 }))
-const SnackBar = props => {
+
+interface SnackBarT {
+  open: boolean
+  onClose: () => void
+  message: string
+  status: string
+}
+const SnackBar: React.FC<SnackBarT> = (props): JSX.Element => {
   const classes = useStyles()
   return (
     <Snackbar
@@ -40,20 +47,19 @@ const SnackBar = props => {
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={props.open}
       autoHideDuration={6000}
-      onClose={props.close}
+      onClose={props.onClose}
     >
       <SnackbarContent
         data-testid="snackbar_content"
-        onClose={props.close}
         aria-describedby="client-snackbar"
         message={
           <span id="client-snackbar" className={classes.message}>
             {props.message}
           </span>
         }
-        className={classes[props.status]}
+        className={props.status === 'error' ? classes.error : classes.success}
         action={[
-          <IconButton key="close" aria-label="Close" color="inherit" onClick={props.close}>
+          <IconButton key="close" aria-label="Close" color="inherit" onClick={props.onClose}>
             <CloseIcon />
           </IconButton>,
         ]}
@@ -63,10 +69,10 @@ const SnackBar = props => {
 }
 
 SnackBar.propTypes = {
-  open: PropTypes.bool,
-  close: PropTypes.func,
-  message: PropTypes.string,
-  status: PropTypes.string,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
 }
 
 export default SnackBar
