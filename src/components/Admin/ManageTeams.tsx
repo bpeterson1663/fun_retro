@@ -3,14 +3,10 @@ import { useState, useContext, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import dayjs from 'dayjs'
 import { db } from '../../firebase'
+import DialogComponent from '../Common/DialogComponent'
 import {
   FormControl,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   TextField,
   LinearProgress,
   IconButton,
@@ -283,45 +279,44 @@ const ManageTeams: React.FC = (): JSX.Element => {
       <Grid container justify="center" spacing={0}>
         {allTeams.length > 0 ? <TeamListData /> : null}
       </Grid>
-      <Dialog
-        data-testid="delete-warning_dialog"
-        open={confirmDialogOpen}
-        onClose={handleConfirmClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{'Delete Team?'}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to say goodbye to this team and delete it?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            data-testid="confirm-delete_button"
-            onClick={() => handleTeamDelete(teamIdToDelete)}
-            color="secondary"
-            variant="contained"
-          >
-            Delete It!
-          </Button>
-          <Button
-            data-testid="cancel-delete_button"
-            onClick={handleConfirmClose}
-            color="primary"
-            variant="contained"
-            autoFocus
-          >
-            No, Keep it.
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <EditTeamDialog
-        handleEditSubmit={handleEditSubmit}
-        editTeam={editTeam}
-        editStatus={editStatus}
-        handleEditClose={handleEditClose}
-      />
+      {confirmDialogOpen ? (
+        <DialogComponent
+          open={confirmDialogOpen}
+          onClose={handleConfirmClose}
+          title="Delete Team?"
+          actions={[
+            <Button
+              key={0}
+              data-testid="confirm-delete_button"
+              onClick={() => handleTeamDelete(teamIdToDelete)}
+              color="secondary"
+              variant="contained"
+            >
+              Delete It!
+            </Button>,
+            <Button
+              key={1}
+              data-testid="cancel-delete_button"
+              onClick={handleConfirmClose}
+              color="primary"
+              variant="contained"
+              autoFocus
+            >
+              No, Keep it.
+            </Button>,
+          ]}
+        >
+          Are you sure you want to say goodbye to this team and delete it?
+        </DialogComponent>
+      ) : null}
+      {editTeam ? (
+        <EditTeamDialog
+          handleEditSubmit={handleEditSubmit}
+          editTeam={editTeam}
+          editStatus={editStatus}
+          handleEditClose={handleEditClose}
+        />
+      ) : null}
     </Container>
   )
 }
