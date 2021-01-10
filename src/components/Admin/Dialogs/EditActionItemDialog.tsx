@@ -2,17 +2,8 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import useStyles from '../AdminContainer.styles'
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Typography,
-  TextField,
-} from '@material-ui/core'
+import DialogComponent from '../../Common/DialogComponent'
+import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
 import dayjs from 'dayjs'
@@ -66,55 +57,54 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
   }
 
   return (
-    <Dialog open={editStatus} onClose={handleEditActionClose}>
-      <DialogTitle>
-        <Typography>Edit Action Item</Typography>
-      </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
-        <FormControlLabel
-          className={classes.checkbox}
-          control={<Checkbox checked={completedValue} onChange={handleCompletedChange} name="completed" />}
-          label="Completed"
-        />
-        <TextField
-          className={`${classes.inputField} ${classes.inputFieldText}`}
-          variant="outlined"
-          multiline
-          required
-          rows="3"
-          type="text"
-          label="Start Typing"
-          value={itemValue}
-          onChange={e => setItemValue(e.target.value)}
-        />
-        <TextField
-          className={`${classes.inputField} ${classes.inputFieldText}`}
-          value={ownerValue}
-          type="text"
-          variant="outlined"
-          label="Owner"
-          onChange={e => setOwnerValue(e.target.value)}
-        />
-        <Autocomplete
-          className={`${classes.inputField} ${classes.inputFieldText}`}
-          filterSelectedOptions
-          value={teamValue}
-          options={teams}
-          onChange={(e, option) => setTeamValue(option)}
-          getOptionLabel={(option: ManageTeamsType) => option.teamName}
-          getOptionSelected={(option, value) => option.teamName === value.teamName}
-          renderInput={params => <TextField {...params} label="Team" />}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button color="secondary" variant="contained" onClick={handleEditActionItem}>
+    <DialogComponent
+      open={editStatus}
+      onClose={handleEditActionClose}
+      title="Edit Action Item"
+      actions={[
+        <Button key={0} color="secondary" variant="contained" onClick={handleEditActionItem}>
           Edit Action Item
-        </Button>
-        <Button color="secondary" variant="outlined" onClick={handleEditActionClose}>
+        </Button>,
+        <Button key={1} color="secondary" variant="outlined" onClick={handleEditActionClose}>
           Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </Button>,
+      ]}
+    >
+      <FormControlLabel
+        className={classes.checkbox}
+        control={<Checkbox checked={completedValue} onChange={handleCompletedChange} name="completed" />}
+        label="Completed"
+      />
+      <TextField
+        className={`${classes.inputField} ${classes.inputFieldText}`}
+        variant="outlined"
+        multiline
+        required
+        rows="3"
+        type="text"
+        label="Start Typing"
+        value={itemValue}
+        onChange={e => setItemValue(e.target.value)}
+      />
+      <TextField
+        className={`${classes.inputField} ${classes.inputFieldText}`}
+        value={ownerValue}
+        type="text"
+        variant="outlined"
+        label="Owner"
+        onChange={e => setOwnerValue(e.target.value)}
+      />
+      <Autocomplete
+        className={`${classes.inputField} ${classes.inputFieldText}`}
+        filterSelectedOptions
+        value={teamValue}
+        options={teams}
+        onChange={(e, option) => setTeamValue(option)}
+        getOptionLabel={(option: ManageTeamsType) => option.teamName}
+        getOptionSelected={(option, value) => option.teamName === value.teamName}
+        renderInput={params => <TextField {...params} label="Team" />}
+      />
+    </DialogComponent>
   )
 }
 
