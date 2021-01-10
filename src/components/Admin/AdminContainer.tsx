@@ -11,18 +11,14 @@ import RetroTable from './RetroTable'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
 import { Link } from 'react-router-dom'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogComponent from '../Common/DialogComponent'
 import { ManageTeamsType, RetroType } from '../../constants/types.constant'
 interface RetroMap {
   name: string
   id: string
   data: RetroType[]
 }
-//TODO: Move Dialog into a common component
+
 const AdminContainer = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true)
   const [retroList, setRetroList] = useState<RetroMap[]>([])
@@ -156,29 +152,22 @@ const AdminContainer = (): JSX.Element => {
       ) : null}
 
       {confirmDialogOpen ? (
-        <Dialog
-          data-testid="delete-warning_dialog"
+        <DialogComponent
           open={confirmDialogOpen}
           onClose={handleConfirmClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'Delete Retro?'}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to say goodbye to this retro and delete it?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
+          title="Delete Retro?"
+          actions={[
             <Button
+              key={0}
               data-testid="confirm-delete_button"
               onClick={handleRetroDelete.bind(this, retroToDelete)}
               color="secondary"
               variant="contained"
             >
               Delete It!
-            </Button>
+            </Button>,
             <Button
+              key={1}
               data-testid="cancel-delete_button"
               onClick={handleConfirmClose.bind(this)}
               color="primary"
@@ -186,9 +175,11 @@ const AdminContainer = (): JSX.Element => {
               autoFocus
             >
               No, Keep it.
-            </Button>
-          </DialogActions>
-        </Dialog>
+            </Button>,
+          ]}
+        >
+          Are you sure you want to say goodbye to this retro and delete it?
+        </DialogComponent>
       ) : null}
     </Container>
   )

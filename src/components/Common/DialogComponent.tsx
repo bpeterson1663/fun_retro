@@ -41,6 +41,6 @@ DialogComponent.propTypes = {
   onClose: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   actions: PropTypes.node.isRequired,
-  settings: PropTypes.object
+  settings: PropTypes.object,
 }
 export default DialogComponent

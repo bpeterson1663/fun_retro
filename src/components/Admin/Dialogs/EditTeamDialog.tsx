@@ -1,68 +1,58 @@
 import * as React from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { useForm, Controller } from 'react-hook-form'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-  FormControl,
-  TextField,
-} from '@material-ui/core'
+import DialogComponent from '../../Common/DialogComponent'
+import { Button, FormControl, TextField } from '@material-ui/core'
 import { ManageTeamsType } from '../../../constants/types.constant'
 import useStyles from '../AdminContainer.styles'
 
 type EditTeamT = {
-  editTeam: ManageTeamsType | null
+  editTeam: ManageTeamsType
   handleEditClose: () => void
   editStatus: boolean
   handleEditSubmit: (team: ManageTeamsType) => void
 }
 const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
   const { editTeam, handleEditClose, editStatus, handleEditSubmit } = props
-  const { handleSubmit, control } = useForm<ManageTeamsType>()
+  const [teamName, setTeamName] = useState('')
   const classes = useStyles()
-  const onSubmitHandler = (data: ManageTeamsType) => {
+  useEffect(() => {
+    setTeamName(editTeam?.teamName)
+  }, [editTeam])
+  const onSubmitHandler = () => {
     const newTeam = {
       ...editTeam,
-      ...data,
+      teamName: teamName,
     }
     handleEditClose()
     handleEditSubmit(newTeam)
   }
   return (
-    <Dialog open={editStatus} onClose={handleEditClose}>
-      <DialogTitle>
-        <Typography>Edit Team - {editTeam?.teamName}</Typography>
-      </DialogTitle>
-      <DialogContent>
-        <form onSubmit={handleSubmit(onSubmitHandler)} className={classes.form}>
-          <FormControl>
-            <Controller
-              name="teamName"
-              control={control}
-              defaultValue={editTeam?.teamName}
-              as={
-                <TextField
-                  className={`${classes.inputField} ${classes.inputFieldText}`}
-                  name="teamName"
-                  required
-                  type="text"
-                  label="Team Name"
-                />
-              }
-            />
-          </FormControl>
-
-          <Button type="submit" color="secondary" variant="contained">
-            Submit Edit
-          </Button>
-        </form>
-      </DialogContent>
-      <DialogActions></DialogActions>
-    </Dialog>
+    <DialogComponent
+      open={editStatus}
+      onClose={handleEditClose}
+      title={`Edit Team - ${editTeam?.teamName}`}
+      actions={[
+        <Button key={0} type="submit" color="secondary" variant="contained" onClick={onSubmitHandler}>
+          Edit
+        </Button>,
+        <Button key={1} color="secondary" variant="outlined" onClick={handleEditClose}>
+          Cancel
+        </Button>,
+      ]}
+    >
+      <FormControl>
+        <TextField
+          value={teamName}
+          className={`${classes.inputField} ${classes.inputFieldText}`}
+          name="teamName"
+          required
+          onChange={event => setTeamName(event.target.value)}
+          type="text"
+          label="Team Name"
+        />
+      </FormControl>
+    </DialogComponent>
   )
 }
 EditTeamDialog.propTypes = {
