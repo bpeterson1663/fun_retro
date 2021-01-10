@@ -3,5 +3,7 @@ import FAQ from '../FAQ'
 import { render } from '@testing-library/react'
 
 it('Colomn Renders', () => {
-  render(<FAQ />)
+  render(<FAQ history={{
+    goBack: () => { return }
+  }}/>)
 })
