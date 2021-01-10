@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType, RetroType } from '../../../constants/types.constant'
+import DialogComponent from '../../Common/DialogComponent'
 import dayjs from 'dayjs'
 const useStyles = makeStyles(theme => ({
   inputField: {
@@ -17,13 +13,6 @@ const useStyles = makeStyles(theme => ({
   },
   inputFieldText: {
     width: '38rem',
-  },
-  dialogContent: {
-    width: 500,
-    margin: 'auto',
-    display: 'flex',
-    flexFlow: 'row wrap',
-    justifyContent: 'center',
   },
 }))
 interface DialogPropTypes {
@@ -61,64 +50,63 @@ const CreateActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element =
     setItemValue('')
   }
   return (
-    <Dialog data-testid="actionitem_dialog" open={showActionItemDialog} onClose={handleActionItemDialogClose}>
-      <DialogTitle>
-        <Typography>Create Action Item</Typography>
-      </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
-        <TextField
-          className={`${classes.inputField} ${classes.inputFieldText}`}
-          variant="outlined"
-          multiline
-          required
-          rows="3"
-          type="text"
-          label="Start Typing"
-          value={itemValue}
-          onChange={e => setItemValue(e.target.value)}
-        />
-        <TextField
-          className={`${classes.inputField} ${classes.inputFieldText}`}
-          value={ownerValue}
-          type="text"
-          variant="outlined"
-          label="Owner"
-          onChange={e => setOwnerValue(e.target.value)}
-        />
-        {retros ? (
-          <Autocomplete
-            className={`${classes.inputField} ${classes.inputFieldText}`}
-            filterSelectedOptions
-            value={retroValue}
-            options={retros}
-            onChange={(e, option) => setRetroValue(option)}
-            getOptionLabel={(option: RetroType) => (option?.name ? option.name : '')}
-            getOptionSelected={(option, value) => option.name === value.name}
-            renderInput={params => <TextField {...params} label="Retro" />}
-          />
-        ) : null}
+    <DialogComponent
+      open={showActionItemDialog}
+      onClose={handleActionItemDialogClose}
+      title="Create Action Item"
+      actions={[
+        <Button key={0} color="secondary" variant="contained" onClick={handleCreateActionItem}>
+          Create
+        </Button>,
+        <Button key={1} color="secondary" variant="outlined" onClick={handleActionItemDialogClose}>
+          Cancel
+        </Button>,
+      ]}
+    >
+      <TextField
+        className={`${classes.inputField} ${classes.inputFieldText}`}
+        variant="outlined"
+        multiline
+        required
+        rows="3"
+        type="text"
+        label="Start Typing"
+        value={itemValue}
+        onChange={e => setItemValue(e.target.value)}
+      />
+      <TextField
+        className={`${classes.inputField} ${classes.inputFieldText}`}
+        value={ownerValue}
+        type="text"
+        variant="outlined"
+        label="Owner"
+        onChange={e => setOwnerValue(e.target.value)}
+      />
+      {retros ? (
         <Autocomplete
           className={`${classes.inputField} ${classes.inputFieldText}`}
-          multiple
           filterSelectedOptions
-          value={teamValue}
-          defaultValue={[]}
-          options={team}
-          onChange={(e, option) => setTeamValue(option)}
-          getOptionLabel={(option: ManageTeamsType) => option.teamName}
-          getOptionSelected={(option, value) => option.teamName === value.teamName}
-          renderInput={params => <TextField {...params} label="Team(s)" />}
+          value={retroValue}
+          options={retros}
+          onChange={(e, option) => setRetroValue(option)}
+          getOptionLabel={(option: RetroType) => (option?.name ? option.name : '')}
+          getOptionSelected={(option, value) => option.name === value.name}
+          renderInput={params => <TextField {...params} label="Retro" />}
         />
-      </DialogContent>
-      <DialogActions>
-        <Button color="secondary" variant="contained" onClick={handleCreateActionItem}>
-          Create
-        </Button>
-        <Button color="secondary" variant="outlined" onClick={handleActionItemDialogClose}>
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
+      ) : null}
+      <Autocomplete
+        className={`${classes.inputField} ${classes.inputFieldText}`}
+        multiple
+        filterSelectedOptions
+        value={teamValue}
+        defaultValue={[]}
+        options={team}
+        onChange={(e, option) => setTeamValue(option)}
+        getOptionLabel={(option: ManageTeamsType) => option.teamName}
+        getOptionSelected={(option, value) => option.teamName === value.teamName}
+        renderInput={params => <TextField {...params} label="Team(s)" />}
+      />
+    </DialogComponent>
   )
 }
 

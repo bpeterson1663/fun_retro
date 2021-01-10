@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { RetroType, ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
 import Button from '@material-ui/core/Button'
 import ActionItemList from '../../Admin/ActionItemList'
+import DialogComponent from '../../Common/DialogComponent'
 import { getRetroById, getActionItemsByTeam, getActionItemsByRetro } from '../../../api'
 interface ViewActionItemDialogProps {
   showViewActionDialog: boolean
@@ -88,39 +89,32 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
 
   const handleTableUpdate = () => setCounter(c => c + 1)
   return (
-    <Dialog
-      fullWidth={true}
-      maxWidth="lg"
-      scroll="body"
-      data-testid="actionitem_dialog"
-      open={showViewActionDialog}
-      onClose={handleViewActionDialogClose}
-    >
-      <DialogTitle>
-        <Typography>Action Items</Typography>
-      </DialogTitle>
-      <DialogContent>
-        <Grid container justify="center" spacing={0}>
-          {actionItems.map(item => {
-            return (
-              <ActionItemList
-                teams={team}
-                retros={allRetros}
-                key={item.id}
-                name={item.name}
-                data={item.actions}
-                tableUpdated={handleTableUpdate}
-              />
-            )
-          })}
-        </Grid>
-      </DialogContent>
-      <DialogActions>
+    <DialogComponent
+      actions={
         <Button onClick={handleViewActionDialogClose} color="secondary" variant="contained">
           Close
         </Button>
-      </DialogActions>
-    </Dialog>
+      }
+      title="Action Items"
+      settings={{ fullWidth: true, maxWidth: 'lg', scroll: 'body' }}
+      open={showViewActionDialog}
+      onClose={handleViewActionDialogClose}
+    >
+      <Grid container justify="center" spacing={0}>
+        {actionItems.map(item => {
+          return (
+            <ActionItemList
+              teams={team}
+              retros={allRetros}
+              key={item.id}
+              name={item.name}
+              data={item.actions}
+              tableUpdated={handleTableUpdate}
+            />
+          )
+        })}
+      </Grid>
+    </DialogComponent>
   )
 }
 ViewActionItemDialog.propTypes = {
