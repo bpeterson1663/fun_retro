@@ -26,7 +26,7 @@ const DialogComponent: React.FC<DialogComponentT> = (props): JSX.Element => {
   const { open, onClose, title, children, actions, settings } = props
   const classes = useStyles()
   return (
-    <Dialog open={open} onClose={onClose} {...settings}>
+    <Dialog data-testid="dialog_component" open={open} onClose={onClose} {...settings}>
       <DialogTitle>
         <Typography>{title}</Typography>
       </DialogTitle>
