@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './Auth.styles'
 
-const ForgotPassword = () => {
+const ForgotPassword: React.FC = ():JSX.Element => {
   const [emailAddress, setEmailAddress] = useState('')
   const [messageState, setMessageState] = useState({
     message: '',
@@ -19,7 +19,7 @@ const ForgotPassword = () => {
   const [isLoading, setLoading] = useState(false)
   const classes = useStyles()
 
-  const submitHandler = event => {
+  const submitHandler = (event: React.FormEvent) => {
     event.preventDefault()
     setLoading(true)
     authFirebase
