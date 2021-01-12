@@ -11,8 +11,19 @@ import { Link } from 'react-router-dom'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './Auth.styles'
 //TODO: Refactor Login and SignUp components to be one
-
-const Login = props => {
+interface LoginT{
+  location: {
+    state?: {
+      retroId?: string
+    }
+  },
+  history: string[],
+  match: {
+    params?: {
+      id?: string
+    }
+  }}
+const Login: React.FC<LoginT> = (props): JSX.Element => {
   const [emailValue, setEmailValue] = useState('')
   const [passwordValue, setPasswordValue] = useState('')
   const [messageState, setMessageState] = useState({
@@ -24,35 +35,26 @@ const Login = props => {
   const auth = useContext(AuthContext)
   const classes = useStyles()
 
-  let retroId = null
-  if (props.location && props.location.state) {
+  let retroId = ''
+  if (props?.location?.state?.retroId) {
     retroId = props.location.state.retroId
   }
-  if (props.match.params.id) {
+  if (props?.match?.params?.id) {
     retroId = props.match.params.id
   }
 
-  const onChangeHandler = (event, value) => {
-    switch (value) {
-      case 'email':
-        setEmailValue(event.target.value)
-        break
-      case 'password':
-        setPasswordValue(event.target.value)
-        break
-      default:
-        return
-    }
-  }
-
-  const submitHandler = event => {
+  const submitHandler = (event: React.FormEvent) => {
     setLoading(true)
     event.preventDefault()
     authFirebase
       .signInWithEmailAndPassword(emailValue, passwordValue)
-      .then(() => {
+      .then((res) => {
         setLoading(false)
-        auth.login(true)
+        if(res.user) {
+          auth.login(res.user.uid)
+        }else{
+          auth.login('')
+        }
         retroId ? props.history.push('/retro/' + retroId) : props.history.push('/retroList')
       })
       .catch(error => {
@@ -62,7 +64,7 @@ const Login = props => {
           message: error.message,
           messageStatus: 'error',
         })
-        auth.login(false)
+       auth.login('')
       })
   }
 
@@ -86,14 +88,14 @@ const Login = props => {
           type="email"
           placeholder="Email"
           value={emailValue}
-          onChange={event => onChangeHandler(event, 'email')}
+          onChange={event => setEmailValue(event.target.value)}
         />
         <TextField
           className={classes.inputField}
           type="password"
           placeholder="Password"
           value={passwordValue}
-          onChange={event => onChangeHandler(event, 'password')}
+          onChange={event => setPasswordValue(event.target.value)}
         />
         <Button type="submit" color="secondary" variant="contained" className={classes.submit}>
           Log In
@@ -126,8 +128,8 @@ const Login = props => {
 }
 
 Login.propTypes = {
-  location: PropTypes.object,
-  match: PropTypes.object,
-  history: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  history: PropTypes.array.isRequired,
 }
 export default Login

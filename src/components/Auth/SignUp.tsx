@@ -11,8 +11,19 @@ import Typography from '@material-ui/core/Typography/Typography'
 import { Link } from 'react-router-dom'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './Auth.styles'
-
-const SignUp = props => {
+interface SignUpT{
+  location: {
+    state?: {
+      retroId?: string
+    }
+  },
+  history: string[],
+  match: {
+    params?: {
+      id?: string
+    }
+  }}
+const SignUp: React.FC<SignUpT> = (props): JSX.Element => {
   const { handleSubmit, control, errors, watch } = useForm()
   const [messageState, setMessageState] = useState({
     message: '',
@@ -23,18 +34,22 @@ const SignUp = props => {
   const auth = useContext(AuthContext)
   const classes = useStyles()
 
-  let retroId = null
-  if (props.location && props.location.state) {
+  let retroId = ''
+  if (props?.location?.state?.retroId) {
     retroId = props.location.state.retroId
   }
 
-  const submitHandler = data => {
+  const submitHandler = (data: {email: string, password: string}) => {
     setLoading(true)
     authFirebase
       .createUserWithEmailAndPassword(data.email, data.password)
-      .then(() => {
+      .then(res => {
         setLoading(false)
-        auth.login(true)
+        if(res.user) {
+          auth.login(res.user.uid)
+        }else{
+          auth.login('')
+        }
         retroId ? props.history.push('/retro/' + retroId) : props.history.push('/retroList')
       })
       .catch(function(error) {
@@ -44,7 +59,7 @@ const SignUp = props => {
           message: error.message,
           messageStatus: 'error',
         })
-        auth.login(false)
+        auth.login('')
       })
   }
 
@@ -154,8 +169,9 @@ const SignUp = props => {
 }
 
 SignUp.propTypes = {
-  location: PropTypes.object,
-  history: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  history: PropTypes.array.isRequired,
 }
 
 export default SignUp
