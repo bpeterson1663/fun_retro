@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import DialogComponent from './DialogComponent'
 import Typography from '@material-ui/core/Typography'
-import ls from 'local-storage'
-
-const IEWarning = () => {
-  const [isIE, setIEState] = useState((false || !!document.documentMode) && !ls.get('showIeDialog'))
+import Button from '@material-ui/core/Button'
+declare global {
+  interface Document {
+      documentMode?: unknown;
+  }
+}
+localStorage.setItem
+const IEWarning: React.FC = (): JSX.Element => {
+  const [isIE, setIEState] = useState((false || !!document['documentMode']) && !localStorage.get('showIeDialog'))
   const closeIEDialog = () => {
     setIEState(false)
-    ls.set('showIeDialog')
+    localStorage.setItem('showIeDialog', 'true')
   }
   return (
     <DialogComponent

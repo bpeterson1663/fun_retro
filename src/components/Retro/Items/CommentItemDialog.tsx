@@ -4,26 +4,30 @@ import DialogComponent from '../../Common/DialogComponent'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useStyles from '../Retro.styles'
-
-const CommentItemDialog = props => {
-  const { showCommentDialog } = props
+interface CommentItemDialogT {
+  showCommentDialog: {item: string}
+  handleCommentClose: () => void
+  addComment: (commentValue: string, item: string) => void
+}
+const CommentItemDialog: React.FC<CommentItemDialogT> = (props): JSX.Element => {
+  const { showCommentDialog, handleCommentClose, addComment } = props
   const classes = useStyles()
 
   const [commentValue, setCommentValue] = useState('')
-  const handleCommentClose = () => {
-    props.handleCommentClose()
+  const commentClose = () => {
+    handleCommentClose()
     setCommentValue('')
   }
 
-  const onSubmitHandler = event => {
+  const onSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault()
-    props.addComment(commentValue, showCommentDialog.item)
+    addComment(commentValue, showCommentDialog.item)
     setCommentValue('')
   }
   return (
     <DialogComponent
       open={!!showCommentDialog.item}
-      onClose={handleCommentClose}
+      onClose={commentClose}
       title="Add a constructive comment"
       actions={
         <Button disabled={!commentValue} onClick={onSubmitHandler} color="secondary" variant="contained">
@@ -35,7 +39,6 @@ const CommentItemDialog = props => {
         variant="outlined"
         multiline
         rows="3"
-        maxLength="1000"
         className={`${classes.inputField} ${classes.inputFieldText}`}
         type="text"
         label="Start Typing"
@@ -47,8 +50,10 @@ const CommentItemDialog = props => {
 }
 
 CommentItemDialog.propTypes = {
-  showCommentDialog: PropTypes.object,
-  handleCommentClose: PropTypes.func,
-  addComment: PropTypes.func,
+  showCommentDialog: PropTypes.shape({
+    item: PropTypes.string.isRequired
+  }).isRequired,
+  handleCommentClose: PropTypes.func.isRequired,
+  addComment: PropTypes.func.isRequired,
 }
 export default CommentItemDialog

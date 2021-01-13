@@ -14,6 +14,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     borderRadius: 10,
   },
+  inputFieldText: {
+    width: '38rem',
+  },
   button: {
     display: 'inherit',
     margin: 'auto',
