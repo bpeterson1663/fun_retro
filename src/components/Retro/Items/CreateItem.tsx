@@ -4,12 +4,18 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useStyles from '../Retro.styles'
 
-const CreateItem = props => {
+interface CreateItemT {
+  itemSubmit: (itemValue: string) => void
+  columnName: string
+  isActive: boolean
+}
+
+const CreateItem: React.FC<CreateItemT> = (props): JSX.Element => {
   const [itemValue, setItemValue] = useState('')
 
   const classes = useStyles()
 
-  const handleSubmit = event => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     props.itemSubmit(itemValue)
     setItemValue('')
@@ -45,9 +51,9 @@ const CreateItem = props => {
 }
 
 CreateItem.propTypes = {
-  itemSubmit: PropTypes.func,
-  isActive: PropTypes.bool,
-  columnName: PropTypes.string,
+  itemSubmit: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  columnName: PropTypes.string.isRequired,
 }
 
 export default CreateItem

@@ -5,7 +5,16 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useStyles from '../Retro.styles'
 
-const EditCommentDialog = props => {
+interface EditCommentT{
+  editComment: {
+    originalComment: string,
+    item: string,
+    i: string
+  },
+  handleCommentClose: () => void
+  editCommentHandler: (commentValue: string, originalComment: string, item: string, i: string) => void
+}
+const EditCommentDialog: React.FC<EditCommentT> = (props): JSX.Element => {
   const { originalComment, item, i } = props.editComment
   const classes = useStyles()
 
@@ -20,7 +29,7 @@ const EditCommentDialog = props => {
     setCommentValue('')
   }
 
-  const onSubmitHandler = event => {
+  const onSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault()
     props.editCommentHandler(commentValue, originalComment, item, i)
     setCommentValue('')
@@ -40,7 +49,6 @@ const EditCommentDialog = props => {
         variant="outlined"
         multiline
         rows="3"
-        maxLength="1000"
         className={`${classes.inputField} ${classes.inputFieldText}`}
         type="text"
         label="Keep Typing"
@@ -52,8 +60,12 @@ const EditCommentDialog = props => {
 }
 
 EditCommentDialog.propTypes = {
-  editComment: PropTypes.object,
-  handleCommentClose: PropTypes.func,
-  editCommentHandler: PropTypes.func,
+  editComment: PropTypes.shape({
+    originalComment: PropTypes.string.isRequired,
+    item: PropTypes.string.isRequired,
+    i: PropTypes.string.isRequired
+  }).isRequired,
+  handleCommentClose: PropTypes.func.isRequired,
+  editCommentHandler: PropTypes.func.isRequired,
 }
 export default EditCommentDialog
