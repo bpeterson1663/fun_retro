@@ -39,6 +39,7 @@ const CommentItemDialog: React.FC<CommentItemDialogT> = (props): JSX.Element => 
         variant="outlined"
         multiline
         rows="3"
+        data-testid="add-comment"
         className={`${classes.inputField} ${classes.inputFieldText}`}
         type="text"
         label="Start Typing"
