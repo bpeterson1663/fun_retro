@@ -3,5 +3,5 @@ import CommentItemDialog from '../CommentItemDialog'
 import { render } from '@testing-library/react'
 
 it('CommentItemDialog Renders', () => {
-  render(<CommentItemDialog addComment={jest.fn()} handleCommentClose={jest.fn()} showCommentDialog={{ item: '' }} />)
+  render(<CommentItemDialog addComment={jest.fn()} handleCommentClose={jest.fn()} showCommentDialog={{ item: 'This is a test' }} />)
 })

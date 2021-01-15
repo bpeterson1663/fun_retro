@@ -48,6 +48,7 @@ const EditCommentDialog: React.FC<EditCommentT> = (props): JSX.Element => {
       <TextField
         variant="outlined"
         multiline
+        data-testid="edit-comment"
         rows="3"
         className={`${classes.inputField} ${classes.inputFieldText}`}
         type="text"
