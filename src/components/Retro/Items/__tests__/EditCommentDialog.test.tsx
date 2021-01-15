@@ -1,7 +1,6 @@
 import React from 'react'
 import EditCommentDialog from '../EditCommentDialog'
 import { render } from '@testing-library/react'
-import userEvent from "@testing-library/user-event";
 
 it('EditCommentDialog Renders', () => {
   const { getByTestId } = render(
