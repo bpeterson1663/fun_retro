@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './Auth.styles'
 
-const ForgotPassword: React.FC = ():JSX.Element => {
+const ForgotPassword: React.FC = (): JSX.Element => {
   const [emailAddress, setEmailAddress] = useState('')
   const [messageState, setMessageState] = useState({
     message: '',

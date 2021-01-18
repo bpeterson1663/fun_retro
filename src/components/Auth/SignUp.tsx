@@ -11,18 +11,19 @@ import Typography from '@material-ui/core/Typography/Typography'
 import { Link } from 'react-router-dom'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './Auth.styles'
-interface SignUpT{
+interface SignUpT {
   location: {
     state?: {
       retroId?: string
     }
-  },
-  history: string[],
+  }
+  history: string[]
   match: {
     params?: {
       id?: string
     }
-  }}
+  }
+}
 const SignUp: React.FC<SignUpT> = (props): JSX.Element => {
   const { handleSubmit, control, errors, watch } = useForm()
   const [messageState, setMessageState] = useState({
@@ -39,15 +40,15 @@ const SignUp: React.FC<SignUpT> = (props): JSX.Element => {
     retroId = props.location.state.retroId
   }
 
-  const submitHandler = (data: {email: string, password: string}) => {
+  const submitHandler = (data: { email: string; password: string }) => {
     setLoading(true)
     authFirebase
       .createUserWithEmailAndPassword(data.email, data.password)
       .then(res => {
         setLoading(false)
-        if(res.user) {
+        if (res.user) {
           auth.login(res.user.uid)
-        }else{
+        } else {
           auth.login('')
         }
         retroId ? props.history.push('/retro/' + retroId) : props.history.push('/retroList')

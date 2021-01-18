@@ -11,18 +11,19 @@ import { Link } from 'react-router-dom'
 import SnackBar from '../Common/SnackBar'
 import useStyles from './Auth.styles'
 //TODO: Refactor Login and SignUp components to be one
-interface LoginT{
+interface LoginT {
   location: {
     state?: {
       retroId?: string
     }
-  },
-  history: string[],
+  }
+  history: string[]
   match: {
     params?: {
       id?: string
     }
-  }}
+  }
+}
 const Login: React.FC<LoginT> = (props): JSX.Element => {
   const [emailValue, setEmailValue] = useState('')
   const [passwordValue, setPasswordValue] = useState('')
@@ -48,11 +49,11 @@ const Login: React.FC<LoginT> = (props): JSX.Element => {
     event.preventDefault()
     authFirebase
       .signInWithEmailAndPassword(emailValue, passwordValue)
-      .then((res) => {
+      .then(res => {
         setLoading(false)
-        if(res.user) {
+        if (res.user) {
           auth.login(res.user.uid)
-        }else{
+        } else {
           auth.login('')
         }
         retroId ? props.history.push('/retro/' + retroId) : props.history.push('/retroList')
@@ -64,7 +65,7 @@ const Login: React.FC<LoginT> = (props): JSX.Element => {
           message: error.message,
           messageStatus: 'error',
         })
-       auth.login('')
+        auth.login('')
       })
   }
 

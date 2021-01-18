@@ -1,7 +1,7 @@
 import React from 'react'
 import CreateItem from '../CreateItem'
 import { render } from '@testing-library/react'
-import userEvent from "@testing-library/user-event";
+import userEvent from '@testing-library/user-event'
 
 it('CreateItem Renders', () => {
   const columnType = 'keepDoing'
