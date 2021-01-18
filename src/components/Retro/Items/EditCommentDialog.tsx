@@ -4,15 +4,16 @@ import DialogComponent from '../../Common/DialogComponent'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useStyles from '../Retro.styles'
+import { ItemT } from '../../../constants/types.constant'
 
-interface EditCommentT{
+interface EditCommentT {
   editComment: {
-    originalComment: string,
-    item: string,
-    i: string
-  },
+    originalComment: string
+    item: ItemT
+    i: number
+  }
   handleCommentClose: () => void
-  editCommentHandler: (commentValue: string, originalComment: string, item: string, i: string) => void
+  editCommentHandler: (commentValue: string, originalComment: string, item: ItemT, i: number) => void
 }
 const EditCommentDialog: React.FC<EditCommentT> = (props): JSX.Element => {
   const { originalComment, item, i } = props.editComment
@@ -63,8 +64,17 @@ const EditCommentDialog: React.FC<EditCommentT> = (props): JSX.Element => {
 EditCommentDialog.propTypes = {
   editComment: PropTypes.shape({
     originalComment: PropTypes.string.isRequired,
-    item: PropTypes.string.isRequired,
-    i: PropTypes.string.isRequired
+    item: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+      retroId: PropTypes.string.isRequired,
+      userId: PropTypes.string.isRequired,
+      votes: PropTypes.number.isRequired,
+      voteMap: PropTypes.array.isRequired,
+      timestamp: PropTypes.number.isRequired,
+      comments: PropTypes.array.isRequired,
+    }).isRequired,
+    i: PropTypes.number.isRequired,
   }).isRequired,
   handleCommentClose: PropTypes.func.isRequired,
   editCommentHandler: PropTypes.func.isRequired,

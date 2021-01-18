@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 declare global {
   interface Document {
-      documentMode?: unknown;
+    documentMode?: unknown
   }
 }
 localStorage.setItem

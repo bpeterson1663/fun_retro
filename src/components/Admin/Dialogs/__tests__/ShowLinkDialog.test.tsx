@@ -18,7 +18,9 @@ test('show link dialog should render', () => {
         isActive: true,
         timestamp: 1610316195,
       }}
-      handleShowLinkClose={() => {return}}
+      handleShowLinkClose={() => {
+        return
+      }}
       showLinkStatus={true}
     />,
   )

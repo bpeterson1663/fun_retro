@@ -4,10 +4,12 @@ import DialogComponent from '../../Common/DialogComponent'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useStyles from '../Retro.styles'
+import { ItemT } from '../../../constants/types.constant'
+
 interface CommentItemDialogT {
-  showCommentDialog: {item: string}
+  showCommentDialog: { item: ItemT }
   handleCommentClose: () => void
-  addComment: (commentValue: string, item: string) => void
+  addComment: (commentValue: string, item: ItemT) => void
 }
 const CommentItemDialog: React.FC<CommentItemDialogT> = (props): JSX.Element => {
   const { showCommentDialog, handleCommentClose, addComment } = props
@@ -52,7 +54,16 @@ const CommentItemDialog: React.FC<CommentItemDialogT> = (props): JSX.Element => 
 
 CommentItemDialog.propTypes = {
   showCommentDialog: PropTypes.shape({
-    item: PropTypes.string.isRequired
+    item: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+      retroId: PropTypes.string.isRequired,
+      userId: PropTypes.string.isRequired,
+      votes: PropTypes.number.isRequired,
+      voteMap: PropTypes.array.isRequired,
+      timestamp: PropTypes.number.isRequired,
+      comments: PropTypes.array.isRequired,
+    }).isRequired,
   }).isRequired,
   handleCommentClose: PropTypes.func.isRequired,
   addComment: PropTypes.func.isRequired,
