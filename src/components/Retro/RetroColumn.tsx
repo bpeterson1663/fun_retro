@@ -109,7 +109,7 @@ const RetroColumn: React.FC<RetroColumnT> = (props): JSX.Element => {
     return () => unsubscribe()
   }
 
-  useEffect(init, [auth.userId, columnMaps, vote, votesPerPerson, columnName, retroId])
+  useEffect(init, [auth.userId, columnMaps, columnName, retroId])
 
   const handleItemSubmit = (value: string) => {
     setLoading(true)
@@ -328,7 +328,6 @@ const RetroColumn: React.FC<RetroColumnT> = (props): JSX.Element => {
                     className={classes.remove}
                     disabled={disableDeleteVotes(item) || !isActive}
                     onClick={handleItemVote.bind(this, 'removeVote', item)}
-                    variant="outlined"
                     size="small"
                   >
                     Remove Vote
