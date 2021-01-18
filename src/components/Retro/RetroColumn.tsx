@@ -108,7 +108,7 @@ const RetroColumn: React.FC<RetroColumnT> = (props): JSX.Element => {
       })
     return () => unsubscribe()
   }
-
+  // eslint-disable-next-line
   useEffect(init, [auth.userId, columnMaps, columnName, retroId])
 
   const handleItemSubmit = (value: string) => {
