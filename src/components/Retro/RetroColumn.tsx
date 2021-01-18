@@ -26,21 +26,57 @@ import CommentItemDialog from './Items/CommentItemDialog'
 import EditCommentDialog from './Items/EditCommentDialog'
 import useStyles from './Retro.styles'
 import { columnKeys } from '../../constants/columns.constants'
+import { CommentT, ItemT } from '../../constants/types.constant'
 
-const RetroColumn = props => {
-  const { columnName, retroId, votesPerPerson, columnsKey } = props
-  const [itemList, setItemList] = useState([])
+interface RetroColumnT {
+  columnName: string
+  retroId: string
+  votesPerPerson: number
+  columnsKey?: keyof typeof columnKeys
+  isActive: boolean
+  title: string
+}
+
+interface EditCommentT {
+  i: number
+  item: ItemT
+  originalComment: string
+}
+
+const RetroColumn: React.FC<RetroColumnT> = (props): JSX.Element => {
+  const { columnName, retroId, votesPerPerson, columnsKey, isActive, title } = props
+  const [itemList, setItemList] = useState<ItemT[]>([])
   const [isLoading, setLoading] = useState(true)
   const [editMode, setEditMode] = useState(false)
-  const [itemEdit, setItemEdit] = useState({})
-  const [showCommentDialog, setShowCommentDialog] = useState({})
-  const [editCommentValue, setEditCommentValue] = useState({})
+  const [itemEdit, setItemEdit] = useState<ItemT>({} as ItemT)
+  const [showCommentDialog, setShowCommentDialog] = useState<{ item: ItemT }>({} as { item: ItemT })
+  const [editCommentValue, setEditCommentValue] = useState<EditCommentT>({} as EditCommentT)
   const auth = useContext(AuthContext)
   const vote = useContext(VoteContext)
   const classes = useStyles()
   const columnMaps = columnsKey ? columnKeys[columnsKey] : columnKeys['keepDoing']
 
   const init = () => {
+    const getUserVoteStatus = () => {
+      //Get Current Users votes for all columns
+      const promises = columnMaps.map(column => {
+        return db
+          .collection(column.value)
+          .where('retroId', '==', retroId)
+          .get()
+      })
+      let allVotes: string[] = []
+      Promise.all(promises).then(res => {
+        res.forEach(querySnapshot => {
+          querySnapshot.docs.forEach(doc => {
+            const data = doc.data()
+            allVotes = allVotes.concat(data.voteMap)
+          })
+        })
+        const userVoteCount = allVotes.filter(id => id === auth.userId).length
+        vote.setRemainingVotes(votesPerPerson - userVoteCount)
+      })
+    }
     const unsubscribe = db
       .collection(columnName)
       .where('retroId', '==', retroId)
@@ -50,49 +86,32 @@ const RetroColumn = props => {
             getUserVoteStatus()
           }
         })
-        const columnData = querySnapshot.docs
-          .map(doc => {
-            const data = doc.data()
-            data.id = doc.id
-            if (!data.voteMap) {
-              data.voteMap = []
-            }
-            if (!data.comments) {
-              data.comments = []
-            }
-            return data
-          })
-          .sort((a, b) => {
-            return a.timestamp - b.timestamp
-          })
-        setItemList(columnData)
+        const itemList: ItemT[] = []
+        querySnapshot.docs.forEach(doc => {
+          const data = doc.data()
+          data.id = doc.id
+          if (!data.voteMap) {
+            data.voteMap = []
+          }
+          if (!data.comments) {
+            data.comments = []
+          }
+          const item = { ...data } as ItemT
+          itemList.push(item)
+        })
+
+        itemList.sort((a, b) => {
+          return a.timestamp - b.timestamp
+        })
+        setItemList(itemList)
         setLoading(false)
       })
     return () => unsubscribe()
   }
-  const getUserVoteStatus = () => {
-    //Get Current Users votes for all columns
-    const promises = columnMaps.map(column => {
-      return db
-        .collection(column.value)
-        .where('retroId', '==', retroId)
-        .get()
-    })
-    let allVotes = []
-    Promise.all(promises).then(res => {
-      res.forEach(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
-          const data = doc.data()
-          allVotes = allVotes.concat(data.voteMap)
-        })
-      })
-      const userVoteCount = allVotes.filter(id => id === auth.userId).length
-      vote.setRemainingVotes(votesPerPerson - userVoteCount)
-    })
-  }
-  useEffect(init, [votesPerPerson])
 
-  const handleItemSubmit = value => {
+  useEffect(init, [auth.userId, columnMaps, vote, votesPerPerson, columnName, retroId])
+
+  const handleItemSubmit = (value: string) => {
     setLoading(true)
     db.collection(columnName)
       .add({
@@ -107,7 +126,7 @@ const RetroColumn = props => {
       .finally(() => setLoading(false))
   }
 
-  const handleItemVote = (operation, item) => {
+  const handleItemVote = (operation: string, item: ItemT) => {
     const itemRef = db.collection(columnName).doc(item.id)
     if (operation === 'addVote') {
       if (item.voteMap) {
@@ -128,7 +147,7 @@ const RetroColumn = props => {
     }
   }
 
-  const handleItemDelete = id => {
+  const handleItemDelete = (id: string) => {
     setLoading(true)
     db.collection(columnName)
       .doc(id)
@@ -136,14 +155,14 @@ const RetroColumn = props => {
       .finally(() => setLoading(false))
   }
 
-  const handleEditItem = item => {
+  const handleEditItem = (item: ItemT) => {
     setEditMode(true)
     setItemEdit(item)
   }
 
   const resetEditMode = () => {
     setEditMode(false)
-    setItemEdit({})
+    setItemEdit({} as ItemT)
   }
 
   const handleUpdateItem = () => {
@@ -157,24 +176,24 @@ const RetroColumn = props => {
       .finally(() => setLoading(false))
   }
 
-  const getUsersVoteCount = item => {
+  const getUsersVoteCount = (item: ItemT) => {
     return item.voteMap.filter(id => auth.userId === id).length
   }
 
-  const disableDeleteVotes = item => {
+  const disableDeleteVotes = (item: ItemT) => {
     return vote.votes === votesPerPerson || getUsersVoteCount(item) === 0
   }
 
-  const showRemoveVote = item => {
+  const showRemoveVote = (item: ItemT) => {
     return getUsersVoteCount(item) > 0
   }
 
   const handleCommentClose = () => {
-    setShowCommentDialog({})
-    setEditCommentValue({})
+    setShowCommentDialog({} as { item: ItemT })
+    setEditCommentValue({} as EditCommentT)
   }
 
-  const handleAddComment = (val, item) => {
+  const handleAddComment = (val: string, item: ItemT) => {
     setLoading(true)
     item.comments.push({ value: val, userId: auth.userId })
     db.collection(columnName)
@@ -187,7 +206,7 @@ const RetroColumn = props => {
       .finally(() => setLoading(false))
   }
 
-  const handleCommentDelete = (comment, item) => {
+  const handleCommentDelete = (comment: CommentT, item: ItemT) => {
     setLoading(true)
     const newComments = item.comments.filter(function(obj) {
       return obj !== comment
@@ -201,7 +220,7 @@ const RetroColumn = props => {
       .finally(() => setLoading(false))
   }
 
-  const handleEditComment = (comment, originalComment, item, i) => {
+  const handleEditComment = (comment: string, originalComment: string, item: ItemT, i: number) => {
     setLoading(true)
     const newComments = item.comments.map((obj, index) => {
       if (obj.value === originalComment && index === i) {
@@ -223,9 +242,9 @@ const RetroColumn = props => {
     <Container style={{ padding: '8px' }} data-testid={`column-${columnName}`}>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeHolder}></div>}
       <Typography variant="h6" className={classes.header}>
-        {props.title}
+        {title}
       </Typography>
-      <CreateItem columnName={columnName} isActive={props.isActive} itemSubmit={handleItemSubmit} />
+      <CreateItem columnName={columnName} isActive={isActive} itemSubmit={handleItemSubmit} />
       {itemList.map((item, i) => {
         return (
           <Card data-testid={`column-${columnName}-item${i}`} key={i} className={classes.card}>
@@ -244,7 +263,6 @@ const RetroColumn = props => {
                   variant="outlined"
                   multiline
                   rows="3"
-                  maxLength="1000"
                   className={classes.editTextBox}
                   value={itemEdit.value}
                   onChange={e => setItemEdit({ ...itemEdit, value: e.target.value })}
@@ -267,13 +285,13 @@ const RetroColumn = props => {
                           <div>
                             <IconButton
                               data-testid={`column-${columnName}-deleteComment${i}`}
-                              disabled={!props.isActive}
+                              disabled={!isActive}
                               onClick={() => handleCommentDelete(comment, item)}
                             >
                               <DeleteIcon />
                             </IconButton>
                             <IconButton
-                              disabled={!props.isActive}
+                              disabled={!isActive}
                               data-testid={`column-${columnName}-editComment${i}`}
                               onClick={() =>
                                 setEditCommentValue({
@@ -298,7 +316,7 @@ const RetroColumn = props => {
                   {getUsersVoteCount(item)}
                 </Avatar>
                 <IconButton
-                  disabled={vote.votes === 0 || !props.isActive}
+                  disabled={vote.votes === 0 || !isActive}
                   onClick={handleItemVote.bind(this, 'addVote', item)}
                   data-testid={`column-${columnName}-likeItem${i}`}
                 >
@@ -308,9 +326,9 @@ const RetroColumn = props => {
                   <Button
                     data-testid={`column-${columnName}-removeVote${i}`}
                     className={classes.remove}
-                    disabled={disableDeleteVotes(item) || !props.isActive}
+                    disabled={disableDeleteVotes(item) || !isActive}
                     onClick={handleItemVote.bind(this, 'removeVote', item)}
-                    vairant="outlined"
+                    variant="outlined"
                     size="small"
                   >
                     Remove Vote
@@ -318,7 +336,7 @@ const RetroColumn = props => {
                 ) : null}
                 <IconButton
                   data-testid={`column-${columnName}-comment${i}`}
-                  disabled={!props.isActive}
+                  disabled={!isActive}
                   onClick={() => setShowCommentDialog({ item: item })}
                 >
                   <CommentIcon />
@@ -329,14 +347,14 @@ const RetroColumn = props => {
                   <div className={classes.editContainer}>
                     <IconButton
                       data-testid={`column-${columnName}-saveEdit${i}`}
-                      disabled={!props.isActive}
+                      disabled={!isActive}
                       onClick={handleUpdateItem.bind(this)}
                     >
                       <SaveIcon />
                     </IconButton>
                     <IconButton
                       data-testid={`column-${columnName}-cancelEdit${i}`}
-                      disabled={!props.isActive}
+                      disabled={!isActive}
                       onClick={resetEditMode.bind(this, item)}
                     >
                       <CancelIcon />
@@ -346,14 +364,14 @@ const RetroColumn = props => {
                   <div className={classes.editContainer}>
                     <IconButton
                       data-testid={`column-${columnName}-edit${i}`}
-                      disabled={!props.isActive}
+                      disabled={!isActive}
                       onClick={handleEditItem.bind(this, item)}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       data-testid={`column-${columnName}-delete${i}`}
-                      disabled={!props.isActive}
+                      disabled={!isActive}
                       onClick={handleItemDelete.bind(this, item.id)}
                     >
                       <DeleteIcon />
@@ -380,13 +398,12 @@ const RetroColumn = props => {
 }
 
 RetroColumn.propTypes = {
-  columnName: PropTypes.string,
-  isActive: PropTypes.bool,
-  title: PropTypes.string,
-  votesPerPerson: PropTypes.number,
-  retroId: PropTypes.string,
-  remaingVotes: PropTypes.number,
-  columnsKey: PropTypes.string,
+  columnName: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
+  votesPerPerson: PropTypes.number.isRequired,
+  retroId: PropTypes.string.isRequired,
+  columnsKey: PropTypes.any,
 }
 
 export default RetroColumn

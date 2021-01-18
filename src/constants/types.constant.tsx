@@ -49,3 +49,19 @@ export interface ActionItemTable extends ActionItemTableProps {
 }
 
 export type Order = 'asc' | 'desc'
+
+export interface CommentT {
+  value: string
+  userId: string
+}
+
+export interface ItemT {
+  id: string
+  value: string
+  retroId: string
+  userId: string
+  votes: number
+  voteMap: string[]
+  timestamp: number
+  comments: CommentT[]
+}
