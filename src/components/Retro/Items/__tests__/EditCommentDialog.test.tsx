@@ -7,7 +7,7 @@ it('EditCommentDialog Renders', () => {
     <EditCommentDialog
       editCommentHandler={jest.fn()}
       handleCommentClose={jest.fn()}
-      editComment={{ i: 'idstring', item: 'item to be edited', originalComment: 'original comment' }}
+      editComment={{ i: 123, item: {retroId: 'retroId', value: 'value', id: 'id', userId: 'userId', votes: 6, timestamp: 13455, voteMap: [], comments: []}, originalComment: 'original comment' }}
     />,
   )
 
