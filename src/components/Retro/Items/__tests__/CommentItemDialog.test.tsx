@@ -8,7 +8,18 @@ it('CommentItemDialog Renders', () => {
     <CommentItemDialog
       addComment={jest.fn()}
       handleCommentClose={jest.fn()}
-      showCommentDialog={{ item: {retroId: 'retroId', value: 'value', id: 'id', userId: 'userId', votes: 6, timestamp: 13455, voteMap: [], comments: []} }}
+      showCommentDialog={{
+        item: {
+          retroId: 'retroId',
+          value: 'value',
+          id: 'id',
+          userId: 'userId',
+          votes: 6,
+          timestamp: 13455,
+          voteMap: [],
+          comments: [],
+        },
+      }}
     />,
   )
 

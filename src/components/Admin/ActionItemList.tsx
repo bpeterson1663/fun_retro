@@ -29,7 +29,6 @@ import Checkbox from '@material-ui/core/Checkbox'
 const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, teams, tableUpdated }): JSX.Element => {
   const classes = useStyles()
   const [actionData, setActionData] = useState<ActionItemType[]>([])
-  const [isEmptyTable, setIsEmptyTable] = useState(false)
   const [editItem, setEditItem] = useState<ActionItemType>({} as ActionItemType)
   const [editStatus, setEditStatus] = useState(false)
   const [orderBy, setOrderBy] = useState<keyof ActionItemType>('value')
@@ -42,7 +41,7 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
       d.retroName = retro ? retro : ''
       return d
     })
-    newData.length > 0 ? setActionData(newData) : setIsEmptyTable(true)
+    setActionData(newData)
   }, [data, retros])
   const handleDelete = (id: string) => deleteActionItem(id).then(tableUpdated)
 
@@ -116,9 +115,7 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
       </TableRow>
     )
   }
-  return isEmptyTable ? (
-    <></>
-  ) : (
+  return (
     <TableContainer component={Paper} className={classes.actionTable}>
       <Typography variant="h6" align="center">
         {name}

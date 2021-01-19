@@ -37,12 +37,12 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
             actions.push(item)
           }
         })
-        setActionItems([{ id: retroId, name: retroData.name, actions: actions }])
-        createTeamMap()
+        const actionItemsWithOutTeam = [{ id: retroId, name: retroData.name, actions: actions }]
+        createTeamMap(actionItemsWithOutTeam)
       })
       .catch(err => console.error(err))
 
-    const createTeamMap = () => {
+    const createTeamMap = (actionItemsWithOutTeam: itemMapType[]) => {
       const teamMap: itemMapType[] = []
       if (team.length <= 0) return
       const promises = team.map(t => {
@@ -80,7 +80,9 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
               retros.push(data)
             })
             setAllRetros([...retros, retroData])
-            setActionItems(prevState => [...prevState, ...teamMap])
+            const map: itemMapType[] = [...actionItemsWithOutTeam, ...teamMap]
+            const filterMap = map.filter(item => item.actions.length > 0)
+            setActionItems(filterMap)
           })
         })
       })
@@ -88,6 +90,7 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
   }, [retroId, showViewActionDialog, team, counter, retroData])
 
   const handleTableUpdate = () => setCounter(c => c + 1)
+
   return (
     <DialogComponent
       actions={
