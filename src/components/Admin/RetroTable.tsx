@@ -17,7 +17,7 @@ import TablePagination from '@material-ui/core/TablePagination'
 import Paper from '@material-ui/core/Paper'
 import { getComparator, stableSort } from '../Common/Table/helpers'
 import { getColumnsTitle } from '../../constants/columns.constants'
-import { Order, RetroType } from '../../constants/types.constant'
+import { Order, RetroType, RetroTypeString } from '../../constants/types.constant'
 import Typography from '@material-ui/core/Typography/Typography'
 import ShowLinkDialog from './Dialogs/ShowLinkDialog'
 import { Link } from 'react-router-dom'
@@ -27,7 +27,7 @@ import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(LocalizedFormat)
 
 interface RetroTableProps {
-  data: RetroType[]
+  data: RetroTypeString[]
   name: string
   handleDelete: (retro: RetroType) => void
 }
@@ -151,7 +151,7 @@ const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JS
                     size="small"
                     variant="contained"
                     color="secondary"
-                    onClick={() => handleShowLink(retro)}
+                    onClick={() => handleShowLink(retro as RetroType)}
                   >
                     Show Link
                   </Button>
@@ -174,7 +174,7 @@ const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JS
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <IconButton className={classes.icon} onClick={handleDelete.bind(this, retro)}>
+                  <IconButton className={classes.icon} onClick={handleDelete.bind(this, retro as RetroType)}>
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>

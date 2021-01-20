@@ -1,4 +1,17 @@
+import { columnKeys } from './columns.constants'
 export interface RetroType {
+  id: string
+  name: string
+  startDate: string
+  endDate: string
+  userId: string
+  team: ManageTeamsType[]
+  numberOfVotes: number
+  columnsKey?: keyof typeof columnKeys
+  isActive: boolean
+  timestamp: number
+}
+export interface RetroTypeString{
   id: string
   name: string
   startDate: string
@@ -10,7 +23,6 @@ export interface RetroType {
   isActive: boolean
   timestamp: number
 }
-
 export interface PreviousRetroType {
   id: string
   name: string

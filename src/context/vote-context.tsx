@@ -2,8 +2,9 @@ import React from 'react'
 
 const voteContext = React.createContext({
   votes: 6,
-  setRemainingVotes: (votes: number) => {
-    return votes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setRemainingVotes: (_votes: number) => {
+    return
   },
 })
 
