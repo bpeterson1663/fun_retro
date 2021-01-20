@@ -63,7 +63,7 @@ ShowLinkDialog.propTypes = {
     userId: PropTypes.string.isRequired,
     team: PropTypes.array.isRequired,
     numberOfVotes: PropTypes.number.isRequired,
-    columnsKey: PropTypes.string.isRequired,
+    columnsKey: PropTypes.any,
     isActive: PropTypes.bool.isRequired,
     timestamp: PropTypes.number.isRequired,
   }).isRequired,

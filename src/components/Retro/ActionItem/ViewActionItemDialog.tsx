@@ -9,7 +9,7 @@ import { getRetroById, getActionItemsByTeam, getActionItemsByRetro } from '../..
 interface ViewActionItemDialogProps {
   showViewActionDialog: boolean
   handleViewActionDialogClose: () => void
-  retroId: string
+  retroId?: string
   retroData: RetroType
   team: ManageTeamsType[]
 }
@@ -24,6 +24,7 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
   const [counter, setCounter] = useState(0)
   const [allRetros, setAllRetros] = useState<RetroType[]>([])
   useEffect(() => {
+    if(!retroId) return
     getActionItemsByRetro(retroId)
       .then(querySnapshot => {
         const actions: ActionItemType[] = []
@@ -132,7 +133,7 @@ ViewActionItemDialog.propTypes = {
     userId: PropTypes.string.isRequired,
     team: PropTypes.array.isRequired,
     numberOfVotes: PropTypes.number.isRequired,
-    columnsKey: PropTypes.string.isRequired,
+    columnsKey: PropTypes.any,
     isActive: PropTypes.bool.isRequired,
     timestamp: PropTypes.number.isRequired,
   }).isRequired,

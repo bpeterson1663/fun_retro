@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import RetroColumn from './RetroColumn'
 import CreateActionItemDialog from './ActionItem/CreateActionItemDialog'
 import VoteContext from '../../context/vote-context'
@@ -15,21 +15,33 @@ import MenuIcon from '@material-ui/icons/Menu'
 import Fab from '@material-ui/core/Fab'
 import ViewActionItemDialog from './ActionItem/ViewActionItemDialog'
 import SnackBar from '../Common/SnackBar'
-import jsPDF from 'jspdf'
 import { columnKeys } from '../../constants/columns.constants'
-import 'jspdf-autotable'
+import jsPDF from "jspdf"
+import autoTable from 'jspdf-autotable'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+import { ManageTeamsType, RetroType } from '../../constants/types.constant'
 dayjs.extend(LocalizedFormat)
+interface RetroContainerT {
+  match: {
+    params?: {
+      id?: string
+    }
+  }
+}
 
-const RetroContainer = props => {
+interface ColumnTypeT {
+  title: string
+  value: string
+  backgroundColor: string
+}
+const RetroContainer: React.FC<RetroContainerT> = (props): JSX.Element => {
   const [remainingVotes, setRemainingVotes] = useState(0)
-  const [retroData, setRetroData] = useState({})
+  const [retroData, setRetroData] = useState<RetroType>({} as RetroType)
   const [retroStatus, setRetroStatus] = useState(true)
   const [retroExists, setRetroExists] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
   const [isLoading, setLoading] = useState(false)
-  const [columnMaps, setColumnMaps] = useState([])
+  const [columnMaps, setColumnMaps] = useState<ColumnTypeT[]>([])
   const [showActionItemDialog, setShowActionItemDialog] = useState(false)
   const [showViewActionDialog, setShowViewActionDialog] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
@@ -40,7 +52,7 @@ const RetroContainer = props => {
     displayMessage: false,
   })
   const auth = useContext(AuthContext)
-  const retroId = props.match.params.id
+  const retroId = props?.match?.params?.id
   const classes = useStyles()
 
   const init = () => {
@@ -50,12 +62,16 @@ const RetroContainer = props => {
       .onSnapshot(doc => {
         if (doc.exists) {
           const docData = doc.data()
-          docData.id = doc.id
-          docData.team = docData.team ? docData.team : []
-          setIsAdmin(docData.userId === auth.userId)
-          setRetroData(docData)
-          setRetroStatus(docData.isActive)
-          docData.columnsKey ? setColumnMaps(columnKeys[docData.columnsKey]) : setColumnMaps(columnKeys.keepDoing)
+          const retro = {
+            ...docData,
+            id: doc.id,
+            team: docData?.team ? docData?.team : []
+          } as RetroType
+
+          setRetroData(retro)
+          setRetroStatus(retro.isActive)
+          const columnMaps = retro.columnsKey ? columnKeys[retro.columnsKey] : columnKeys['keepDoing']
+          setColumnMaps(columnMaps)
           getUserVoteStatus()
         } else {
           setRetroExists(false)
@@ -64,7 +80,7 @@ const RetroContainer = props => {
     return () => unsubscribe()
   }
 
-  const getUserVoteStatus = () => {
+  const getUserVoteStatus = useCallback(() => {
     //Get Current Users votes for all columns
     const promises = columnMaps.map(column => {
       return db
@@ -72,7 +88,7 @@ const RetroContainer = props => {
         .where('retroId', '==', retroId)
         .get()
     })
-    let allVotes = []
+    let allVotes: string[] = []
     Promise.all(promises).then(res => {
       res.forEach(querySnapshot => {
         querySnapshot.docs.forEach(doc => {
@@ -85,9 +101,9 @@ const RetroContainer = props => {
         ? setRemainingVotes(0)
         : setRemainingVotes(retroData.numberOfVotes - userVoteCount)
     })
-  }
+  }, [auth.userId, columnMaps, retroId, retroData.numberOfVotes])
 
-  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes, columnMaps])
+  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes, columnMaps, getUserVoteStatus])
 
   const handleRetroStatus = () => {
     handleMenuClose()
@@ -111,27 +127,31 @@ const RetroContainer = props => {
         .get()
     })
     Promise.all(promises).then(res => {
-      const allData = []
+      const allData: Array<Array<{value: string, votes: string, id: string}>> = []
       res.forEach(querySnapshot => {
-        allData.push(
-          querySnapshot.docs.map(doc => {
+          allData.push(querySnapshot.docs.map(doc => {
             const data = doc.data()
-            data.id = doc.id
-            return data
-          }),
-        )
-      })
-      let doc = new jsPDF()
+            const dataObj: {value: string, votes: string, id: string} ={
+              value: data.value,
+              votes: data.votes,
+              id: doc.id
+            }
+            return dataObj;
+          })
+          )
+        })
+      const doc = new jsPDF()
       reportSections.forEach((column, i) => {
-        let columnHeader = column.value === 'actionItems' ? [column.title] : [column.title, 'Votes']
-        let rows = []
+        const columnHeader = column.value === 'actionItems' ? [column.title] : [column.title, 'Votes']
+        const rows: Array<Array<string>> = []
         allData[i].forEach(item => {
           column.value === 'actionItems' ? rows.push([item.value]) : rows.push([item.value, item.votes])
         })
-        doc.autoTable({
+        autoTable(doc, {
           headStyles: { fillColor: column.backgroundColor, halign: 'center' },
           head: [columnHeader],
-          body: rows.concat().sort((a, b) => b[1] - a[1]),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          body: rows.concat().sort((a: any, b: any) => b[1] - a[1]),
           columnStyles: {
             0: { cellWidth: 85 },
             1: { cellWidth: 20, halign: 'center' },
@@ -143,7 +163,8 @@ const RetroContainer = props => {
       doc.save(retroData.name + '.pdf')
     })
   }
-  const handleMenuClick = event => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMenuClick = (event: any) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -164,7 +185,13 @@ const RetroContainer = props => {
 
   const handleViewActionDialogClose = () => setShowViewActionDialog(false)
 
-  const createActionItem = item => {
+  const createActionItem = (item: {
+    value: string
+    team: ManageTeamsType[]
+    retroId: string
+    owner: string
+    timestamp: number
+  }) => {
     //create Action Item for each team if multiple teams are selected
     setLoading(true)
     if (item.team.length > 0) {
@@ -286,8 +313,7 @@ const RetroContainer = props => {
                 <RetroColumn
                   retroId={retroId}
                   votesPerPerson={retroData.numberOfVotes}
-                  columnKey={retroData.columnsKey}
-                  remainingVotes={remainingVotes}
+                  columnsKey={retroData.columnsKey}
                   title={column.title}
                   columnName={column.value}
                   isActive={retroStatus}
@@ -303,6 +329,7 @@ const RetroContainer = props => {
           handleActionItemDialogClose={handleActionItemDialogClose}
           createActionItem={createActionItem}
           team={retroData.team}
+          retros={[retroData]}
         />
       ) : null}
 
@@ -313,7 +340,6 @@ const RetroContainer = props => {
           retroData={retroData}
           retroId={retroId}
           team={retroData.team}
-          isAdmin={isAdmin}
         />
       ) : null}
     </Container>

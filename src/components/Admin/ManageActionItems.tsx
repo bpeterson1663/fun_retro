@@ -118,7 +118,8 @@ const ManageActionItems: React.FC = (): JSX.Element => {
               }
             })
           })
-          setActionItemsMap(itemMap)
+          const allItems = itemMap.filter(item => item.data.length > 0)
+          setActionItemsMap(allItems)
           setIsLoading(false)
         })
       })

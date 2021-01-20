@@ -30,7 +30,7 @@ import { CommentT, ItemT } from '../../constants/types.constant'
 
 interface RetroColumnT {
   columnName: string
-  retroId: string
+  retroId?: string
   votesPerPerson: number
   columnsKey?: keyof typeof columnKeys
   isActive: boolean
