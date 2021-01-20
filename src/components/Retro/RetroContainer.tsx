@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import RetroColumn from './RetroColumn'
 import CreateActionItemDialog from './ActionItem/CreateActionItemDialog'
 import VoteContext from '../../context/vote-context'
@@ -80,7 +80,7 @@ const RetroContainer: React.FC<RetroContainerT> = (props): JSX.Element => {
     return () => unsubscribe()
   }
 
-  const getUserVoteStatus = () => {
+  const getUserVoteStatus = useCallback(() => {
     //Get Current Users votes for all columns
     const promises = columnMaps.map(column => {
       return db
@@ -101,9 +101,9 @@ const RetroContainer: React.FC<RetroContainerT> = (props): JSX.Element => {
         ? setRemainingVotes(0)
         : setRemainingVotes(retroData.numberOfVotes - userVoteCount)
     })
-  }
+  }, [auth.userId, columnMaps, retroId, retroData.numberOfVotes])
 
-  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes, columnMaps])
+  useEffect(init, [retroId, retroData.isActive, retroData.numberOfVotes, columnMaps, getUserVoteStatus])
 
   const handleRetroStatus = () => {
     handleMenuClose()
