@@ -66,6 +66,7 @@ const CreateActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element =
       <TextField
         className={`${classes.inputField} ${classes.inputFieldText}`}
         variant="outlined"
+        data-testid="create_action_item"
         multiline
         required
         rows="3"
@@ -77,6 +78,7 @@ const CreateActionItemDialog: React.FC<DialogPropTypes> = (props): JSX.Element =
       <TextField
         className={`${classes.inputField} ${classes.inputFieldText}`}
         value={ownerValue}
+        data-testid="owner_action_item"
         type="text"
         variant="outlined"
         label="Owner"
