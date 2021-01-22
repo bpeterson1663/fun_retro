@@ -19,6 +19,8 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import IEWarning from './components/Common/IEWarning'
 import ForgotPassword from './components/Auth/ForgotPassword'
+import{ init } from 'emailjs-com'
+init(`${process.env.REACT_APP_STAGE_EMAIL_JS}`)
 
 const theme = createMuiTheme({
   palette: {
