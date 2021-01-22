@@ -87,7 +87,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
           endDate: dayjs().format('YYYY-MM-DD'),
           columnsKey: columnTitles[0].value,
         })
-        const emailTasks: {id: string, retro_name: string, email: string}[] = []
+        const emailTasks: { id: string; retro_name: string; email: string }[] = []
         teamValue.forEach(team => {
           team.emailList.forEach(email => {
             const templateParams = {
@@ -99,11 +99,13 @@ const CreateRetro: React.FC = (): JSX.Element => {
           })
         })
         const promises = emailTasks.map(task => emailjs.send('service_dfy35zv', 'template_mvtzknv', task))
-        Promise.all(promises).then(res => {
-          setIsLoading(false)
-          console.log(res)
-        }).catch(error => console.error('error: ', error))
-        
+        Promise.all(promises)
+          .then(res => {
+            setIsLoading(false)
+            console.log(res)
+          })
+          .catch(error => console.error('error: ', error))
+
         setTeamValue([])
         setResponse({
           open: true,

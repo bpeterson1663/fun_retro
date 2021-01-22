@@ -22,8 +22,8 @@ import ForgotPassword from './components/Auth/ForgotPassword'
 import { init } from 'emailjs-com'
 
 if (window.location.href.includes('staging') || window.location.href.includes('localhost')) {
- init(`${process.env.REACT_APP_STAGE_EMAIL_JS}`)
-}else{
+  init(`${process.env.REACT_APP_STAGE_EMAIL_JS}`)
+} else {
   init(`${process.env.REACT_APP_EMAIL_JS}`)
 }
 
