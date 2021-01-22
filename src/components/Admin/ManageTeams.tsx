@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useState, useContext, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { withStyles } from '@material-ui/core/styles'
 import dayjs from 'dayjs'
 import { db } from '../../firebase'
 import DialogComponent from '../Common/DialogComponent'
@@ -22,6 +23,7 @@ import {
   TableSortLabel,
   Paper,
 } from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import EditIcon from '@material-ui/icons/Edit'
 import Typography from '@material-ui/core/Typography/Typography'
@@ -44,6 +46,8 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const [allTeams, setAllTeams] = useState<ManageTeamsType[]>([])
   const [editStatus, setEditStatus] = useState(false)
   const [editTeam, setEditTeam] = useState<ManageTeamsType | null>(null)
+  const [emailList, setEmailList] = useState<string[]>([])
+  const [error, setError] = useState(false)
   const [orderBy, setOrderBy] = useState<keyof ManageTeamsType>('teamName')
   const [order, setOrder] = useState<Order>('asc')
   const [page, setPage] = useState(0)
@@ -62,6 +66,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
             teamName: docData.teamName,
             timestamp: docData.timestamp,
             userId: auth.userId,
+            emailList: docData.emailList ? docData.emailList : [],
           })
         })
         setAllTeams(teams)
@@ -89,6 +94,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
     setIsLoading(true)
     const newTeam = {
       ...data,
+      emailList: emailList,
       timestamp: dayjs().valueOf(),
       userId: auth.userId,
     }
@@ -195,18 +201,21 @@ const ManageTeams: React.FC = (): JSX.Element => {
         <Table aria-label="manage teams table">
           <TableHead>
             <TableRow>
-              <TableSortLabel
-                active={orderBy === 'teamName'}
-                direction={orderBy === 'teamName' ? order : 'asc'}
-                onClick={createSortHandler('teamName')}
-              >
-                Name
-                {orderBy === 'teamName' ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null}
-              </TableSortLabel>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'teamName'}
+                  direction={orderBy === 'teamName' ? order : 'asc'}
+                  onClick={createSortHandler('teamName')}
+                >
+                  Name
+                  {orderBy === 'teamName' ? (
+                    <span className={classes.visuallyHidden}>
+                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </span>
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Email(s)</TableCell>
               <TableCell>Edit</TableCell>
               <TableCell>Delete</TableCell>
             </TableRow>
@@ -217,6 +226,13 @@ const ManageTeams: React.FC = (): JSX.Element => {
               .map(team => (
                 <TableRow key={team.id} className={classes.actionRow}>
                   <TableCell>{team.teamName}</TableCell>
+                  <TableCell>
+                    <ul>
+                      {team.emailList.map(item => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </TableCell>
                   <TableCell>
                     <IconButton className={classes.icon} onClick={() => handleEditOpen(team)}>
                       <EditIcon />
@@ -243,6 +259,24 @@ const ManageTeams: React.FC = (): JSX.Element => {
       </TableContainer>
     )
   }
+  const validateEmail = (email: string) => {
+    if (!email) return
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (re.test(String(email).toLowerCase())) {
+      setError(false)
+    } else {
+      setError(true)
+    }
+  }
+
+  const ErrorTypography = withStyles(theme => ({
+    root: {
+      color: theme.palette.error.dark,
+      margin: '0 auto'
+    }
+  }))(Typography)
+
+  const emails: string[] = []
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
@@ -264,8 +298,21 @@ const ManageTeams: React.FC = (): JSX.Element => {
             }
           />
         </FormControl>
+        <Autocomplete
+          id="email"
+          multiple
+          freeSolo
+          filterSelectedOptions
+          className={`${classes.inputField} ${classes.inputFieldText}`}
+          options={emails}
+          onChange={(e, option) => setEmailList(option)}
+          onInputChange={(e, value) => validateEmail(value)}
+          size="small"
+          renderInput={params => <TextField {...params} error={error} label="Email(s)" />}
+        />
+        {error ? <ErrorTypography variant="caption" display="block">Please enter a valid email</ErrorTypography> : null}
         <div className={classes.actionButtons}>
-          <Button type="submit" color="secondary" variant="contained">
+          <Button type="submit" color="secondary" disabled={error} variant="contained">
             Create Team
           </Button>
         </div>

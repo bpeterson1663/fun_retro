@@ -79,6 +79,7 @@ const EditRetro: React.FC = (): JSX.Element => {
                 teamName: data.teamName,
                 timestamp: data.timestamp,
                 userId: data.userId,
+                emailList: data.emailList ? data.emailList : [],
               })
             })
             setTeams(teams)

@@ -24,7 +24,7 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
   const [counter, setCounter] = useState(0)
   const [allRetros, setAllRetros] = useState<RetroType[]>([])
   useEffect(() => {
-    if(!retroId) return
+    if (!retroId) return
     getActionItemsByRetro(retroId)
       .then(querySnapshot => {
         const actions: ActionItemType[] = []

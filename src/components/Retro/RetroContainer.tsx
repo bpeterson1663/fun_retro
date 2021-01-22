@@ -16,7 +16,7 @@ import Fab from '@material-ui/core/Fab'
 import ViewActionItemDialog from './ActionItem/ViewActionItemDialog'
 import SnackBar from '../Common/SnackBar'
 import { columnKeys } from '../../constants/columns.constants'
-import jsPDF from "jspdf"
+import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
@@ -65,7 +65,7 @@ const RetroContainer: React.FC<RetroContainerT> = (props): JSX.Element => {
           const retro = {
             ...docData,
             id: doc.id,
-            team: docData?.team ? docData?.team : []
+            team: docData?.team ? docData?.team : [],
           } as RetroType
 
           setRetroData(retro)
@@ -127,19 +127,20 @@ const RetroContainer: React.FC<RetroContainerT> = (props): JSX.Element => {
         .get()
     })
     Promise.all(promises).then(res => {
-      const allData: Array<Array<{value: string, votes: string, id: string}>> = []
+      const allData: Array<Array<{ value: string; votes: string; id: string }>> = []
       res.forEach(querySnapshot => {
-          allData.push(querySnapshot.docs.map(doc => {
+        allData.push(
+          querySnapshot.docs.map(doc => {
             const data = doc.data()
-            const dataObj: {value: string, votes: string, id: string} ={
+            const dataObj: { value: string; votes: string; id: string } = {
               value: data.value,
               votes: data.votes,
-              id: doc.id
+              id: doc.id,
             }
-            return dataObj;
-          })
-          )
-        })
+            return dataObj
+          }),
+        )
+      })
       const doc = new jsPDF()
       reportSections.forEach((column, i) => {
         const columnHeader = column.value === 'actionItems' ? [column.title] : [column.title, 'Votes']
