@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
 import DialogComponent from '../../Common/DialogComponent'
-import { Button, FormControl, TextField } from '@material-ui/core'
+import { Button, FormControl, TextField, Typography } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType } from '../../../constants/types.constant'
 import useStyles from '../AdminContainer.styles'
@@ -43,6 +44,13 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
       setError(true)
     }
   }
+
+  const ErrorTypography = withStyles(theme => ({
+    root: {
+      color: theme.palette.error.dark
+    }
+  }))(Typography)
+
   return (
     <DialogComponent
       open={editStatus}
@@ -78,10 +86,10 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
         value={emailList}
         onChange={(e, option) => setEmailList(option)}
         onInputChange={(e, value) => validateEmail(value)}
-        renderInput={params => <TextField {...params} label="Email(s)" />}
+        renderInput={params => <TextField error={error} {...params} label="Email(s)" />}
         size="small"
       />
-      {error ? 'Enter a valid email' : null}
+      {error ? <ErrorTypography variant="caption">Please enter a valid email</ErrorTypography> : null}
     </DialogComponent>
   )
 }

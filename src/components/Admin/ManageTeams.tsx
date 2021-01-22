@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useState, useContext, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+import { withStyles } from '@material-ui/core/styles'
 import dayjs from 'dayjs'
 import { db } from '../../firebase'
 import DialogComponent from '../Common/DialogComponent'
@@ -267,6 +268,14 @@ const ManageTeams: React.FC = (): JSX.Element => {
       setError(true)
     }
   }
+
+  const ErrorTypography = withStyles(theme => ({
+    root: {
+      color: theme.palette.error.dark,
+      margin: '0 auto'
+    }
+  }))(Typography)
+
   const emails: string[] = []
   return (
     <Container>
@@ -301,7 +310,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
           size="small"
           renderInput={params => <TextField {...params} error={error} label="Email(s)" />}
         />
-        {error ? 'Enter a valid email' : null}
+        {error ? <ErrorTypography variant="caption" display="block">Please enter a valid email</ErrorTypography> : null}
         <div className={classes.actionButtons}>
           <Button type="submit" color="secondary" disabled={error} variant="contained">
             Create Team
