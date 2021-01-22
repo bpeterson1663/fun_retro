@@ -272,8 +272,8 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const ErrorTypography = withStyles(theme => ({
     root: {
       color: theme.palette.error.dark,
-      margin: '0 auto'
-    }
+      margin: '0 auto',
+    },
   }))(Typography)
 
   const emails: string[] = []
@@ -310,7 +310,11 @@ const ManageTeams: React.FC = (): JSX.Element => {
           size="small"
           renderInput={params => <TextField {...params} error={error} label="Email(s)" />}
         />
-        {error ? <ErrorTypography variant="caption" display="block">Please enter a valid email</ErrorTypography> : null}
+        {error ? (
+          <ErrorTypography variant="caption" display="block">
+            Please enter a valid email
+          </ErrorTypography>
+        ) : null}
         <div className={classes.actionButtons}>
           <Button type="submit" color="secondary" disabled={error} variant="contained">
             Create Team

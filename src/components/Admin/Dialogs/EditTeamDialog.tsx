@@ -47,8 +47,8 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
 
   const ErrorTypography = withStyles(theme => ({
     root: {
-      color: theme.palette.error.dark
-    }
+      color: theme.palette.error.dark,
+    },
   }))(Typography)
 
   return (
