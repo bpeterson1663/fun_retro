@@ -17,8 +17,8 @@ export function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-  a: { [key in Key]: number | string | ManageTeamsType[] | boolean },
-  b: { [key in Key]: number | string | ManageTeamsType[] | boolean },
+  a: { [key in Key]: number | string | ManageTeamsType[] | boolean | string[] },
+  b: { [key in Key]: number | string | ManageTeamsType[] | boolean | string[] },
 ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)

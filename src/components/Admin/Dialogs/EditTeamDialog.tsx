@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import DialogComponent from '../../Common/DialogComponent'
 import { Button, FormControl, TextField } from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import { ManageTeamsType } from '../../../constants/types.constant'
 import useStyles from '../AdminContainer.styles'
 
@@ -15,9 +16,12 @@ type EditTeamT = {
 const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
   const { editTeam, handleEditClose, editStatus, handleEditSubmit } = props
   const [teamName, setTeamName] = useState('')
+  const [emailList, setEmailList] = useState<string[]>([])
+  const [error, setError] = useState(false)
   const classes = useStyles()
   useEffect(() => {
     setTeamName(editTeam?.teamName)
+    setEmailList(editTeam?.emailList)
   }, [editTeam])
   const onSubmitHandler = () => {
     const newTeam = {
@@ -27,13 +31,25 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
     handleEditClose()
     handleEditSubmit(newTeam)
   }
+  const validateEmail = (email: string) => {
+    if (!email) {
+      setError(false)
+      return
+    }
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (re.test(String(email).toLowerCase())) {
+      setError(false)
+    } else {
+      setError(true)
+    }
+  }
   return (
     <DialogComponent
       open={editStatus}
       onClose={handleEditClose}
       title={`Edit Team - ${editTeam?.teamName}`}
       actions={[
-        <Button key={0} type="submit" color="secondary" variant="contained" onClick={onSubmitHandler}>
+        <Button disabled={error} key={0} type="submit" color="secondary" variant="contained" onClick={onSubmitHandler}>
           Edit
         </Button>,
         <Button key={1} color="secondary" variant="outlined" onClick={handleEditClose}>
@@ -52,6 +68,20 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
           label="Team Name"
         />
       </FormControl>
+      <Autocomplete
+        id="email"
+        multiple
+        freeSolo
+        filterSelectedOptions
+        className={`${classes.inputField} ${classes.inputFieldText}`}
+        options={emailList}
+        value={emailList}
+        onChange={(e, option) => setEmailList(option)}
+        onInputChange={(e, value) => validateEmail(value)}
+        renderInput={params => <TextField {...params} label="Email(s)" />}
+        size="small"
+      />
+      {error ? 'Enter a valid email' : null}
     </DialogComponent>
   )
 }
@@ -61,6 +91,7 @@ EditTeamDialog.propTypes = {
     id: PropTypes.string.isRequired,
     timestamp: PropTypes.number.isRequired,
     userId: PropTypes.string.isRequired,
+    emailList: PropTypes.array.isRequired,
   }).isRequired,
   handleEditClose: PropTypes.func.isRequired,
   editStatus: PropTypes.bool.isRequired,
