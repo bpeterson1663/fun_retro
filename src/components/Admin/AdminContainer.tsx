@@ -137,7 +137,12 @@ const AdminContainer = (): JSX.Element => {
         </div>
         {retroList.length > 0
           ? retroList.map(map => (
-              <RetroTable key={map.id} data={map.data as RetroTypeString[]} name={map.name} handleDelete={handleConfirmOpen} />
+              <RetroTable
+                key={map.id}
+                data={map.data as RetroTypeString[]}
+                name={map.name}
+                handleDelete={handleConfirmOpen}
+              />
             ))
           : null}
       </Grid>
