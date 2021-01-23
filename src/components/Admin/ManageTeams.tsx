@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useState, useContext, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
 import { withStyles } from '@material-ui/core/styles'
 import dayjs from 'dayjs'
 import { db } from '../../firebase'
@@ -42,7 +41,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false)
   const [response, setResponse] = useState({ open: false, status: '', message: '' })
   const classes = useStyles()
-  const { handleSubmit, control, reset } = useForm<ManageTeamsType>()
+  const [teamName, setTeamName] = useState('')
   const [allTeams, setAllTeams] = useState<ManageTeamsType[]>([])
   const [editStatus, setEditStatus] = useState(false)
   const [editTeam, setEditTeam] = useState<ManageTeamsType | null>(null)
@@ -90,14 +89,17 @@ const ManageTeams: React.FC = (): JSX.Element => {
     setEditTeam(team)
     setEditStatus(true)
   }
-  const onSubmitHandler = (data: ManageTeamsType) => {
+  const onSubmitHandler = () => {
     setIsLoading(true)
+    const emailListMap = emailList.map(email => {
+      return { email: email }
+    })
     const newTeam = {
-      ...data,
-      emailList: emailList,
+      teamName: teamName,
+      emailList: emailListMap,
       timestamp: dayjs().valueOf(),
       userId: auth.userId,
-    }
+    } as ManageTeamsType
     db.collection('teams')
       .add(newTeam)
       .then(res => {
@@ -105,10 +107,9 @@ const ManageTeams: React.FC = (): JSX.Element => {
         const newState = allTeams
         newState.push(newTeam)
         setAllTeams(newState)
+        setTeamName('')
+        setEmailList([])
         setIsLoading(false)
-        reset({
-          teamName: '',
-        })
         setResponse({
           open: true,
           status: 'success',
@@ -229,7 +230,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
                   <TableCell>
                     <ul>
                       {team.emailList.map(item => (
-                        <li key={item}>{item}</li>
+                        <li key={item.email + (Math.random() * 10000).toFixed(0)}>{item.email}</li>
                       ))}
                     </ul>
                   </TableCell>
@@ -260,7 +261,10 @@ const ManageTeams: React.FC = (): JSX.Element => {
     )
   }
   const validateEmail = (email: string) => {
-    if (!email) return
+    if (!email) {
+      setError(false)
+      return
+    }
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     if (re.test(String(email).toLowerCase())) {
       setError(false)
@@ -276,51 +280,53 @@ const ManageTeams: React.FC = (): JSX.Element => {
     },
   }))(Typography)
 
-  const emails: string[] = []
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Typography variant="h5">Manage Teams</Typography>
-      <form onSubmit={handleSubmit(onSubmitHandler)} className={classes.form}>
+      <Grid className={classes.form}>
         <FormControl>
-          <Controller
+          <TextField
+            className={`${classes.inputField} ${classes.inputFieldText}`}
             name="teamName"
-            control={control}
-            defaultValue=""
-            as={
-              <TextField
-                className={`${classes.inputField} ${classes.inputFieldText}`}
-                name="teamName"
-                required
-                type="text"
-                label="Team Name"
-              />
-            }
+            value={teamName}
+            onChange={e => setTeamName(e.target.value)}
+            required
+            type="text"
+            label="Team Name"
           />
         </FormControl>
-        <Autocomplete
-          id="email"
-          multiple
-          freeSolo
-          filterSelectedOptions
-          className={`${classes.inputField} ${classes.inputFieldText}`}
-          options={emails}
-          onChange={(e, option) => setEmailList(option)}
-          onInputChange={(e, value) => validateEmail(value)}
-          size="small"
-          renderInput={params => <TextField {...params} error={error} label="Email(s)" />}
-        />
-        {error ? (
-          <ErrorTypography variant="caption" display="block">
-            Please enter a valid email
-          </ErrorTypography>
-        ) : null}
+        <FormControl>
+          <Autocomplete
+            id="email"
+            multiple
+            freeSolo
+            filterSelectedOptions
+            className={`${classes.inputField} ${classes.inputFieldText}`}
+            options={emailList}
+            onChange={(e, option) => setEmailList(option)}
+            onInputChange={(e, value) => validateEmail(value)}
+            size="small"
+            renderInput={params => <TextField {...params} error={error} label="Email(s)" />}
+          />
+          {error ? (
+            <ErrorTypography variant="caption" display="block">
+              Please enter a valid email
+            </ErrorTypography>
+          ) : null}
+        </FormControl>
         <div className={classes.actionButtons}>
-          <Button type="submit" color="secondary" disabled={error} variant="contained">
+          <Button
+            type="submit"
+            color="secondary"
+            onClick={onSubmitHandler}
+            disabled={(error && emailList.length < 1) || !teamName}
+            variant="contained"
+          >
             Create Team
           </Button>
         </div>
-      </form>
+      </Grid>
       <SnackBar
         open={response.open}
         message={response.message}

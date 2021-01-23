@@ -34,7 +34,7 @@ export interface ManageTeamsType {
   id: string
   timestamp: number
   userId: string
-  emailList: string[]
+  emailList: { email: string }[]
 }
 
 export interface ActionItemType {

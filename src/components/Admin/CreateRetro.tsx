@@ -93,7 +93,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
             const templateParams = {
               id: res.id,
               retro_name: data.name,
-              email: email,
+              email: email.email,
             }
             emailTasks.push(templateParams)
           })
