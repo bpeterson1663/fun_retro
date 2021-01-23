@@ -22,12 +22,21 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
   const classes = useStyles()
   useEffect(() => {
     setTeamName(editTeam?.teamName)
-    setEmailList(editTeam?.emailList)
+    if (editTeam.emailList) {
+      const emailListMap = editTeam.emailList.map(email => {
+        return email.email
+      })
+      setEmailList(emailListMap)
+    }
   }, [editTeam])
   const onSubmitHandler = () => {
+    const emailListMap = emailList.map(email => {
+      return { email: email }
+    })
     const newTeam = {
       ...editTeam,
       teamName: teamName,
+      emailList: emailListMap,
     }
     handleEditClose()
     handleEditSubmit(newTeam)
@@ -50,7 +59,7 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
       color: theme.palette.error.dark,
     },
   }))(Typography)
-
+  console.log('email list render: ', emailList)
   return (
     <DialogComponent
       open={editStatus}
