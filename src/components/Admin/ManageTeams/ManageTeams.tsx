@@ -1,13 +1,10 @@
 import * as React from 'react'
 import { useState, useContext, useEffect } from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import dayjs from 'dayjs'
-import { db } from '../../firebase'
-import DialogComponent from '../Common/DialogComponent'
+import { db } from '../../../firebase'
+import DialogComponent from '../../Common/DialogComponent'
+import ManageTeamsForm from './ManageTeamsForm'
 import {
-  FormControl,
   Container,
-  TextField,
   LinearProgress,
   IconButton,
   Button,
@@ -22,17 +19,15 @@ import {
   TableSortLabel,
   Paper,
 } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
-import EditIcon from '@material-ui/icons/Edit'
 import Typography from '@material-ui/core/Typography/Typography'
-import AuthContext from '../../context/auth-context'
-import SnackBar from '../Common/SnackBar'
-import useStyles from './AdminContainer.styles'
-import { ManageTeamsType, Order } from '../../constants/types.constant'
-import { getComparator, stableSort } from '../Common/Table/helpers'
-
-import EditTeamDialog from './Dialogs/EditTeamDialog'
+import EditIcon from '@material-ui/icons/Edit'
+import AuthContext from '../../../context/auth-context'
+import SnackBar from '../../Common/SnackBar'
+import useStyles from '../AdminContainer.styles'
+import { ManageTeamsType, Order } from '../../../constants/types.constant'
+import { getComparator, stableSort } from '../../Common/Table/helpers'
+import EditTeamDialog from '../Dialogs/EditTeamDialog'
 
 const ManageTeams: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
@@ -41,16 +36,14 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false)
   const [response, setResponse] = useState({ open: false, status: '', message: '' })
   const classes = useStyles()
-  const [teamName, setTeamName] = useState('')
   const [allTeams, setAllTeams] = useState<ManageTeamsType[]>([])
   const [editStatus, setEditStatus] = useState(false)
   const [editTeam, setEditTeam] = useState<ManageTeamsType | null>(null)
-  const [emailList, setEmailList] = useState<string[]>([])
-  const [error, setError] = useState(false)
   const [orderBy, setOrderBy] = useState<keyof ManageTeamsType>('teamName')
   const [order, setOrder] = useState<Order>('asc')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+
   useEffect(() => {
     db.collection('teams')
       .where('userId', '==', auth.userId)
@@ -89,26 +82,17 @@ const ManageTeams: React.FC = (): JSX.Element => {
     setEditTeam(team)
     setEditStatus(true)
   }
-  const onSubmitHandler = () => {
+
+  const onSubmitHandler = (data: ManageTeamsType) => {
     setIsLoading(true)
-    const emailListMap = emailList.map(email => {
-      return { email: email }
-    })
-    const newTeam = {
-      teamName: teamName,
-      emailList: emailListMap,
-      timestamp: dayjs().valueOf(),
-      userId: auth.userId,
-    } as ManageTeamsType
+
     db.collection('teams')
-      .add(newTeam)
+      .add(data)
       .then(res => {
-        newTeam.id = res.id
+        data.id = res.id
         const newState = allTeams
-        newState.push(newTeam)
+        newState.push(data)
         setAllTeams(newState)
-        setTeamName('')
-        setEmailList([])
         setIsLoading(false)
         setResponse({
           open: true,
@@ -260,73 +244,12 @@ const ManageTeams: React.FC = (): JSX.Element => {
       </TableContainer>
     )
   }
-  const validateEmail = (email: string) => {
-    if (!email) {
-      setError(false)
-      return
-    }
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    if (re.test(String(email).toLowerCase())) {
-      setError(false)
-    } else {
-      setError(true)
-    }
-  }
-
-  const ErrorTypography = withStyles(theme => ({
-    root: {
-      color: theme.palette.error.dark,
-      margin: '0 auto',
-    },
-  }))(Typography)
 
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Typography variant="h5">Manage Teams</Typography>
-      <Grid className={classes.form}>
-        <FormControl>
-          <TextField
-            className={`${classes.inputField} ${classes.inputFieldText}`}
-            name="teamName"
-            value={teamName}
-            onChange={e => setTeamName(e.target.value)}
-            required
-            type="text"
-            label="Team Name"
-          />
-        </FormControl>
-        <FormControl>
-          <Autocomplete
-            id="email"
-            multiple
-            freeSolo
-            filterSelectedOptions
-            className={`${classes.inputField} ${classes.inputFieldText}`}
-            options={emailList}
-            onChange={(e, option) => setEmailList(option)}
-            onInputChange={(e, value) => validateEmail(value)}
-            size="small"
-            renderInput={params => <TextField {...params} error={error} label="Email(s)" />}
-          />
-          {error ? (
-            <ErrorTypography variant="caption" display="block">
-              Please enter a valid email
-            </ErrorTypography>
-          ) : null}
-        </FormControl>
-        <div className={classes.actionButtons}>
-          <Button
-            type="submit"
-            color="secondary"
-            onClick={onSubmitHandler}
-            disabled={(error && emailList.length < 1) || !teamName}
-            variant="contained"
-          >
-            Create Team
-          </Button>
-        </div>
-      </Grid>
+      <ManageTeamsForm handleSubmit={onSubmitHandler} />
       <SnackBar
         open={response.open}
         message={response.message}
