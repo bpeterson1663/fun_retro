@@ -4,7 +4,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Button from '@material-ui/core/Button'
 import DialogComponent from '../../Common/DialogComponent'
 import SnackBar from '../../Common/SnackBar'
-import { RetroType } from '../../../constants/types.constant'
+import { RetroType } from '../../../constants/types.constants'
 
 interface ShowLinkProps {
   retroLink: RetroType

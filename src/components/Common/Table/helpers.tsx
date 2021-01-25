@@ -1,4 +1,4 @@
-import { ManageTeamsType } from '../../../constants/types.constant'
+import { ManageTeamsType } from '../../../constants/types.constants'
 
 type Order = 'asc' | 'desc'
 

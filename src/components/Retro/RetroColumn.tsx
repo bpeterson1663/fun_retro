@@ -26,7 +26,7 @@ import CommentItemDialog from './Items/CommentItemDialog'
 import EditCommentDialog from './Items/EditCommentDialog'
 import useStyles from './Retro.styles'
 import { columnKeys } from '../../constants/columns.constants'
-import { CommentT, ItemT } from '../../constants/types.constant'
+import { CommentT, ItemT } from '../../constants/types.constants'
 
 interface RetroColumnT {
   columnName: string

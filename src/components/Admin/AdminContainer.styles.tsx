@@ -53,6 +53,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexFlow: 'row-reverse wrap',
   },
+  actionButton: {
+    margin: 5,
+  },
   tableContainer: {
     minWidth: 400,
     maxWidth: 1200,
@@ -95,11 +98,11 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
     listStyle: 'none',
     padding: theme.spacing(0.5),
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
   },
   buttonSecondary: {
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }))
 
 export default useStyles

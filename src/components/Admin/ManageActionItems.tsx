@@ -7,7 +7,7 @@ import CreateActionItemDialog from '../Retro/ActionItem/CreateActionItemDialog'
 import { db } from '../../firebase'
 import { getTeams, getActionItemsByTeam, getActionItemsByUser, getAllRetros } from '../../api/index'
 import AuthContext from '../../context/auth-context'
-import { ActionItemTable, RetroType, ManageTeamsType } from '../../constants/types.constant'
+import { ActionItemTable, RetroType, ManageTeamsType } from '../../constants/types.constants'
 import SnackBar from '../Common/SnackBar'
 import dayjs from 'dayjs'
 

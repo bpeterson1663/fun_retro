@@ -12,7 +12,7 @@ import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
 import { Link } from 'react-router-dom'
 import DialogComponent from '../Common/DialogComponent'
-import { ManageTeamsType, RetroType, RetroTypeString } from '../../constants/types.constant'
+import { ManageTeamsType, RetroType, RetroTypeString } from '../../constants/types.constants'
 interface RetroMap {
   name: string
   id: string
