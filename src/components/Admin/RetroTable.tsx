@@ -34,7 +34,7 @@ interface RetroTableProps {
 
 const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JSX.Element => {
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [orderBy, setOrderBy] = useState<keyof RetroType>('name')
   const [order, setOrder] = useState<Order>('asc')
   const classes = useStyles()
@@ -183,7 +183,7 @@ const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JS
         </TableBody>
       </Table>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 20]}
+        rowsPerPageOptions={[10, 20, 30]}
         component="div"
         count={data.length}
         rowsPerPage={rowsPerPage}
