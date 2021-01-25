@@ -137,7 +137,7 @@ const EditRetro: React.FC = (): JSX.Element => {
         setResponse({
           open: true,
           status: 'success',
-          message: 'Boom! An email has been sent to the each member of the team(s)!',
+          message: 'Boom! An email has been sent to each member of the team(s)!',
         })
       })
       .catch(() => {
