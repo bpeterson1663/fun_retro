@@ -31,7 +31,6 @@ const EditTeamDialog: React.FC<EditTeamT> = (props): JSX.Element => {
       ]}
     >
       <ManageTeamsForm editData={editTeam} handleSubmit={onSubmitHandler} />
-      
     </DialogComponent>
   )
 }

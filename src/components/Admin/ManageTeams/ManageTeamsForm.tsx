@@ -22,28 +22,27 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
   const classes = useStyles()
 
   useEffect(() => {
-    if(editData){
+    if (editData) {
       setTeamName(editData.teamName)
       setChipList(editData.emailList)
-    } 
+    }
   }, [editData])
 
   const handleSubmitForm = () => {
     let newTeam = {} as ManageTeamsType
-    if(editData){
-        newTeam = {
-            ...editData,
-            teamName: teamName,
-            emailList: chipList
-        }
-    }else{
-        newTeam = {
-            teamName: teamName,
-            emailList: chipList,
-            timestamp: dayjs().valueOf(),
-            userId: auth.userId,
-          } as ManageTeamsType
-          
+    if (editData) {
+      newTeam = {
+        ...editData,
+        teamName: teamName,
+        emailList: chipList,
+      }
+    } else {
+      newTeam = {
+        teamName: teamName,
+        emailList: chipList,
+        timestamp: dayjs().valueOf(),
+        userId: auth.userId,
+      } as ManageTeamsType
     }
     handleSubmit(newTeam)
     setChipList([])
@@ -72,7 +71,7 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
     return re.test(String(text).toLowerCase())
   }
 
-  const ErrorTypography = withStyles(theme => ({ 
+  const ErrorTypography = withStyles(theme => ({
     root: {
       color: theme.palette.error.dark,
       margin: '0 auto',
@@ -84,11 +83,11 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
       <>
         <Typography variant="subtitle1">List of Emails</Typography>
         <Grid component="ul" className={classes.chipList}>
-            {chipList.map(data => (
+          {chipList.map(data => (
             <li key={data.id}>
-                <Chip label={data.email} onDelete={() => handleChipDelete(data)} />
+              <Chip label={data.email} onDelete={() => handleChipDelete(data)} />
             </li>
-            ))}
+          ))}
         </Grid>
       </>
     )
@@ -108,7 +107,6 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
         />
       </FormControl>
       <FormControl>
-        
         <TextField
           className={`${classes.inputField} ${classes.inputFieldText}`}
           value={emailValue}
@@ -129,11 +127,18 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
           </ErrorTypography>
         ) : null}
         <div className={classes.actionButtons}>
-          <Button color="secondary" variant="contained" size="small" disabled={error || !emailValue} onClick={handleChipAdd} className={classes.buttonSecondary}>
+          <Button
+            color="secondary"
+            variant="contained"
+            size="small"
+            disabled={error || !emailValue}
+            onClick={handleChipAdd}
+            className={classes.buttonSecondary}
+          >
             Add Email
           </Button>
         </div>
-        {chipList.length > 0 ? <EmailList /> : null }
+        {chipList.length > 0 ? <EmailList /> : null}
       </FormControl>
       <div className={classes.actionButtons}>
         <Button
@@ -153,12 +158,12 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
 ManageTeamsForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   editData: PropTypes.shape({
-      teamName: PropTypes.string.isRequired,
-      emailList: PropTypes.array.isRequired,
-      timestamp: PropTypes.number.isRequired,
-      id: PropTypes.string.isRequired,
-      userId: PropTypes.string.isRequired  
-  })
+    teamName: PropTypes.string.isRequired,
+    emailList: PropTypes.array.isRequired,
+    timestamp: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+  }),
 }
 
 export default ManageTeamsForm
