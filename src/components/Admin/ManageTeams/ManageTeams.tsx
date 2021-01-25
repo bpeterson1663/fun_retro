@@ -1,13 +1,10 @@
 import * as React from 'react'
 import { useState, useContext, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import dayjs from 'dayjs'
-import { db } from '../../firebase'
-import DialogComponent from '../Common/DialogComponent'
+import { db } from '../../../firebase'
+import DialogComponent from '../../Common/DialogComponent'
+import ManageTeamsForm from './ManageTeamsForm'
 import {
-  FormControl,
   Container,
-  TextField,
   LinearProgress,
   IconButton,
   Button,
@@ -23,15 +20,14 @@ import {
   Paper,
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
-import EditIcon from '@material-ui/icons/Edit'
 import Typography from '@material-ui/core/Typography/Typography'
-import AuthContext from '../../context/auth-context'
-import SnackBar from '../Common/SnackBar'
-import useStyles from './AdminContainer.styles'
-import { ManageTeamsType, Order } from '../../constants/types.constant'
-import { getComparator, stableSort } from '../Common/Table/helpers'
-
-import EditTeamDialog from './Dialogs/EditTeamDialog'
+import EditIcon from '@material-ui/icons/Edit'
+import AuthContext from '../../../context/auth-context'
+import SnackBar from '../../Common/SnackBar'
+import useStyles from '../AdminContainer.styles'
+import { ManageTeamsType, Order } from '../../../constants/types.constants'
+import { getComparator, stableSort } from '../../Common/Table/helpers'
+import EditTeamDialog from '../Dialogs/EditTeamDialog'
 
 const ManageTeams: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
@@ -40,14 +36,14 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false)
   const [response, setResponse] = useState({ open: false, status: '', message: '' })
   const classes = useStyles()
-  const { handleSubmit, control, reset } = useForm<ManageTeamsType>()
   const [allTeams, setAllTeams] = useState<ManageTeamsType[]>([])
   const [editStatus, setEditStatus] = useState(false)
   const [editTeam, setEditTeam] = useState<ManageTeamsType | null>(null)
   const [orderBy, setOrderBy] = useState<keyof ManageTeamsType>('teamName')
   const [order, setOrder] = useState<Order>('asc')
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+
   useEffect(() => {
     db.collection('teams')
       .where('userId', '==', auth.userId)
@@ -62,6 +58,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
             teamName: docData.teamName,
             timestamp: docData.timestamp,
             userId: auth.userId,
+            emailList: docData.emailList ? docData.emailList : [],
           })
         })
         setAllTeams(teams)
@@ -85,24 +82,18 @@ const ManageTeams: React.FC = (): JSX.Element => {
     setEditTeam(team)
     setEditStatus(true)
   }
+
   const onSubmitHandler = (data: ManageTeamsType) => {
     setIsLoading(true)
-    const newTeam = {
-      ...data,
-      timestamp: dayjs().valueOf(),
-      userId: auth.userId,
-    }
+
     db.collection('teams')
-      .add(newTeam)
+      .add(data)
       .then(res => {
-        newTeam.id = res.id
+        data.id = res.id
         const newState = allTeams
-        newState.push(newTeam)
+        newState.push(data)
         setAllTeams(newState)
         setIsLoading(false)
-        reset({
-          teamName: '',
-        })
         setResponse({
           open: true,
           status: 'success',
@@ -195,18 +186,21 @@ const ManageTeams: React.FC = (): JSX.Element => {
         <Table aria-label="manage teams table">
           <TableHead>
             <TableRow>
-              <TableSortLabel
-                active={orderBy === 'teamName'}
-                direction={orderBy === 'teamName' ? order : 'asc'}
-                onClick={createSortHandler('teamName')}
-              >
-                Name
-                {orderBy === 'teamName' ? (
-                  <span className={classes.visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </span>
-                ) : null}
-              </TableSortLabel>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'teamName'}
+                  direction={orderBy === 'teamName' ? order : 'asc'}
+                  onClick={createSortHandler('teamName')}
+                >
+                  Name
+                  {orderBy === 'teamName' ? (
+                    <span className={classes.visuallyHidden}>
+                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </span>
+                  ) : null}
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Email(s)</TableCell>
               <TableCell>Edit</TableCell>
               <TableCell>Delete</TableCell>
             </TableRow>
@@ -217,6 +211,13 @@ const ManageTeams: React.FC = (): JSX.Element => {
               .map(team => (
                 <TableRow key={team.id} className={classes.actionRow}>
                   <TableCell>{team.teamName}</TableCell>
+                  <TableCell>
+                    <ul>
+                      {team.emailList.map(item => (
+                        <li key={item.email + (Math.random() * 10000).toFixed(0)}>{item.email}</li>
+                      ))}
+                    </ul>
+                  </TableCell>
                   <TableCell>
                     <IconButton className={classes.icon} onClick={() => handleEditOpen(team)}>
                       <EditIcon />
@@ -232,7 +233,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[10, 20, 30]}
           component="div"
           count={allTeams.length}
           rowsPerPage={rowsPerPage}
@@ -243,33 +244,12 @@ const ManageTeams: React.FC = (): JSX.Element => {
       </TableContainer>
     )
   }
+
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
       <Typography variant="h5">Manage Teams</Typography>
-      <form onSubmit={handleSubmit(onSubmitHandler)} className={classes.form}>
-        <FormControl>
-          <Controller
-            name="teamName"
-            control={control}
-            defaultValue=""
-            as={
-              <TextField
-                className={`${classes.inputField} ${classes.inputFieldText}`}
-                name="teamName"
-                required
-                type="text"
-                label="Team Name"
-              />
-            }
-          />
-        </FormControl>
-        <div className={classes.actionButtons}>
-          <Button type="submit" color="secondary" variant="contained">
-            Create Team
-          </Button>
-        </div>
-      </form>
+      <ManageTeamsForm handleSubmit={onSubmitHandler} />
       <SnackBar
         open={response.open}
         message={response.message}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Grid } from '@material-ui/core'
-import { RetroType, ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
+import { RetroType, ManageTeamsType, ActionItemType } from '../../../constants/types.constants'
 import Button from '@material-ui/core/Button'
 import ActionItemList from '../../Admin/ActionItemList'
 import DialogComponent from '../../Common/DialogComponent'
@@ -24,7 +24,7 @@ const ViewActionItemDialog: React.FC<ViewActionItemDialogProps> = (props): JSX.E
   const [counter, setCounter] = useState(0)
   const [allRetros, setAllRetros] = useState<RetroType[]>([])
   useEffect(() => {
-    if(!retroId) return
+    if (!retroId) return
     getActionItemsByRetro(retroId)
       .then(querySnapshot => {
         const actions: ActionItemType[] = []

@@ -5,7 +5,7 @@ import RetroContainer from './components/Retro/RetroContainer'
 import CreateRetro from './components/Admin/CreateRetro'
 import ManageActionItems from './components/Admin/ManageActionItems'
 import EditRetro from './components/Admin/EditRetro'
-import ManageTeams from './components/Admin/ManageTeams'
+import ManageTeams from './components/Admin/ManageTeams/ManageTeams'
 import SignUp from './components/Auth/SignUp'
 import Login from './components/Auth/Login'
 import Navigation from './components/Navigation'
@@ -19,6 +19,13 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import IEWarning from './components/Common/IEWarning'
 import ForgotPassword from './components/Auth/ForgotPassword'
+import { init } from 'emailjs-com'
+
+if (window.location.href.includes('staging') || window.location.href.includes('localhost')) {
+  init(`${process.env.REACT_APP_STAGE_EMAIL_JS}`)
+} else {
+  init(`${process.env.REACT_APP_EMAIL_JS}`)
+}
 
 const theme = createMuiTheme({
   palette: {

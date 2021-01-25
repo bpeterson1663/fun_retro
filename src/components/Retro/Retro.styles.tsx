@@ -86,12 +86,6 @@ const useStyles = makeStyles(theme => ({
   editTextBox: {
     width: '100%',
   },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
   dialogContent: {
     minWidth: 500,
     maxWidth: 900,

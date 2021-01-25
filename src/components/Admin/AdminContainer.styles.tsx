@@ -53,6 +53,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexFlow: 'row-reverse wrap',
   },
+  actionButton: {
+    margin: 5,
+  },
   tableContainer: {
     minWidth: 400,
     maxWidth: 1200,
@@ -60,12 +63,6 @@ const useStyles = makeStyles(theme => ({
   showLinkButton: {
     width: 110,
     maxHeight: 30,
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
   },
   form: {
     width: '90%',
@@ -94,6 +91,17 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     top: 20,
     width: 1,
+  },
+  chipList: {
+    display: 'flex',
+    justifyContent: 'left',
+    flexWrap: 'wrap',
+    listStyle: 'none',
+    padding: theme.spacing(0.5),
+    marginBottom: theme.spacing(1),
+  },
+  buttonSecondary: {
+    marginBottom: theme.spacing(1),
   },
 }))
 

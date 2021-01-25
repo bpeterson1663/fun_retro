@@ -12,7 +12,7 @@ import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
 import { Link } from 'react-router-dom'
 import DialogComponent from '../Common/DialogComponent'
-import { ManageTeamsType, RetroType, RetroTypeString } from '../../constants/types.constant'
+import { ManageTeamsType, RetroType, RetroTypeString } from '../../constants/types.constants'
 interface RetroMap {
   name: string
   id: string
@@ -137,7 +137,12 @@ const AdminContainer = (): JSX.Element => {
         </div>
         {retroList.length > 0
           ? retroList.map(map => (
-              <RetroTable key={map.id} data={map.data as RetroTypeString[]} name={map.name} handleDelete={handleConfirmOpen} />
+              <RetroTable
+                key={map.id}
+                data={map.data as RetroTypeString[]}
+                name={map.name}
+                handleDelete={handleConfirmOpen}
+              />
             ))
           : null}
       </Grid>

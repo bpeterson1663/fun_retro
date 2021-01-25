@@ -5,7 +5,7 @@ import useStyles from '../AdminContainer.styles'
 import DialogComponent from '../../Common/DialogComponent'
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { ManageTeamsType, ActionItemType } from '../../../constants/types.constant'
+import { ManageTeamsType, ActionItemType } from '../../../constants/types.constants'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(LocalizedFormat)

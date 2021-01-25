@@ -11,7 +11,7 @@ export interface RetroType {
   isActive: boolean
   timestamp: number
 }
-export interface RetroTypeString{
+export interface RetroTypeString {
   id: string
   name: string
   startDate: string
@@ -23,10 +23,16 @@ export interface RetroTypeString{
   isActive: boolean
   timestamp: number
 }
+
 export interface PreviousRetroType {
   id: string
   name: string
   timestamp: number
+}
+
+export interface EmailData {
+  email: string
+  id: number
 }
 
 export interface ManageTeamsType {
@@ -34,6 +40,7 @@ export interface ManageTeamsType {
   id: string
   timestamp: number
   userId: string
+  emailList: EmailData[]
 }
 
 export interface ActionItemType {

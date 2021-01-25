@@ -15,13 +15,15 @@ import Tooltip from '@material-ui/core/Tooltip'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import HelpIcon from '@material-ui/icons/Help'
-import { ManageTeamsType, RetroType } from '../../constants/types.constant'
+import { ManageTeamsType, RetroType } from '../../constants/types.constants'
 import Button from '@material-ui/core/Button'
 import SnackBar from '../Common/SnackBar'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import { useParams, useHistory } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import emailjs from 'emailjs-com'
+import SERVICE_ID, { EDIT_RETRO_TEMPLATE } from '../../constants/emailjs.constants'
 
 interface ParamTypes {
   id: string
@@ -79,6 +81,7 @@ const EditRetro: React.FC = (): JSX.Element => {
                 teamName: data.teamName,
                 timestamp: data.timestamp,
                 userId: data.userId,
+                emailList: data.emailList ? data.emailList : [],
               })
             })
             setTeams(teams)
@@ -114,6 +117,39 @@ const EditRetro: React.FC = (): JSX.Element => {
       })
   }
 
+  const sendEmail = () => {
+    setIsLoading(true)
+    const emailTasks: { id: string; retro_name?: string; email: string }[] = []
+    teamValue.forEach(team => {
+      team.emailList.forEach(email => {
+        const templateParams = {
+          id: id,
+          retro_name: editRetro?.name,
+          email: email.email,
+          team: team.teamName
+        }
+        emailTasks.push(templateParams)
+      })
+    })
+    const promises = emailTasks.map(task => emailjs.send(SERVICE_ID, EDIT_RETRO_TEMPLATE, task))
+    Promise.all(promises)
+      .then(() => {
+        setIsLoading(false)
+        setResponse({
+          open: true,
+          status: 'success',
+          message: 'Boom! An email has been sent to each member of the team(s)!',
+        })
+      })
+      .catch(() => {
+        setIsLoading(false)
+        setResponse({
+          open: true,
+          status: 'error',
+          message: 'Oh no! Something went wrong with sending the emails',
+        })
+      })
+  }
   return (
     <Container>
       {isLoading ? <LinearProgress variant="query" /> : <div className={classes.placeholder}></div>}
@@ -250,9 +286,20 @@ const EditRetro: React.FC = (): JSX.Element => {
           />
         </FormControl>
         <div className={classes.actionButtons}>
-          <Button type="submit" color="secondary" variant="contained">
+          <Button className={classes.actionButton} type="submit" color="secondary" variant="contained">
             Save Retro
           </Button>
+          {teamValue.length > 0 ? (
+            <Button
+              disabled={isLoading}
+              className={classes.actionButton}
+              color="secondary"
+              variant="contained"
+              onClick={sendEmail}
+            >
+              Send Email Update
+            </Button>
+          ) : null}
         </div>
       </form>
       <SnackBar

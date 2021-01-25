@@ -16,10 +16,11 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import useStyles from './AdminContainer.styles'
-import { ActionItemTableProps, ActionItemType, Order } from '../../constants/types.constant'
+import { ActionItemTableProps, ActionItemType, Order } from '../../constants/types.constants'
 import { deleteActionItem, editActionItemById } from '../../api/index'
 import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'
+import SnackBar from '../Common/SnackBar'
 import { getComparator, stableSort } from '../Common/Table/helpers'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
@@ -31,10 +32,11 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
   const [actionData, setActionData] = useState<ActionItemType[]>([])
   const [editItem, setEditItem] = useState<ActionItemType>({} as ActionItemType)
   const [editStatus, setEditStatus] = useState(false)
+  const [response, setResponse] = useState({ open: false, status: '', message: '' })
   const [orderBy, setOrderBy] = useState<keyof ActionItemType>('value')
   const [order, setOrder] = useState<Order>('asc')
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   useEffect(() => {
     const newData = data.map(d => {
       const retro = retros.find(retro => retro.id === d.retroId)?.name
@@ -45,7 +47,7 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
   }, [data, retros])
   const handleDelete = (id: string) => deleteActionItem(id).then(tableUpdated)
 
-  const editActionItem = (item: { value: string; teamId: string; owner: string }) => {
+  const editActionItem = (item: { value: string; teamId: string; owner: string, completed: boolean, completedDate: string }) => {
     const newItem = {
       ...editItem,
       ...item,
@@ -54,7 +56,10 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
     editActionItemById(newItem.id, newItem).then(() => {
       handleEditActionClose()
       tableUpdated()
-    })
+      if(item.completed){
+        setResponse({ open: true, status: 'success', message: 'Action item completed! Keep up the good work!' })
+      }
+    }).catch(err => setResponse({ open: true, status: 'error', message: `Oh no! An error occured: ${err.message}` }))
   }
 
   const handleEditItem = (item: ActionItemType) => {
@@ -165,13 +170,19 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
         />
       ) : null}
       <TablePagination
-        rowsPerPageOptions={[5, 10, 20]}
+        rowsPerPageOptions={[10, 20, 30]}
         component="div"
         count={actionData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+      <SnackBar
+        open={response.open}
+        message={response.message}
+        status={response.status}
+        onClose={() => setResponse({ open: false, message: '', status: '' })}
       />
     </TableContainer>
   )

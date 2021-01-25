@@ -17,7 +17,7 @@ import TablePagination from '@material-ui/core/TablePagination'
 import Paper from '@material-ui/core/Paper'
 import { getComparator, stableSort } from '../Common/Table/helpers'
 import { getColumnsTitle } from '../../constants/columns.constants'
-import { Order, RetroType, RetroTypeString } from '../../constants/types.constant'
+import { Order, RetroType, RetroTypeString } from '../../constants/types.constants'
 import Typography from '@material-ui/core/Typography/Typography'
 import ShowLinkDialog from './Dialogs/ShowLinkDialog'
 import { Link } from 'react-router-dom'
@@ -34,7 +34,7 @@ interface RetroTableProps {
 
 const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JSX.Element => {
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [orderBy, setOrderBy] = useState<keyof RetroType>('name')
   const [order, setOrder] = useState<Order>('asc')
   const classes = useStyles()
@@ -183,7 +183,7 @@ const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JS
         </TableBody>
       </Table>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 20]}
+        rowsPerPageOptions={[10, 20, 30]}
         component="div"
         count={data.length}
         rowsPerPage={rowsPerPage}
