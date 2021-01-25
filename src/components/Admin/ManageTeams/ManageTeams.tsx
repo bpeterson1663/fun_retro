@@ -42,7 +42,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const [orderBy, setOrderBy] = useState<keyof ManageTeamsType>('teamName')
   const [order, setOrder] = useState<Order>('asc')
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   useEffect(() => {
     db.collection('teams')
@@ -233,7 +233,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[10, 20, 30]}
           component="div"
           count={allTeams.length}
           rowsPerPage={rowsPerPage}

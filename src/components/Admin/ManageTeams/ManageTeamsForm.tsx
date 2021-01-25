@@ -148,7 +148,7 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
           disabled={(error && chipList.length < 1) || !teamName}
           variant="contained"
         >
-          {editData ? 'Edit Team' : 'Create Team'}
+          {editData ? 'Save Changes' : 'Create Team'}
         </Button>
       </div>
     </Grid>
