@@ -47,19 +47,27 @@ const ActionItemList: React.FC<ActionItemTableProps> = ({ name, data, retros, te
   }, [data, retros])
   const handleDelete = (id: string) => deleteActionItem(id).then(tableUpdated)
 
-  const editActionItem = (item: { value: string; teamId: string; owner: string, completed: boolean, completedDate: string }) => {
+  const editActionItem = (item: {
+    value: string
+    teamId: string
+    owner: string
+    completed: boolean
+    completedDate: string
+  }) => {
     const newItem = {
       ...editItem,
       ...item,
       timestamp: editItem.timestamp ? editItem.timestamp : dayjs().valueOf(),
     }
-    editActionItemById(newItem.id, newItem).then(() => {
-      handleEditActionClose()
-      tableUpdated()
-      if(item.completed){
-        setResponse({ open: true, status: 'success', message: 'Action item completed! Keep up the good work!' })
-      }
-    }).catch(err => setResponse({ open: true, status: 'error', message: `Oh no! An error occured: ${err.message}` }))
+    editActionItemById(newItem.id, newItem)
+      .then(() => {
+        handleEditActionClose()
+        tableUpdated()
+        if (item.completed) {
+          setResponse({ open: true, status: 'success', message: 'Action item completed! Keep up the good work!' })
+        }
+      })
+      .catch(err => setResponse({ open: true, status: 'error', message: `Oh no! An error occured: ${err.message}` }))
   }
 
   const handleEditItem = (item: ActionItemType) => {

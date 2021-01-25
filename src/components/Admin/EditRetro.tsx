@@ -126,7 +126,7 @@ const EditRetro: React.FC = (): JSX.Element => {
           id: id,
           retro_name: editRetro?.name,
           email: email.email,
-          team: team.teamName
+          team: team.teamName,
         }
         emailTasks.push(templateParams)
       })
