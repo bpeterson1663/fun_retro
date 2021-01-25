@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { Button, Chip, FormControl, Grid, TextField } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography/Typography'
 import dayjs from 'dayjs'
-import { ManageTeamsType, EmailData } from '../../../constants/types.constant'
+import { ManageTeamsType, EmailData } from '../../../constants/types.constants'
 import AuthContext from '../../../context/auth-context'
 
 interface ManageTeamsFromT {

@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { ManageTeamsType, RetroType } from '../../../constants/types.constant'
+import { ManageTeamsType, RetroType } from '../../../constants/types.constants'
 import DialogComponent from '../../Common/DialogComponent'
 import dayjs from 'dayjs'
 const useStyles = makeStyles(theme => ({

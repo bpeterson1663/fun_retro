@@ -1,6 +1,6 @@
 import { db } from '../firebase'
 import { QuerySnapshot, DocumentSnapshot } from '@firebase/firestore-types'
-import { ActionItemType } from '../constants/types.constant'
+import { ActionItemType } from '../constants/types.constants'
 export const getAllRetros = async (id: string): Promise<QuerySnapshot> =>
   db
     .collection('retros')

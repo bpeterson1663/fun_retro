@@ -25,7 +25,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import AuthContext from '../../../context/auth-context'
 import SnackBar from '../../Common/SnackBar'
 import useStyles from '../AdminContainer.styles'
-import { ManageTeamsType, Order } from '../../../constants/types.constant'
+import { ManageTeamsType, Order } from '../../../constants/types.constants'
 import { getComparator, stableSort } from '../../Common/Table/helpers'
 import EditTeamDialog from '../Dialogs/EditTeamDialog'
 

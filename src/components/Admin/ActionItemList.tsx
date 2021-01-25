@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import useStyles from './AdminContainer.styles'
-import { ActionItemTableProps, ActionItemType, Order } from '../../constants/types.constant'
+import { ActionItemTableProps, ActionItemType, Order } from '../../constants/types.constants'
 import { deleteActionItem, editActionItemById } from '../../api/index'
 import EditActionItemDialog from './Dialogs/EditActionItemDialog'
 import EditIcon from '@material-ui/icons/Edit'

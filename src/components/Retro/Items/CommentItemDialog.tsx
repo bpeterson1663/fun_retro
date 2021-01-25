@@ -4,7 +4,7 @@ import DialogComponent from '../../Common/DialogComponent'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useStyles from '../Retro.styles'
-import { ItemT } from '../../../constants/types.constant'
+import { ItemT } from '../../../constants/types.constants'
 
 interface CommentItemDialogT {
   showCommentDialog: { item: ItemT }

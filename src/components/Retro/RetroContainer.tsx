@@ -20,7 +20,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
-import { ManageTeamsType, RetroType } from '../../constants/types.constant'
+import { ManageTeamsType, RetroType } from '../../constants/types.constants'
 dayjs.extend(LocalizedFormat)
 interface RetroContainerT {
   match: {

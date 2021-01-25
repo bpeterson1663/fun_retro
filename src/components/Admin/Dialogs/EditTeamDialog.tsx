@@ -2,7 +2,7 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import DialogComponent from '../../Common/DialogComponent'
 import { Button } from '@material-ui/core'
-import { ManageTeamsType } from '../../../constants/types.constant'
+import { ManageTeamsType } from '../../../constants/types.constants'
 import ManageTeamsForm from '../ManageTeams/ManageTeamsForm'
 
 type EditTeamT = {
