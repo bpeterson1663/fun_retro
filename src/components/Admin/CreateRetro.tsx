@@ -15,13 +15,14 @@ import Tooltip from '@material-ui/core/Tooltip'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import HelpIcon from '@material-ui/icons/Help'
-import { ManageTeamsType } from '../../constants/types.constant'
+import { ManageTeamsType } from '../../constants/types.constants'
 import Button from '@material-ui/core/Button'
 import SnackBar from '../Common/SnackBar'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
 import { Link } from 'react-router-dom'
 import emailjs from 'emailjs-com'
+import SERVICE_ID, { CREATE_RETRO_TEMPLATE } from '../../constants/emailjs.constants'
 
 interface RetroForm {
   name: string
@@ -98,7 +99,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
             emailTasks.push(templateParams)
           })
         })
-        const promises = emailTasks.map(task => emailjs.send('service_dfy35zv', 'template_mvtzknv', task))
+        const promises = emailTasks.map(task => emailjs.send(SERVICE_ID, CREATE_RETRO_TEMPLATE, task))
         Promise.all(promises)
           .then(res => {
             setIsLoading(false)
