@@ -150,7 +150,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
         setResponse({
           open: true,
           status: 'success',
-          message: 'Team was delete successfully!',
+          message: 'Team was deleted successfully!',
         })
       })
       .catch(err => {
@@ -159,7 +159,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
         setResponse({
           open: true,
           status: 'error',
-          message: 'Oh no there was an error!',
+          message: 'Oh no, there was an error!',
         })
         console.error('ERROR: ', err)
       })

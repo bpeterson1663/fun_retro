@@ -81,7 +81,7 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
   const EmailList: React.FC = (): JSX.Element => {
     return (
       <>
-        <Typography variant="subtitle1">List of Emails</Typography>
+        <Typography variant="subtitle1">Team Members</Typography>
         <Grid component="ul" className={classes.chipList}>
           {chipList.map(data => (
             <li key={data.id}>
@@ -110,7 +110,7 @@ const ManageTeamsForm: React.FC<ManageTeamsFromT> = ({ handleSubmit, editData })
         <TextField
           className={`${classes.inputField} ${classes.inputFieldText}`}
           value={emailValue}
-          label="Add an email"
+          label="Add a team member's email"
           error={error}
           onChange={e => {
             setEmailValue(e.target.value)
