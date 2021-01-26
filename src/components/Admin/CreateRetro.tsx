@@ -9,6 +9,7 @@ import { columnTitles } from '../../constants/columns.constants'
 import MenuItem from '@material-ui/core/MenuItem'
 import { db } from '../../firebase'
 import AuthContext from '../../context/auth-context'
+import { Checkbox, FormControlLabel } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography/Typography'
 import FormControl from '@material-ui/core/FormControl'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -39,6 +40,7 @@ const CreateRetro: React.FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false)
   const [allTeams, setTeams] = useState<ManageTeamsType[]>([])
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
+  const [sendEmail, setSendEmail] = useState(false)
   const { handleSubmit, register, reset, control } = useForm<RetroForm>({
     defaultValues: {
       columnsKey: columnTitles[0].value,
@@ -88,26 +90,28 @@ const CreateRetro: React.FC = (): JSX.Element => {
           endDate: dayjs().format('YYYY-MM-DD'),
           columnsKey: columnTitles[0].value,
         })
-        const emailTasks: { id: string; retro_name: string; email: string }[] = []
-        teamValue.forEach(team => {
-          team.emailList.forEach(email => {
-            const templateParams = {
-              id: res.id,
-              retro_name: data.name,
-              email: email.email,
-              team: team.teamName,
-            }
-            emailTasks.push(templateParams)
+        if (sendEmail) {
+          const emailTasks: { id: string; retro_name: string; email: string }[] = []
+          teamValue.forEach(team => {
+            team.emailList.forEach(email => {
+              const templateParams = {
+                id: res.id,
+                retro_name: data.name,
+                email: email.email,
+                team: team.teamName,
+              }
+              emailTasks.push(templateParams)
+            })
           })
-        })
-        const promises = emailTasks.map(task => emailjs.send(SERVICE_ID, CREATE_RETRO_TEMPLATE, task))
-        Promise.all(promises)
-          .then(res => {
-            setIsLoading(false)
-            console.log(res)
-          })
-          .catch(error => console.error('error: ', error))
-
+          const promises = emailTasks.map(task => emailjs.send(SERVICE_ID, CREATE_RETRO_TEMPLATE, task))
+          Promise.all(promises)
+            .then(res => {
+              setIsLoading(false)
+              console.log(res)
+            })
+            .catch(error => console.error('error: ', error))
+        }
+        setIsLoading(false)
         setTeamValue([])
         setResponse({
           open: true,
@@ -251,6 +255,22 @@ const CreateRetro: React.FC = (): JSX.Element => {
             }
           />
         </FormControl>
+        {teamValue.length > 0 ? (
+          <FormControlLabel
+            className={classes.checkbox}
+            control={
+              <Checkbox
+                checked={sendEmail}
+                onChange={() => {
+                  const newState = !sendEmail
+                  setSendEmail(newState)
+                }}
+                name="sendEmail"
+              />
+            }
+            label="Send email to team members"
+          />
+        ) : null}
         <div className={classes.actionButtons}>
           <Button type="submit" color="secondary" variant="contained">
             Create Retro

@@ -12,6 +12,7 @@ import AuthContext from '../../context/auth-context'
 import Typography from '@material-ui/core/Typography/Typography'
 import FormControl from '@material-ui/core/FormControl'
 import Tooltip from '@material-ui/core/Tooltip'
+import { FormControlLabel, Checkbox } from '@material-ui/core'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import HelpIcon from '@material-ui/icons/Help'
@@ -44,6 +45,7 @@ const EditRetro: React.FC = (): JSX.Element => {
   const [editRetro, setEditRetro] = useState<RetroType>()
   const [allTeams, setTeams] = useState<ManageTeamsType[]>([])
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
+  const [sendEmail, setSendEmail] = useState(false)
   const { id } = useParams<ParamTypes>()
 
   const { handleSubmit, setValue, control } = useForm<RetroForm>()
@@ -99,6 +101,7 @@ const EditRetro: React.FC = (): JSX.Element => {
     fetchData()
   }, [auth.userId, history, id, setValue])
   const onSubmitHandler = (data: RetroForm) => {
+    setIsLoading(true)
     const retro = {
       ...editRetro,
       ...data,
@@ -108,6 +111,9 @@ const EditRetro: React.FC = (): JSX.Element => {
       .doc(id)
       .update(retro)
       .then(() => {
+        if (sendEmail) {
+          handleSendEmail()
+        }
         setIsLoading(false)
         setResponse({
           open: true,
@@ -117,7 +123,7 @@ const EditRetro: React.FC = (): JSX.Element => {
       })
   }
 
-  const sendEmail = () => {
+  const handleSendEmail = () => {
     setIsLoading(true)
     const emailTasks: { id: string; retro_name?: string; email: string }[] = []
     teamValue.forEach(team => {
@@ -133,22 +139,8 @@ const EditRetro: React.FC = (): JSX.Element => {
     })
     const promises = emailTasks.map(task => emailjs.send(SERVICE_ID, EDIT_RETRO_TEMPLATE, task))
     Promise.all(promises)
-      .then(() => {
-        setIsLoading(false)
-        setResponse({
-          open: true,
-          status: 'success',
-          message: 'Boom! An email has been sent to each member of the team(s)!',
-        })
-      })
-      .catch(() => {
-        setIsLoading(false)
-        setResponse({
-          open: true,
-          status: 'error',
-          message: 'Oh no! Something went wrong with sending the emails',
-        })
-      })
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false))
   }
   return (
     <Container>
@@ -285,21 +277,32 @@ const EditRetro: React.FC = (): JSX.Element => {
             }
           />
         </FormControl>
+        {teamValue.length > 0 ? (
+          <FormControlLabel
+            className={classes.checkbox}
+            control={
+              <Checkbox
+                checked={sendEmail}
+                onChange={() => {
+                  const newState = !sendEmail
+                  setSendEmail(newState)
+                }}
+                name="sendEmail"
+              />
+            }
+            label="Send email update to team members"
+          />
+        ) : null}
         <div className={classes.actionButtons}>
-          <Button className={classes.actionButton} type="submit" color="secondary" variant="contained">
+          <Button
+            className={classes.actionButton}
+            disabled={isLoading}
+            type="submit"
+            color="secondary"
+            variant="contained"
+          >
             Save Retro
           </Button>
-          {teamValue.length > 0 ? (
-            <Button
-              disabled={isLoading}
-              className={classes.actionButton}
-              color="secondary"
-              variant="contained"
-              onClick={sendEmail}
-            >
-              Send Email Update
-            </Button>
-          ) : null}
         </div>
       </form>
       <SnackBar
