@@ -83,6 +83,7 @@ const EditActionItemDialog: React.FC<EditActionT> = (props): JSX.Element => {
         rows="3"
         type="text"
         label="Start Typing"
+        data-testid="action-item_edit"
         value={itemValue}
         onChange={e => setItemValue(e.target.value)}
       />
