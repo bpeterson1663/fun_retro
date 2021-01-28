@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Grid } from '@material-ui/core'
 import { RetroType, ManageTeamsType, ActionItemType } from '../../../constants/types.constants'
 import Button from '@material-ui/core/Button'
-import ActionItemList from '../../Admin/ActionItemList'
+import ActionItemList from '../../Admin/ActionItems/ActionItemList'
 import DialogComponent from '../../Common/DialogComponent'
 import { getRetroById, getActionItemsByTeam, getActionItemsByRetro } from '../../../api'
 interface ViewActionItemDialogProps {
