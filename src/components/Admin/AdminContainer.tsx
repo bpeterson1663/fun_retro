@@ -12,6 +12,7 @@ import SnackBar from '../Common/SnackBar'
 import useStyles from './AdminContainer.styles'
 import { Link } from 'react-router-dom'
 import DialogComponent from '../Common/DialogComponent'
+import { columnKeys } from '../../constants/columns.constants'
 import { ManageTeamsType, RetroType, RetroTypeString } from '../../constants/types.constants'
 interface RetroMap {
   name: string
@@ -30,11 +31,7 @@ const AdminContainer = (): JSX.Element => {
   })
   const [retroToDelete, setRetroToDelete] = useState<RetroType>({} as RetroType)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
-  const columnMaps = [
-    { title: 'Keep Doing', value: 'keepDoing', backgroundColor: '#009588' },
-    { title: 'Stop Doing', value: 'stopDoing', backgroundColor: '#E91D63' },
-    { title: 'Start Doing', value: 'startDoing', backgroundColor: '#9C28B0' },
-  ]
+
   const auth = useContext(AuthContext)
   const classes = useStyles()
 
@@ -92,6 +89,7 @@ const AdminContainer = (): JSX.Element => {
 
   const handleRetroDelete = (retro: RetroType) => {
     setIsLoading(true)
+    const columnMaps = retro.columnsKey ? columnKeys[retro.columnsKey] : columnKeys['keepDoing']
     const promises = columnMaps.map(column => {
       return db
         .collection(column.value)
