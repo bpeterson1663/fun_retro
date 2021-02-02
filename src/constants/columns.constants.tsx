@@ -3,6 +3,13 @@ const $green = '#008A60',
   $purple = '#806DC2',
   $blue = '#1588E6'
 
+export const colors = {
+  green: $green,
+  red: $red,
+  purple: $purple,
+  blue: $blue,
+}
+
 export const columnKeys = {
   keepDoing: [
     { title: 'Keep Doing', value: 'keepDoing', backgroundColor: $green },

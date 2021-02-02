@@ -35,8 +35,8 @@ interface RetroTableProps {
 const RetroTable: React.FC<RetroTableProps> = ({ data, name, handleDelete }): JSX.Element => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [orderBy, setOrderBy] = useState<keyof RetroType>('name')
-  const [order, setOrder] = useState<Order>('asc')
+  const [orderBy, setOrderBy] = useState<keyof RetroType>('startDate')
+  const [order, setOrder] = useState<Order>('desc')
   const classes = useStyles()
   const [retroLink, setRetroLink] = useState<RetroType>({} as RetroType)
   const [showLinkStatus, setShowLinkStatus] = useState(false)
