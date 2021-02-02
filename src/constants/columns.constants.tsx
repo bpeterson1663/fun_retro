@@ -7,7 +7,7 @@ export const colors = {
   green: $green,
   red: $red,
   purple: $purple,
-  blue: $blue
+  blue: $blue,
 }
 
 export const columnKeys = {

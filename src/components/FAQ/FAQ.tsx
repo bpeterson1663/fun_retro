@@ -28,16 +28,16 @@ const useStyles = makeStyles(theme => ({
     marginTop: 10,
   },
   green: {
-    backgroundColor: colors.green, //TODO: moves to a constant
+    backgroundColor: colors.green,
   },
-  pink: {
+  red: {
     backgroundColor: colors.red,
   },
   purple: {
     backgroundColor: colors.purple,
   },
   blue: {
-    backgroundColor: colors.blue
+    backgroundColor: colors.blue,
   },
   back: {
     display: 'flex',
@@ -79,22 +79,49 @@ const FAQ: React.FC<FAQProps> = (props): JSX.Element => {
       </Accordion>
       <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-          <Typography className={`${classes.heading} ${classes.pink}`}>How does Fun Retro work?</Typography>
+          <Typography className={`${classes.heading} ${classes.red}`}>How does Fun Retro work?</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            Using Super Fun Retro is easy! Simply create your retro and send the link that is generated out to your
-            team. Your team members then login and can start entering in feedback in three different categories; Keep
-            Doing, Stop Doing, and Start Doing. Each team member can then vote for any item they like. All feedback is
-            anonymous to help encourage a safe and free environment to provide more honest feedback. Only the user who
-            creates the Super Fun Retro will be able to acivate/disable the retro as well as edit, delete or generate a
-            report.
+            Using Super Fun Retro is easy! Simply create your retro and send the link that is generated out to your team
+            or if you create a Team, you can have the option to send an email to members of the team which will include
+            the retro link. Your team members then login and can start entering in feedback. Each team member can then
+            vote for any item they like. All feedback is anonymous to help encourage a safe and free environment to
+            provide more honest feedback. Only the user who creates the Super Fun Retro will be able to acivate/disable
+            the retro.
           </Typography>
         </AccordionDetails>
       </Accordion>
       <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-          <Typography className={`${classes.heading} ${classes.purple}`}>How much does it cost?</Typography>
+          <Typography className={`${classes.heading} ${classes.purple}`}>What are Teams?</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Teams are a great to keep your Retros and Action Items organized. When you create a team you have the option
+            to add your team member&apos;s emails to the team. This will give you the option to send an email containg
+            the retro link when you create a new retro to members on the team.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion className={classes.panel}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+          <Typography className={`${classes.heading} ${classes.blue}`}>What are Action Items?</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Action Items are what Super Fun Retro is all about (other than having super amounts of fun!). The purpose of
+            having a retrospective is to find out what went wrong and what you can improve on. Creating Action Items can
+            be done in the Action menu on the retro board or under Manage Action Items. When creating an action item,
+            you can assign a team and/or an owner for someone to follow up and complete the action item. You can edit
+            the action item under View Action Items to mark the action item copmlete or under the Manage Action Items
+            page.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion className={classes.panel}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+          <Typography className={`${classes.heading} ${classes.green}`}>How much does it cost?</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -106,7 +133,7 @@ const FAQ: React.FC<FAQProps> = (props): JSX.Element => {
       </Accordion>
       <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-          <Typography className={`${classes.heading} ${classes.blue}`}>
+          <Typography className={`${classes.heading} ${classes.red}`}>
             Does everyone have to have an account that uses Super Fun Retro?
           </Typography>
         </AccordionSummary>
