@@ -8,6 +8,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Button from '@material-ui/core/Button/Button'
+import { colors } from '../../constants/columns.constants'
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -27,13 +28,16 @@ const useStyles = makeStyles(theme => ({
     marginTop: 10,
   },
   green: {
-    backgroundColor: '#009588', //TODO: moves to a constant
+    backgroundColor: colors.green, //TODO: moves to a constant
   },
   pink: {
-    backgroundColor: '#E91D63',
+    backgroundColor: colors.red,
   },
   purple: {
-    backgroundColor: '#9C28B0',
+    backgroundColor: colors.purple,
+  },
+  blue: {
+    backgroundColor: colors.blue
   },
   back: {
     display: 'flex',
@@ -102,7 +106,7 @@ const FAQ: React.FC<FAQProps> = (props): JSX.Element => {
       </Accordion>
       <Accordion className={classes.panel}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-          <Typography className={`${classes.heading} ${classes.green}`}>
+          <Typography className={`${classes.heading} ${classes.blue}`}>
             Does everyone have to have an account that uses Super Fun Retro?
           </Typography>
         </AccordionSummary>
