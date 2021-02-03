@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState, useContext } from 'react'
-import { db } from '../../firebase'
+import { getRetroById, getTeams, updateRetro } from '../../api/index'
 import dayjs from 'dayjs'
 import useStyles from './AdminContainer.styles'
 import Container from '@material-ui/core/Container'
@@ -41,7 +41,7 @@ interface RetroForm {
 const EditRetro: React.FC = (): JSX.Element => {
   const history = useHistory()
   const auth = useContext(AuthContext)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [editRetro, setEditRetro] = useState<RetroType>()
   const [allTeams, setTeams] = useState<ManageTeamsType[]>([])
   const [teamValue, setTeamValue] = useState<ManageTeamsType[]>([])
@@ -54,16 +54,7 @@ const EditRetro: React.FC = (): JSX.Element => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all([
-        db
-          .collection('retros')
-          .doc(id)
-          .get(),
-        db
-          .collection('teams')
-          .where('userId', '==', auth.userId)
-          .get(),
-      ])
+      await Promise.all([getRetroById(id), getTeams(auth.userId)])
         .then(res => {
           const [retroSnapshot, allSnapshot] = res
           const retroData = retroSnapshot.data()
@@ -86,6 +77,7 @@ const EditRetro: React.FC = (): JSX.Element => {
                 emailList: data.emailList ? data.emailList : [],
               })
             })
+            setIsLoading(false)
             setTeams(teams)
             setEditRetro(retro)
             setTeamValue(retroData.team ? retroData.team : [])
@@ -96,7 +88,10 @@ const EditRetro: React.FC = (): JSX.Element => {
             setValue('numberOfVotes', retroData?.numberOfVotes)
           }
         })
-        .catch(() => history.push('/retroList'))
+        .catch(() => {
+          setIsLoading(false)
+          history.push('/retroList')
+        })
     }
     fetchData()
   }, [auth.userId, history, id, setValue])
@@ -106,21 +101,18 @@ const EditRetro: React.FC = (): JSX.Element => {
       ...editRetro,
       ...data,
       team: teamValue ? teamValue : [],
-    }
-    db.collection('retros')
-      .doc(id)
-      .update(retro)
-      .then(() => {
-        if (sendEmail) {
-          handleSendEmail()
-        }
-        setIsLoading(false)
-        setResponse({
-          open: true,
-          status: 'success',
-          message: 'Oh yea! Way to make those changes!',
-        })
+    } as RetroType
+    updateRetro(id, retro).then(() => {
+      if (sendEmail) {
+        handleSendEmail()
+      }
+      setIsLoading(false)
+      setResponse({
+        open: true,
+        status: 'success',
+        message: 'Oh yea! Way to make those changes!',
       })
+    })
   }
 
   const handleSendEmail = () => {
