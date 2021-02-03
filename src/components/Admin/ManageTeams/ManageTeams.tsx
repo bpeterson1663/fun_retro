@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useState, useContext, useEffect } from 'react'
-import { db } from '../../../firebase'
+import { deleteTeam, getTeams, createTeam, editTeamById } from '../../../api/index'
 import DialogComponent from '../../Common/DialogComponent'
 import ManageTeamsForm from './ManageTeamsForm'
 import {
@@ -45,24 +45,21 @@ const ManageTeams: React.FC = (): JSX.Element => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
   useEffect(() => {
-    db.collection('teams')
-      .where('userId', '==', auth.userId)
-      .get()
-      .then(querySnapshot => {
-        const teams: ManageTeamsType[] = []
+    getTeams(auth.userId).then(querySnapshot => {
+      const teams: ManageTeamsType[] = []
 
-        querySnapshot.docs.forEach(doc => {
-          const docData = doc.data()
-          teams.push({
-            id: doc.id,
-            teamName: docData.teamName,
-            timestamp: docData.timestamp,
-            userId: auth.userId,
-            emailList: docData.emailList ? docData.emailList : [],
-          })
+      querySnapshot.docs.forEach(doc => {
+        const docData = doc.data()
+        teams.push({
+          id: doc.id,
+          teamName: docData.teamName,
+          timestamp: docData.timestamp,
+          userId: auth.userId,
+          emailList: docData.emailList ? docData.emailList : [],
         })
-        setAllTeams(teams)
       })
+      setAllTeams(teams)
+    })
   }, [auth.userId])
   const handleConfirmClose = (): void => {
     setTeamIdToDelete('')
@@ -85,9 +82,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
 
   const onSubmitHandler = (data: ManageTeamsType) => {
     setIsLoading(true)
-
-    db.collection('teams')
-      .add(data)
+    createTeam(data)
       .then(res => {
         data.id = res.id
         const newState = allTeams
@@ -112,9 +107,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
   }
   const handleEditSubmit = (team: ManageTeamsType): void => {
     setIsLoading(true)
-    db.collection('teams')
-      .doc(team.id)
-      .update(team)
+    editTeamById(team.id, team)
       .then(() => {
         setIsLoading(false)
         const newState = allTeams
@@ -139,9 +132,7 @@ const ManageTeams: React.FC = (): JSX.Element => {
   }
   const handleTeamDelete = (id: string): void => {
     setIsLoading(true)
-    db.collection('teams')
-      .doc(id)
-      .delete()
+    deleteTeam(id)
       .then(() => {
         const newState = allTeams.filter(team => team.id !== id)
         setAllTeams(newState)

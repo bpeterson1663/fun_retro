@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { db } from '../../firebase'
 import AuthContext from '../../context/auth-context'
-import { getAllRetros } from '../../api/index'
+import { getAllRetros, deleteRetro } from '../../api/index'
 import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress'
@@ -105,9 +105,7 @@ const AdminContainer = (): JSX.Element => {
         })
       })
       batchDeletes.commit().then(() => {
-        db.collection('retros')
-          .doc(retro.id)
-          .delete()
+        deleteRetro(retro.id)
           .then(() => {
             handleConfirmClose()
             setMessageState({

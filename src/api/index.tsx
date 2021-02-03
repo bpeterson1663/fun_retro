@@ -1,6 +1,6 @@
 import { db } from '../firebase'
-import { QuerySnapshot, DocumentSnapshot } from '@firebase/firestore-types'
-import { ActionItemType } from '../constants/types.constants'
+import { QuerySnapshot, DocumentSnapshot, DocumentData } from '@firebase/firestore-types'
+import { ActionItemType, RetroType, ManageTeamsType } from '../constants/types.constants'
 export const getAllRetros = async (id: string): Promise<QuerySnapshot> =>
   db
     .collection('retros')
@@ -49,3 +49,31 @@ export const getRetroById = async (id: string): Promise<DocumentSnapshot> =>
     .collection('retros')
     .doc(id)
     .get()
+
+export const updateRetro = async (id: string, body: RetroType): Promise<void> =>
+  await db
+    .collection('retros')
+    .doc(id)
+    .update(body)
+
+export const createRetro = async (body: RetroType): Promise<DocumentData> => await db.collection('retros').add(body)
+
+export const deleteRetro = async (id: string): Promise<void> => 
+  await db
+    .collection('retros')
+    .doc(id)
+    .delete()
+
+export const createTeam = async (body: ManageTeamsType): Promise<DocumentData> => await db.collection('teams').add(body)
+
+export const deleteTeam = async (id: string): Promise<void> =>
+  await db
+    .collection('teams')
+    .doc(id)
+    .delete()
+
+export const editTeamById = async (id: string, body: ManageTeamsType): Promise<void> =>
+  await db
+    .collection('teams')
+    .doc(id)
+    .update(body)
