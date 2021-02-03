@@ -1,6 +1,6 @@
 import { db } from '../firebase'
-import { QuerySnapshot, DocumentSnapshot } from '@firebase/firestore-types'
-import { ActionItemType } from '../constants/types.constants'
+import { QuerySnapshot, DocumentSnapshot, DocumentData } from '@firebase/firestore-types'
+import { ActionItemType, RetroType } from '../constants/types.constants'
 export const getAllRetros = async (id: string): Promise<QuerySnapshot> =>
   db
     .collection('retros')
@@ -49,3 +49,11 @@ export const getRetroById = async (id: string): Promise<DocumentSnapshot> =>
     .collection('retros')
     .doc(id)
     .get()
+
+export const updateRetro = async (id: string, body: RetroType): Promise<void> =>
+  await db
+    .collection('retros')
+    .doc(id)
+    .update(body)
+
+export const createRetro = async (body: RetroType): Promise<DocumentData> => await db.collection('retros').add(body)
