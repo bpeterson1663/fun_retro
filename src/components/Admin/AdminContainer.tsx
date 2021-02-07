@@ -105,17 +105,16 @@ const AdminContainer = (): JSX.Element => {
         })
       })
       batchDeletes.commit().then(() => {
-        deleteRetro(retro.id)
-          .then(() => {
-            handleConfirmClose()
-            setMessageState({
-              displayMessage: true,
-              message: 'Goodbye Retro! You have been deleted!',
-              messageStatus: 'success',
-            })
-            setCounter(c => c + 1)
-            setIsLoading(false)
+        deleteRetro(retro.id).then(() => {
+          handleConfirmClose()
+          setMessageState({
+            displayMessage: true,
+            message: 'Goodbye Retro! You have been deleted!',
+            messageStatus: 'success',
           })
+          setCounter(c => c + 1)
+          setIsLoading(false)
+        })
       })
     })
   }
