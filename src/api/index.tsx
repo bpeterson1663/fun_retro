@@ -58,7 +58,7 @@ export const updateRetro = async (id: string, body: RetroType): Promise<void> =>
 
 export const createRetro = async (body: RetroType): Promise<DocumentData> => await db.collection('retros').add(body)
 
-export const deleteRetro = async (id: string): Promise<void> => 
+export const deleteRetro = async (id: string): Promise<void> =>
   await db
     .collection('retros')
     .doc(id)
