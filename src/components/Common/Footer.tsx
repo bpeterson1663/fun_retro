@@ -10,7 +10,7 @@ const Footer: React.FC = (): JSX.Element => {
   const currentYear = dayjs()
   const classes = useStyles()
   return (
-    <BottomNavigation className={classes.root} showLabels>
+    <BottomNavigation className={classes.footer} showLabels>
       <BottomNavigationAction
         className={classes.copyright}
         disabled
