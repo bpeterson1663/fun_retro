@@ -1,17 +1,7 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core/'
-import { makeStyles } from '@material-ui/core/styles'
-
-const useStyles = makeStyles(() => ({
-  dialogContent: {
-    width: '90%',
-    margin: 'auto',
-    display: 'flex',
-    flexFlow: 'row wrap',
-    justifyContent: 'center',
-  },
-}))
+import useStyles from './Common.styles'
 
 interface DialogComponentT {
   open: boolean
