@@ -1,29 +1,13 @@
 import React, { useContext } from 'react'
-import AuthContext from '../context/auth-context'
+import AuthContext from '../../context/auth-context'
 import { Link } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
-import { authFirebase } from '../firebase'
+import { authFirebase } from '../../firebase'
 import Typography from '@material-ui/core/Typography/Typography'
+import useStyles from './Common.styles'
 
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(1),
-    color: '#fff',
-  },
-  header: {
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    margin: '0 0 0 auto',
-  },
-  faq: {
-    color: 'white',
-    textDecoration: 'none',
-  },
-}))
 const Navigation: React.FC = (): JSX.Element => {
   const auth = useContext(AuthContext)
   const handleLogOut = () => {
