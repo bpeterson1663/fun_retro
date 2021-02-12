@@ -1,55 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import Typography from '@material-ui/core/Typography/Typography'
-import Accordion from '@material-ui/core/Accordion'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import Button from '@material-ui/core/Button/Button'
-import { colors } from '../../constants/columns.constants'
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(18),
-    margin: '0 auto',
-    flexShrink: 0,
-    backgroundColor: 'red',
-    width: '98%',
-    height: 40,
-    borderRadius: 4,
-    padding: '8px 0',
-    color: 'white',
-  },
-  panel: {
-    marginTop: 10,
-  },
-  green: {
-    backgroundColor: colors.green,
-  },
-  red: {
-    backgroundColor: colors.red,
-  },
-  purple: {
-    backgroundColor: colors.purple,
-  },
-  blue: {
-    backgroundColor: colors.blue,
-  },
-  back: {
-    display: 'flex',
-    fontSize: 12,
-  },
-}))
+import { Container, Typography, Accordion, AccordionSummary, AccordionDetails, Button } from '@material-ui/core'
+import useStyles from './FAQ.styles'
+
 interface FAQProps {
   history: { goBack: () => void }
 }
+
 const FAQ: React.FC<FAQProps> = (props): JSX.Element => {
   const classes = useStyles()
-
   return (
     <Container>
       <Button
