@@ -28,5 +28,5 @@ test('should render the edit action item dialog', () => {
     />,
   )
   const element = getByTestId('action-item_edit').querySelector('textarea')
-  expect(element.value).toEqual('Action Item Value')
+  expect(element?.value).toEqual('Action Item Value')
 })
